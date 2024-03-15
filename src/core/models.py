@@ -107,8 +107,7 @@ class OpensearchServer(StateBase):
     def username(self) -> Optional[str]:
         """The generated username for the client application."""
         # Until we settle user credential questions we statically return 'kibanaserver'
-        # return self.relation_data.get("username")
-        return "kibanaserver"
+        return self.relation_data.get("username")
 
     @property
     def password(self) -> Optional[str]:
@@ -347,6 +346,6 @@ class CharmWithRelationData(CharmBase):
         self.client_requires_interface = OpenSearchRequires(
             self,
             relation_name=OPENSEARCH_REL_NAME,
-            index="admin",
+            index='admin',
             extra_user_roles="all_access",
         )

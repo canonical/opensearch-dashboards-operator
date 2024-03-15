@@ -19,7 +19,7 @@ from .helpers import (
     get_secret_by_label,
     get_user_password,
     ping_servers,
-    set_opensearch_user_password,
+    set_opensearch_user_role,
     set_password,
 )
 
@@ -41,7 +41,7 @@ OPENSEARCH_CONFIG = {
 TLS_CERTIFICATES_APP_NAME = "tls-certificates-operator"
 
 
-async def recreate_opensearch_kibanaserver(ops_test: OpsTest):
+async def add_kibana_user_role(ops_test: OpsTest):
     """Temporary helper function."""
     #
     # THIS HAS TO CHANGE AS https://warthogs.atlassian.net/browse/DPE-2944 is processed
@@ -67,13 +67,14 @@ async def recreate_opensearch_kibanaserver(ops_test: OpsTest):
     dashboard_credentials = await get_secret_by_label(
         ops_test, f"opensearch-client.{pytest.relation.id}.user.secret"
     )
+    dashboard_user = dashboard_credentials["username"]
     dashboard_password = dashboard_credentials["password"]
-    set_opensearch_user_password(
-        opensearch_endpoint, opensearch_admin_password, dashboard_password
+    set_opensearch_user_role(
+        opensearch_endpoint, opensearch_admin_password, dashboard_user, dashboard_password
     )
 
     await ops_test.model.wait_for_idle(
-        apps=[OPENSEARCH_CHARM, APP_NAME], status="active", timeout=1000
+        apps=[OPENSEARCH_CHARM], status="active", timeout=1000
     )
 
 
@@ -83,7 +84,7 @@ async def recreate_opensearch_kibanaserver(ops_test: OpsTest):
 async def test_deploy_active(ops_test: OpsTest):
 
     charm = await ops_test.build_charm(".")
-    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=3)
+    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=1)
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
     # Pinning down opensearch revision to the last 2.10 one
     # NOTE: can't access 2/stable from the tests, only 'edge' available
@@ -104,7 +105,7 @@ async def test_deploy_active(ops_test: OpsTest):
 
     async with ops_test.fast_forward():
         await ops_test.model.block_until(
-            lambda: len(ops_test.model.applications[APP_NAME].units) == 3
+            lambda: len(ops_test.model.applications[APP_NAME].units) == 1
         )
         await ops_test.model.wait_for_idle(
             apps=[APP_NAME], status="active", timeout=1000, idle_period=30
@@ -116,7 +117,10 @@ async def test_deploy_active(ops_test: OpsTest):
     await ops_test.model.wait_for_idle(
         apps=[OPENSEARCH_CHARM, APP_NAME], status="active", timeout=1000
     )
-    await recreate_opensearch_kibanaserver(ops_test)
+    await add_kibana_user_role(ops_test)
+    await ops_test.model.wait_for_idle(
+        apps=[OPENSEARCH_CHARM, APP_NAME], status="active", timeout=1000
+    )
 
 
 @pytest.mark.group(1)
@@ -127,11 +131,12 @@ async def test_dashboard_access(ops_test: OpsTest):
     dashboard_credentials = await get_secret_by_label(
         ops_test, f"opensearch-client.{pytest.relation.id}.user.secret"
     )
+    dashboard_user = dashboard_credentials["username"]
     dashboard_password = dashboard_credentials["password"]
 
     for unit in ops_test.model.applications[APP_NAME].units:
         host = get_private_address(ops_test.model.name, unit.name)
-        assert access_dashboard(host=host, username="kibanaserver", password=dashboard_password)
+        assert access_dashboard(host=host, username=dashboard_user, password=dashboard_password)
 
 
 @pytest.mark.group(1)
@@ -141,6 +146,7 @@ async def test_dashboard_access_https(ops_test: OpsTest):
     dashboard_credentials = await get_secret_by_label(
         ops_test, f"opensearch-client.{pytest.relation.id}.user.secret"
     )
+    dashboard_user = dashboard_credentials["username"]
     dashboard_password = dashboard_credentials["password"]
 
     # Relate it to OpenSearch to set up TLS.
@@ -155,7 +161,7 @@ async def test_dashboard_access_https(ops_test: OpsTest):
 
     for unit in ops_test.model.applications[APP_NAME].units:
         host = get_private_address(ops_test.model.name, unit.name)
-        assert access_dashboard_https(host=host, password=dashboard_password)
+        assert access_dashboard_https(host=host, username=dashboard_user, password=dashboard_password)
 
 
 @pytest.mark.group(1)

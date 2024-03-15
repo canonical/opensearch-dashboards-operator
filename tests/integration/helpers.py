@@ -134,6 +134,7 @@ def access_dashboard(
         "osd-xsrf": "true",
     }
 
+    import pdb; pdb.set_trace()
     arguments = {"url": url, "headers": headers, "json": data}
     if ssl:
         arguments["verify"] = "./ca.pem"
@@ -142,8 +143,9 @@ def access_dashboard(
     return response.status_code == 200
 
 
-def access_dashboard_https(host: str, password: str):
+def access_dashboard_https(host: str, username: str, password: str) -> bool:
     """This function should be rather replaced by a 'requests' call, if we can figure out the source of discrepancy."""
+    import pdb; pdb.set_trace()
     curl_cmd = check_output(
         [
             "bash",
@@ -151,7 +153,7 @@ def access_dashboard_https(host: str, password: str):
             'curl  -XPOST -H "Content-Type: application/json" -H "osd-xsrf: true" -H "Accept: application/json" '
             + f"https://{host}:5601/auth/login -d "
             + "'"
-            + '{"username":"kibanaserver","password": "'
+            + '{"username":"{username}","password": "'
             + f"{password}"
             + '"'
             + "}' --cacert ca.pem",
@@ -441,4 +443,21 @@ def set_opensearch_user_password(
     payload = {"password": dashboard_password}
     headers = {"Content-Type": "application/json"}
     response = session.put(url, json=payload, headers=headers, verify=False)
+    return response.status_code == 200
+
+
+def set_opensearch_user_role(
+    opensearch_endpoint: str,
+    opensearch_admin_password: str,
+    dashboard_user: str,
+    dashboard_password: str,
+) -> bool:
+    """Setting the password for a user in opensearch."""
+    session = requests.Session()
+    session.auth = ("admin", opensearch_admin_password)
+
+    url = f"https://{opensearch_endpoint}/_plugins/_security/api/internalusers/{dashboard_user}"
+    payload = [{"op": "replace", "path": "/opendistro_security_roles", "value": ["own_index", dashboard_user, "kibana_user"]}]
+    headers = {"Content-Type": "application/json"}
+    response = session.patch(url, json=payload, headers=headers, verify=False)
     return response.status_code == 200
