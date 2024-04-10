@@ -442,3 +442,16 @@ def set_opensearch_user_password(
     headers = {"Content-Type": "application/json"}
     response = session.put(url, json=payload, headers=headers, verify=False)
     return response.status_code == 200
+
+
+async def get_leader_name(ops_test: OpsTest, app_name: str = APP_NAME):
+    """Get the leader unit name."""
+    for unit in ops_test.model.applications[app_name].units:
+        if await unit.is_leader_from_status():
+            return unit.name
+
+
+async def get_leader_id(ops_test: OpsTest, app_name: str = APP_NAME) -> str:
+    """Get the leader unit id."""
+    leader_name = await get_leader_name(ops_test, app_name)
+    return leader_name.split("/")[-1]
