@@ -86,7 +86,8 @@ async def recreate_opensearch_kibanaserver(ops_test: OpsTest):
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.charm
-async def test_deploy_active(ops_test: OpsTest):
+async def test_build_and_deploy(ops_test: OpsTest):
+    """Deploying all charms required for the tests, and wait for their complete setup to be done."""
 
     charm = await ops_test.build_charm(".")
     await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
