@@ -142,6 +142,21 @@ def access_dashboard(
     return response.status_code == 200
 
 
+async def access_all_dashboards(ops_test: OpsTest, relation_id: int):
+    """Check if all dashboard instances are accessible."""
+
+    dashboard_credentials = await get_secret_by_label(
+        ops_test, f"opensearch-client.{relation_id}.user.secret"
+    )
+    dashboard_password = dashboard_credentials["password"]
+
+    result = True
+    for unit in ops_test.model.applications[APP_NAME].units:
+        host = get_private_address(ops_test.model.name, unit.name)
+        result &= access_dashboard(host=host, username="kibanaserver", password=dashboard_password)
+    return result
+
+
 def access_dashboard_https(host: str, password: str):
     """This function should be rather replaced by a 'requests' call, if we can figure out the source of discrepancy."""
     curl_cmd = check_output(
