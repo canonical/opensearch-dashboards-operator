@@ -14,7 +14,7 @@ from ops.testing import Harness
 
 from charm import OpensearchDasboardsCharm
 from helpers import clear_status
-from literals import CHARM_KEY, CONTAINER, PEER, SUBSTRATE
+from literals import CHARM_KEY, CONTAINER, OPENSEARCH_REL_NAME, PEER, SUBSTRATE
 
 logger = logging.getLogger(__name__)
 
@@ -167,6 +167,16 @@ def test_relation_changed_starts_units(harness):
         patch("core.cluster.ClusterState.all_units_related", return_value=True),
     ):
         harness.charm.on.config_changed.emit()
+        patched.assert_called_once()
+
+
+def test_relation_changed_emitted_for_opensearch_relation_changed(harness):
+    with harness.hooks_disabled():
+        opensearch_rel_id = harness.add_relation(OPENSEARCH_REL_NAME, "opensearch")
+        harness.add_relation_unit(opensearch_rel_id, "opensearch/0")
+
+    with patch("events.requirer.RequirerEvents._on_client_relation_changed") as patched:
+        harness.charm.on.opensearch_client_relation_changed.emit(harness.charm.state.opensearch_relation)
         patched.assert_called_once()
 
 

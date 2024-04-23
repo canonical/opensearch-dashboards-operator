@@ -15,6 +15,8 @@ from .helpers import (
     count_lines_with,
     get_application_relation_data,
     get_dashboard_ca_cert,
+    get_leader_id,
+    get_leader_name,
     get_private_address,
     get_secret_by_label,
     get_user_password,
@@ -27,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
-OPENSEARCH_CHARM = "opensearch"
+OPENSEARCH_APP_NAME = "opensearch"
 OPENSEARCH_CONFIG = {
     "logging-config": "<root>=INFO;unit=DEBUG",
     "update-status-hook-interval": "1h",
@@ -63,7 +65,7 @@ async def recreate_opensearch_kibanaserver(ops_test: OpsTest):
     )
     opensearch_endpoint = opensearch_endpoints.split(",")[0]
 
-    unit_name = f"{OPENSEARCH_CHARM}/0"
+    unit_name = f"{OPENSEARCH_APP_NAME}/0"
     action = await ops_test.model.units.get(unit_name).run_action("get-password")
     await action.wait()
     opensearch_admin_password = action.results.get("password")
@@ -77,7 +79,7 @@ async def recreate_opensearch_kibanaserver(ops_test: OpsTest):
     )
 
     await ops_test.model.wait_for_idle(
-        apps=[OPENSEARCH_CHARM, APP_NAME], status="active", timeout=1000
+        apps=[OPENSEARCH_APP_NAME, APP_NAME], status="active", timeout=1000
     )
 
 
@@ -91,7 +93,12 @@ async def test_deploy_active(ops_test: OpsTest):
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
     # Pinning down opensearch revision to the last 2.10 one
     # NOTE: can't access 2/stable from the tests, only 'edge' available
-    await ops_test.model.deploy(OPENSEARCH_CHARM, channel="2/edge", num_units=NUM_UNITS_DB)
+    # await ops_test.model.deploy(opensearch_new_charm, application_name=OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB)
+    test_charm_path = "./tests/integration/opensearch-operator"
+    opensearch_new_charm = await ops_test.build_charm(test_charm_path)
+    await ops_test.model.deploy(
+            opensearch_new_charm, application_name=OPENSEARCH_APP_NAME, num_units=NUM_UNITS_DB
+    )
 
     config = {"ca-common-name": "CN_CA"}
     await ops_test.model.deploy(TLS_CERTIFICATES_APP_NAME, channel="stable", config=config)
@@ -101,9 +108,9 @@ async def test_deploy_active(ops_test: OpsTest):
     )
 
     # Relate it to OpenSearch to set up TLS.
-    await ops_test.model.relate(OPENSEARCH_CHARM, TLS_CERTIFICATES_APP_NAME)
+    await ops_test.model.relate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
     await ops_test.model.wait_for_idle(
-        apps=[OPENSEARCH_CHARM, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
+        apps=[OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
     )
 
     async with ops_test.fast_forward():
@@ -116,9 +123,9 @@ async def test_deploy_active(ops_test: OpsTest):
 
     assert ops_test.model.applications[APP_NAME].status == "active"
 
-    pytest.relation = await ops_test.model.relate(OPENSEARCH_CHARM, APP_NAME)
+    pytest.relation = await ops_test.model.relate(OPENSEARCH_APP_NAME, APP_NAME)
     await ops_test.model.wait_for_idle(
-        apps=[OPENSEARCH_CHARM, APP_NAME], status="active", timeout=1000
+        apps=[OPENSEARCH_APP_NAME, APP_NAME], status="active", timeout=1000
     )
     await recreate_opensearch_kibanaserver(ops_test)
 
@@ -164,18 +171,34 @@ async def test_dashboard_access_https(ops_test: OpsTest):
 
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
+async def test_dashboard_password_rotation(ops_test: OpsTest):
+    """Test HTTPS access to each dashboard unit."""
+    db_leader_name = await get_leader_name(ops_test, OPENSEARCH_APP_NAME)
+    db_leader_unit = ops_test.model.units.get(db_leader_name)
+    user = "kibanaserver"
+
+    action = await db_leader_unit.run_action("set-password", **{"username": user})
+    password = await action.wait()
+    new_password = password.results[f"{user}-password"]
+
+    # Copying the Dashboard's CA cert locally to use it for SSL verification
+    # We only get it once for pipeline efficiency, as it's the same on all units
+    get_dashboard_ca_cert(ops_test.model.name, f"{APP_NAME}/0")
+
+    for unit in ops_test.model.applications[APP_NAME].units:
+        host = get_private_address(ops_test.model.name, unit.name)
+        assert access_dashboard_https(host=host, password=new_password)
+
+
+@pytest.mark.group(1)
+@pytest.mark.abort_on_fail
 async def test_local_password_rotation(ops_test: OpsTest):
     """Test password rotation for local users -- in case we decide to have any."""
     user = "monitor"
     password = await get_user_password(ops_test, user)
     assert len(password) == 32
 
-    leader = None
-    for unit in ops_test.model.applications[APP_NAME].units:
-        if await unit.is_leader_from_status():
-            leader = unit.name
-            break
-    leader_num = leader.split("/")[-1]
+    leader_num = await get_leader_id(ops_test)
 
     # Change both passwords
     result = await set_password(ops_test, username=user, num_unit=leader_num)

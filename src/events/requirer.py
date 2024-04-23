@@ -32,6 +32,7 @@ class RequirerEvents(Object):
         self.framework.observe(
             self.charm.on[OPENSEARCH_REL_NAME].relation_changed, self._on_client_relation_changed
         )
+
         self.framework.observe(
             self.charm.on[OPENSEARCH_REL_NAME].relation_broken, self._on_client_relation_broken
         )
