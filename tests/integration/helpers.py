@@ -24,6 +24,20 @@ APP_NAME = METADATA["name"]
 logger = logging.getLogger(__name__)
 
 
+def application_active(ops_test: OpsTest, expected_units: int) -> bool:
+    units = ops_test.model.applications[APP_NAME].units
+
+    if len(units) != expected_units:
+        return False
+
+    for unit in units:
+        if unit.workload_status != "active":
+            return False
+
+    return True
+>>>>>>> 5ef8075 (Scaling tests)
+
+
 async def get_password(ops_test) -> str:
     secret_data = await get_secret_by_label(ops_test, f"{APP_NAME}.app")
     return secret_data.get("super-password")
@@ -184,8 +198,9 @@ async def access_all_dashboards(
             continue
         host = get_private_address(ops_test.model.name, unit.name)
         if not host:
-            logger.debug(f"Couldn't determine hostname for unit {unit.name}")
+            logger.debug(f"No hostname found for {unit.name}, can't check connection.")
             return False
+
         result &= function(host=host, password=dashboard_password)
         if result:
             logger.info(f"Host {unit.name}, {host} passed access check")

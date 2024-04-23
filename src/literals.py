@@ -27,10 +27,8 @@ PATHS = {
 }
 
 PEER_APP_SECRETS = [
-    "admin-username",
-    "admin-password",
-    "kibanaserver-username",
-    "kibanaserver-password",
+    "monitor-username",
+    "monitor-password",
 ]
 PEER_UNIT_SECRETS = ["ca-cert", "csr", "certificate", "private-key"]
 
