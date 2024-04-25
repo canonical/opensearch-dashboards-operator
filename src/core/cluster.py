@@ -17,7 +17,6 @@ from ops.model import Relation, Unit
 from core.models import SUBSTRATES, ODCluster, ODServer, OpensearchServer
 from literals import (
     DASHBOARD_INDEX,
-    DASHBOARD_ROLE,
     OPENSEARCH_REL_NAME,
     PEER,
     PEER_APP_SECRETS,
@@ -45,7 +44,7 @@ class ClusterState(Object):
             self.model,
             relation_name=OPENSEARCH_REL_NAME,
             index=DASHBOARD_INDEX,
-            extra_user_roles=DASHBOARD_ROLE,
+            extra_user_roles="kibanaserver",
         )
 
     # --- RAW RELATION ---
