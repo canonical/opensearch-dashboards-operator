@@ -127,6 +127,13 @@ class OpensearchDasboardsCharm(CharmBase):
 
         # don't delay scale-down leader ops by restarting dying unit
         if getattr(event, "departing_unit", None) == self.unit:
+            logger.info(f"Unit {self.state.unit_server.component.name} is departing.")
+            return
+
+        # We may receive reconcile event very soon before the node is disappearing
+        # Lets rather wait to find out -- restart at this point is not guaranteed to be safe
+        if self.state.scaling_down:
+            event.defer()
             return
 
         if (
@@ -134,6 +141,7 @@ class OpensearchDasboardsCharm(CharmBase):
             and self.state.unit_server.started
             # and self.upgrade_events.idle
         ):
+            logger.info(f"Unit {self.state.unit_server.component.name} is restarting.")
             self.on[f"{self.restart.name}"].acquire_lock.emit()
 
         if self.unit.is_leader() and self.state.opensearch_server:

@@ -165,6 +165,15 @@ class ClusterState(Object):
         """
         return len(self.servers) == self.model.app.planned_units()
 
+    @property
+    def scaling_down(self) -> bool:
+        """Checks if currently related units make up all planned units.
+
+        Returns:
+            True if the application is in a scaledown state
+        """
+        return len(self.servers) > self.model.app.planned_units()
+
     # --- HEALTH ---
 
     # @property
