@@ -98,7 +98,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
     test_charm_path = "./tests/integration/opensearch-operator"
     opensearch_new_charm = await ops_test.build_charm(test_charm_path)
     await ops_test.model.deploy(
-            opensearch_new_charm, application_name=OPENSEARCH_APP_NAME, num_units=NUM_UNITS_DB
+        opensearch_new_charm, application_name=OPENSEARCH_APP_NAME, num_units=NUM_UNITS_DB
     )
 
     config = {"ca-common-name": "CN_CA"}

@@ -88,8 +88,8 @@ class OpensearchDasboardsCharm(CharmBase):
         self.framework.observe(getattr(self.on, "config_changed"), self.reconcile)
 
         self.framework.observe(getattr(self.on, f"{PEER}_relation_changed"), self.reconcile)
-        self.framework.observe(getattr(self.on, f"{PEER}_relation_joined"), self.reconcile)
-        self.framework.observe(getattr(self.on, f"{PEER}_relation_departed"), self.reconcile)
+        # self.framework.observe(getattr(self.on, f"{PEER}_relation_joined"), self.reconcile)
+        # self.framework.observe(getattr(self.on, f"{PEER}_relation_departed"), self.reconcile)
 
         self.framework.observe(getattr(self.on, "secret_changed"), self._on_secret_changed)
 
@@ -128,13 +128,14 @@ class OpensearchDasboardsCharm(CharmBase):
         # don't delay scale-down leader ops by restarting dying unit
         if getattr(event, "departing_unit", None) == self.unit:
             logger.info(f"Unit {self.state.unit_server.component.name} is departing.")
+            self.on[f"{self.restart.name}"].release_lock.emit()
             return
 
-        # We may receive reconcile event very soon before the node is disappearing
-        # Lets rather wait to find out -- restart at this point is not guaranteed to be safe
-        if self.state.scaling_down:
-            event.defer()
-            return
+        # # We may receive reconcile event very soon before the node is disappearing
+        # # Lets rather wait to find out -- restart at this point is not guaranteed to be safe
+        # if self.state.scaling_down:
+        #     event.defer()
+        #     return
 
         if (
             self.config_manager.config_changed()
@@ -158,7 +159,7 @@ class OpensearchDasboardsCharm(CharmBase):
         if event.secret.label == self.state.cluster.data_interface._generate_secret_label(
             PEER,
             self.state.cluster.relation.id,
-            'extra',  # type:ignore noqa
+            "extra",  # type:ignore noqa
         ):  # Changes with the soon upcoming new version of DP-libs STILL within this POC
             logger.info(f"Secret {event.secret.label} changed.")
             self.reconcile(event)

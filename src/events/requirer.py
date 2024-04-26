@@ -68,4 +68,7 @@ class RequirerEvents(Object):
             return
 
         # call normal updated handler
+        logger.info(
+            f"Unit {self.charm.state.unit_server.component.name} is leaving Opensearch relation"
+        )
         self._on_client_relation_changed(event=event)

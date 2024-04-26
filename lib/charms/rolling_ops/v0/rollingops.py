@@ -339,6 +339,7 @@ class RollingOpsManager(Object):
 
         if lock.is_pending():
             self.model.unit.status = WaitingStatus("Awaiting {} operation".format(self.name))
+            logger.info("[ROLLINGOPS] Awaiting {} operation".format(self.name))
 
         if lock.is_held():
             self.charm.on[self.name].run_with_lock.emit()
@@ -358,11 +359,14 @@ class RollingOpsManager(Object):
         pending = []
 
         for lock in Locks(self):
+            logger.info("[ROLLINGOPS] Processing lock {}".format(lock.relation.data))
             if lock.is_held():
                 # One of our units has the lock -- return without further processing.
+                logger.info("[ROLLINGOPS] Lock is held {}".format(lock.relation.data))
                 return
 
             if lock.release_requested():
+                logger.info("[ROLLINGOPS] Clearing lock {}".format(lock.relation.data))
                 lock.clear()  # Updates relation data
 
             if lock.is_pending():
@@ -376,6 +380,7 @@ class RollingOpsManager(Object):
         # one of them.
         if pending:
             self.model.app.status = MaintenanceStatus("Beginning rolling {}".format(self.name))
+            logger.info("[ROLLINGOPS] Beginning rolling {}".format(self.name))
             lock = pending[-1]
             lock.grant()
             if lock.unit == self.model.unit:
@@ -384,26 +389,30 @@ class RollingOpsManager(Object):
             return
 
         if self.model.app.status.message == f"Beginning rolling {self.name}":
+            logger.info("[ROLLINGOPS] Setting active status {}".format(self.name))
             self.model.app.status = ActiveStatus()
 
     def _on_acquire_lock(self: CharmBase, event: ActionEvent):
         """Request a lock."""
         try:
             Lock(self).acquire()  # Updates relation data
+            logger.debug("[ROLLINGOPS] Acquiring lock.")
             # emit relation changed event in the edge case where acquire does not
             relation = self.model.get_relation(self.name)
 
             # persist callback override for eventual run
             relation.data[self.charm.unit].update({"callback_override": event.callback_override})
             self.charm.on[self.name].relation_changed.emit(relation, app=self.charm.app)
+            logger.debug("[ROLLINGOPS] Emitting relation_changed.")
 
         except LockNoRelationError:
-            logger.debug("No {} peer relation yet. Delaying rolling op.".format(self.name))
+            logger.debug("[ROLLINGOPS] No {} peer relation yet. Delaying rolling op.".format(self.name))
             event.defer()
 
     def _on_run_with_lock(self: CharmBase, event: RunWithLock):
         lock = Lock(self)
         self.model.unit.status = MaintenanceStatus("Executing {} operation".format(self.name))
+        logger.info("[ROLLINGOPS] Executing {} operation".format(self.name))
         relation = self.model.get_relation(self.name)
 
         # default to instance callback if not set
@@ -414,6 +423,7 @@ class RollingOpsManager(Object):
         callback(event)
 
         lock.release()  # Updates relation data
+        logger.info("[ROLLINGOPS] Clearing lock {}".format(lock.relation.data))
         if lock.unit == self.model.unit:
             self.charm.on[self.name].process_locks.emit()
 
@@ -421,4 +431,5 @@ class RollingOpsManager(Object):
         relation.data[self.charm.unit].update({"callback_override": ""})
 
         if self.model.unit.status.message == f"Executing {self.name} operation":
+            logger.info("[ROLLINGOPS] Setting active status {}".format(self.name))
             self.model.unit.status = ActiveStatus()

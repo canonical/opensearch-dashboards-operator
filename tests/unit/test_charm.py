@@ -176,7 +176,9 @@ def test_relation_changed_emitted_for_opensearch_relation_changed(harness):
         harness.add_relation_unit(opensearch_rel_id, "opensearch/0")
 
     with patch("events.requirer.RequirerEvents._on_client_relation_changed") as patched:
-        harness.charm.on.opensearch_client_relation_changed.emit(harness.charm.state.opensearch_relation)
+        harness.charm.on.opensearch_client_relation_changed.emit(
+            harness.charm.state.opensearch_relation
+        )
         patched.assert_called_once()
 
 

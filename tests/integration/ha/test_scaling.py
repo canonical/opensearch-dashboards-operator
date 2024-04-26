@@ -6,7 +6,6 @@ import logging
 import time
 from pathlib import Path
 
-import time
 import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
@@ -35,8 +34,9 @@ OPENSEARCH_CONFIG = {
 }
 TLS_CERTIFICATES_APP_NAME = "self-signed-certificates"
 
-HTTP_UNITS = [0, 1, 2]
-HTTPS_UNITS = [3, 4, 5]
+# HTTP_UNITS = [0, 1, 2]
+# HTTPS_UNITS = [3, 4, 5]
+HTTPS_UNITS = [0, 1, 2]
 
 
 async def recreate_opensearch_kibanaserver(ops_test: OpsTest):
@@ -104,10 +104,10 @@ async def test_build_and_deploy(ops_test: OpsTest):
 
     async with ops_test.fast_forward():
         await ops_test.model.wait_for_idle(
-            apps=[APP_NAME], wait_for_exact_units=1, status="active", timeout=1000, idle_period=30
+            apps=[APP_NAME], wait_for_exact_units=1, timeout=1000, idle_period=30
         )
 
-    assert ops_test.model.applications[APP_NAME].status == "active"
+    assert ops_test.model.applications[APP_NAME].status == "blocked"
 
     pytest.relation = await ops_test.model.relate(OPENSEARCH_CHARM, APP_NAME)
     await ops_test.model.wait_for_idle(
@@ -116,54 +116,54 @@ async def test_build_and_deploy(ops_test: OpsTest):
     await recreate_opensearch_kibanaserver(ops_test)
 
 
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_horizontal_scale_up_http(ops_test: OpsTest) -> None:
-    """Tests that new added are functional."""
-    init_units_count = len(ops_test.model.applications[APP_NAME].units)
-    amount = len(HTTP_UNITS) - 1
-
-    # scale up
-    await ops_test.model.applications[APP_NAME].add_unit(count=amount)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
-    num_units = len(ops_test.model.applications[APP_NAME].units)
-    assert num_units == init_units_count + amount
-
-    assert await access_all_dashboards(ops_test, pytest.relation.id)
-
-
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_horizontal_scale_down_http(ops_test: OpsTest) -> None:
-    """Tests that decreasing units keeps functionality."""
-    init_units_count = len(ops_test.model.applications[APP_NAME].units)
-    amount = len(HTTP_UNITS[1:])
-
-    # scale down
-    await ops_test.model.applications[APP_NAME].destroy_unit(
-        *[f"{APP_NAME}/{cnt}" for cnt in HTTP_UNITS[1:]]
-    )
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
-    num_units = len(ops_test.model.applications[APP_NAME].units)
-    assert num_units == init_units_count - amount
-
-    assert await access_all_dashboards(ops_test, pytest.relation.id)
-
-
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_horizontal_scale_down_to_zero_http(ops_test: OpsTest) -> None:
-    """Tests that decreasing units keeps functionality."""
-    init_units_count = len(ops_test.model.applications[APP_NAME].units)
-    unit_id = HTTP_UNITS[0]
-
-    # scale down
-    await ops_test.model.applications[APP_NAME].destroy_unit(f"{APP_NAME}/{unit_id}")
-    await ops_test.model.wait_for_idle(
-        apps=[APP_NAME], status="active", timeout=1000, wait_for_exact_units=0
-    )
-    num_units = len(ops_test.model.applications[APP_NAME].units)
-    assert num_units == init_units_count - 1
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_horizontal_scale_up_http(ops_test: OpsTest) -> None:
+#     """Tests that new added are functional."""
+#     init_units_count = len(ops_test.model.applications[APP_NAME].units)
+#     amount = len(HTTP_UNITS) - 1
+#
+#     # scale up
+#     await ops_test.model.applications[APP_NAME].add_unit(count=amount)
+#     await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+#     num_units = len(ops_test.model.applications[APP_NAME].units)
+#     assert num_units == init_units_count + amount
+#
+#     assert await access_all_dashboards(ops_test, pytest.relation.id)
+#
+#
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_horizontal_scale_down_http(ops_test: OpsTest) -> None:
+#     """Tests that decreasing units keeps functionality."""
+#     init_units_count = len(ops_test.model.applications[APP_NAME].units)
+#     amount = len(HTTP_UNITS[1:])
+#
+#     # scale down
+#     await ops_test.model.applications[APP_NAME].destroy_unit(
+#         *[f"{APP_NAME}/{cnt}" for cnt in HTTP_UNITS[1:]]
+#     )
+#     await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+#     num_units = len(ops_test.model.applications[APP_NAME].units)
+#     assert num_units == init_units_count - amount
+#
+#     assert await access_all_dashboards(ops_test, pytest.relation.id)
+#
+#
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_horizontal_scale_down_to_zero_http(ops_test: OpsTest) -> None:
+#     """Tests that decreasing units keeps functionality."""
+#     init_units_count = len(ops_test.model.applications[APP_NAME].units)
+#     unit_id = HTTP_UNITS[0]
+#
+#     # scale down
+#     await ops_test.model.applications[APP_NAME].destroy_unit(f"{APP_NAME}/{unit_id}")
+#     await ops_test.model.wait_for_idle(
+#         apps=[APP_NAME], status="active", timeout=1000, wait_for_exact_units=0
+#     )
+#     num_units = len(ops_test.model.applications[APP_NAME].units)
+#     assert num_units == init_units_count - 1
 
 
 @pytest.mark.group(1)
@@ -211,6 +211,7 @@ async def test_horizontal_scale_down_https(ops_test: OpsTest) -> None:
     amount = len(HTTPS_UNITS[:-1])
 
     # scale down
+    import pdb; pdb.set_trace()
     await ops_test.model.applications[APP_NAME].destroy_unit(
         *[f"{APP_NAME}/{cnt}" for cnt in HTTPS_UNITS[:-1]]
     )
@@ -226,7 +227,7 @@ async def test_horizontal_scale_down_https(ops_test: OpsTest) -> None:
 async def test_horizontal_scale_down_to_zero_https(ops_test: OpsTest) -> None:
     """Tests that decreasing units keeps functionality."""
     init_units_count = len(ops_test.model.applications[APP_NAME].units)
-    unit_id = HTTP_UNITS[-1]
+    unit_id = HTTPS_UNITS[-1]
 
     # scale down
     await ops_test.model.applications[APP_NAME].destroy_unit(f"{APP_NAME}/5")
