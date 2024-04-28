@@ -14,11 +14,12 @@ from charms.opensearch.v0.constants_tls import CertType
 from charms.opensearch.v0.helper_security import to_pkcs8
 from charms.opensearch.v0.opensearch_base_charm import OpenSearchBaseCharm
 from charms.opensearch.v0.opensearch_exceptions import OpenSearchInstallError
-from opensearch import OpenSearchSnap
 from ops.charm import InstallEvent
 from ops.main import main
 from ops.model import BlockedStatus, MaintenanceStatus
 from overrides import override
+
+from opensearch import OpenSearchSnap
 
 logger = logging.getLogger(__name__)
 

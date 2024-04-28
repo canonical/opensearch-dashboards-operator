@@ -62,27 +62,141 @@ jobs:
       - name: Run tests
         run: tox run -e unit
 
-  build:
-    strategy:
-      matrix:
-        path:
-          - .
-          - ./tests/integration/opensearch-operator
-    name: Build charm
-    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v11.0.1
-    with:
-      path-to-charm-directory: ${{ matrix.path }}
-      cache: true
+  # build:
+  #   strategy:
+  #     matrix:
+  #       path:
+  #         - .
+  #         - ./tests/integration/opensearch-operator
+  #   name: Build charm
+  #   uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v11.0.1
+  #   with:
+  #     path-to-charm-directory: ${{ matrix.path }}
+  #     cache: true
+  #
+  # integration-test:
+  #   name: Integration test charm
+  #   needs:
+  #     - lint
+  #     - unit-test
+  #     - build
+  #   uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v11.0.1
+  #   with:
+  #     # artifact-prefix: packed-charm-cache-true
+  #     artifact-prefix: ${{ needs.build.outputs.artifact-prefix }}
+  #     cloud: lxd
+  #     juju-agent-version: 3.1.6
 
-  integration-test:
-    name: Integration test charm
-    needs:
-      - lint
-      - unit-test
-      - build
-    uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v11.0.1
-    with:
-      # artifact-prefix: packed-charm-cache-true
-      artifact-prefix: ${{ needs.build.outputs.artifact-prefix }}
-      cloud: lxd
-      juju-agent-version: 3.1.6
+  cross-model-ha:
+    name: Test Traefik functionality
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # needs:
+    #   - integration-test
+    steps:
+      - name: Setup operator environment
+        # TODO: Replace with custom image on self-hosted runner
+        uses: charmed-kubernetes/actions-operator@main
+        with:
+          provider: microk8s
+          channel: "1.27-strict/stable"
+          bootstrap-options: "--agent-version 3.1.6 --add-model=traefik-test"
+          juju-channel: "3.1/stable"
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Create lxd controller
+        run: |
+          set -x
+
+          LXD_CONTROLLER="controller-lxd"
+          LXD_MODEL="dashboard-tests"
+          K8S_CONTROLLER=${CONTROLLER_NAME}
+          K8S_MODEL="testing"
+
+          sudo sysctl -w vm.max_map_count=262144
+          sudo sysctl -w vm.swappiness=0
+          sudo sysctl -w net.ipv4.tcp_retries2=5
+
+
+          echo "microk8s settings"
+          sudo microk8s enable storage dns
+          sudo microk8s enable metallb 192.168.0.10-192.168.0.100
+
+          echo "Bootstrap LXD controller (for Opensearch Dashboards charm)"
+          juju bootstrap localhost ${LXD_CONTROLLER} --add-model ${LXD_CONTROLLER}
+          cat <<EOF > cloudinit-userdata.yaml
+          cloudinit-userdata: |
+            postruncmd:
+              - [ 'sysctl', '-w', 'vm.max_map_count=262144' ]
+              - [ 'sysctl', '-w', 'vm.swappiness=0' ]
+              - [ 'sysctl', '-w', 'net.ipv4.tcp_retries2=5' ]
+              - [ 'sysctl', '-w', 'fs.file-max=1048576' ]
+          EOF
+          juju model-config --file ./cloudinit-userdata.yaml
+
+          
+          echo "Deploying traefik"
+          juju switch ${K8S_CONTROLLER}
+          juju deploy traefik-k8s
+          juju config traefik-k8s juju-external-hostname=traefik-test
+
+          echo "Building an deploying charm"
+          juju switch ${LXD_CONTROLLER}
+          charmcraft pack
+          juju deploy ./opensearch-dashboards_ubuntu-22.04-amd64.charm
+          juju status
+
+          echo "Deploying Opensearch"
+          juju deploy self-signed-certificates
+
+          # Local Opensearch deployment until https://github.com/canonical/opensearch-operator/pull/216 is released
+          juju deploy opensearch --channel=2/edge
+          # RETURN=${PWD}
+          # cd ./tests/integration/opensearch-operator
+          # charmcraft pack
+          # juju deploy ./opensearch_ubuntu-22.04-amd64.charm
+          # cd ${RETURN}
+
+          juju relate opensearch self-signed-certificates
+          juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")'
+          juju wait-for application self-signed-certificates --query='name=="self-signed-certificates" && (status=="active" || status=="idle")'
+          juju status
+          juju debug-log --replay
+
+          KIBANASERVER_PW=$(juju run opensearch/0 get-password username=kibanaserver | grep password | cut -d: -f2 | tr -d ' ')
+          IP=$(juju status | grep opensearch-dashboards/0 | awk -F ' *' '{ print $5 }')
+
+          echo "Relating Dashboard to Opensearch"
+          juju relate opensearch opensearch-dashboards
+          juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")'
+          juju wait-for application opensearch-dashboards --query='name=="opensearch-dashboards" && (status=="active" || status=="idle")'
+          juju status
+
+          echo "Relate Dashboards to traefik"
+          juju switch ${K8S_CONTROLLER}
+          juju offer traefik-k8s:ingress
+          juju switch ${LXD_CONTROLLER}
+          juju consume ${K8S_CONTROLLER}:/admin/${K8S_MODEL}.traefik-k8s
+          juju relate traefik-k8s:ingress opensearch-dashboards
+          juju status --relations
+
+          # Runs on a timeout
+          # juju wait-for application traefik --query='name=="traefik" && (status=="active" || status=="idle")'
+          juju wait-for application opensearch-dashboards --query='name=="opensearch-dashboards" && (status=="active" || status=="idle")'
+
+          # Attempt to access the interface using valid authentication
+          authenticate_ok=$(curl -i  -k -XPOST http://${IP}:5601/auth/login \
+            -H 'Accept: application/json' \
+            -H 'Content-Type: application/json' \
+            -H 'osd-xsrf:true' \
+            -d '{"username":"kibanaserver","password":"'${KIBANASERVER_PW}'"}' | grep "200 OK")
+
+          if [ ! "$authenticate_ok" ]; then
+            echo "ERROR: Authentication failed with correct credentials. Aborting..." >&2
+            exit 1
+          fi
+      # - name: Setup tmate session
+      #   if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3

@@ -29,6 +29,7 @@ from charms.operator_libs_linux.v2 import snap
 from charms.operator_libs_linux.v2.snap import SnapError
 from overrides import override
 from tenacity import Retrying, retry, stop_after_attempt, wait_exponential, wait_fixed
+
 from utils import extract_tarball
 
 logger = logging.getLogger(__name__)

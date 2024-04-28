@@ -93,10 +93,15 @@ COSPort = "9200"
 
 
 # Opensearch Users
-OpenSearchUsers = {"admin", "monitor", "kibanaserver"}
+OpenSearchSystemUsers = {"admin", "kibanaserver"}
+OpenSearchUsers = OpenSearchSystemUsers | {"monitor"}
 OpenSearchRoles = set()
+AdminUser = "admin"
 KibanaserverUser = "kibanaserver"
 KibanaserverRole = "kibana_server"
 
 # Opensearch Snap revision
 OPENSEARCH_SNAP_REVISION = 40
+
+# User-face Backup ID format
+OPENSEARCH_BACKUP_ID_FORMAT = "%Y-%m-%dT%H:%M:%SZ"

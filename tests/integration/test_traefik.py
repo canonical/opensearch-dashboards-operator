@@ -3,7 +3,6 @@
 # See LICENSE file for licensing details.
 
 import logging
-import subprocess
 from pathlib import Path
 
 import pytest
@@ -32,41 +31,10 @@ NUM_UNITS_APP = 3
 NUM_UNITS_DB = 2
 
 
-def create_traefik_model():
-
-    commands1 = [
-        "sudo snap install microk8s --classic --channel=1.25-strict/stable",
-        "sudo usermod -a -G snap_microk8s $USER",
-    ]
-    import pdb
-
-    pdb.set_trace()
-    output = subprocess.run(";".join(commands1), capture_output=True, shell=True)
-    commands2 = [
-        "sg snap_microk8s microk8s enable storage",
-        "sg snap_microk8s microk8s enable dns",
-        "sg snap_microk8s microk8s status --wait-ready",
-        "sg snap_microk8s juju bootstrap microk8s k8s-traefik",
-        # "sg snap_microk8s mkdir -p .local/share",
-        # "juju add-model traefik",
-    ]
-    output2 = subprocess.run(";".join(commands2), capture_output=True, shell=True)
-    commands2 = [
-        "sudo microk8s enable storage",
-        "sudo microk8s enable dns",
-        "microk8s status --wait-ready",
-        "juju bootstrap microk8s",
-        "mkdir -p .local/share",
-        "juju add-model traefik",
-    ]
-
-
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.charm
 async def test_deploy_active(ops_test: OpsTest):
-
-    retval = create_traefik_model()
 
     charm = await ops_test.build_charm(".")
     await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
@@ -105,4 +73,4 @@ async def test_deploy_active(ops_test: OpsTest):
         apps=[OPENSEARCH_APP_NAME, APP_NAME], status="active", timeout=1000
     )
 
-    assert access_all_dashboards()
+    assert access_all_dashboards(ops_test, pytest.relation, https=True)
