@@ -10,21 +10,7 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
-# from .helpers import (
-#     access_dashboard,
-#     access_dashboard_https,
-#     count_lines_with,
-#     get_application_relation_data,
-#     get_dashboard_ca_cert,
-#     get_leader_id,
-#     get_leader_name,
-#     get_private_address,
-#     get_secret_by_label,
-#     get_user_password,
-#     ping_servers,
-#     set_opensearch_user_password,
-#     set_password,
-# )
+from .helpers import access_all_dashboards
 
 logger = logging.getLogger(__name__)
 

@@ -19,6 +19,7 @@ from events.requirer import RequirerEvents
 
 # from events.provider import ProviderEvents
 from events.tls import TLSEvents
+from events.traefik_requirer import TraefikRequirerEvents
 from helpers import clear_status
 from literals import (
     CHARM_KEY,
@@ -58,6 +59,7 @@ class OpensearchDasboardsCharm(CharmBase):
         self.password_action_events = PasswordActionEvents(self)
         self.tls_events = TLSEvents(self)
         self.requirer_events = RequirerEvents(self)
+        self.traefik_requirer_events = TraefikRequirerEvents(self)
         # self.upgrade_events = ODUpgradeEvents(
         #     self,
         #     dependency_model=OpensearchDasboardsDependencyModel(
