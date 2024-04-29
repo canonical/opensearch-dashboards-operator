@@ -3,6 +3,7 @@
 # See LICENSE file for licensing details.
 
 import json
+import logging
 import re
 import socket
 import subprocess
@@ -15,6 +16,8 @@ import yaml
 from pytest_operator.plugin import OpsTest
 
 from core.workload import ODPaths
+
+logger = logging.getLogger(__name__)
 
 METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
@@ -154,14 +157,16 @@ def access_dashboard_https(host: str, password: str):
             + '{"username":"kibanaserver","password": "'
             + f"{password}"
             + '"'
-            + "}' --cacert ca.pem",
+            + "}' --cacert ca.pem --verbose",
         ],
         text=True,
     )
     return "roles" in curl_cmd
 
 
-async def access_all_dashboards(ops_test: OpsTest, relation_id: int, https: bool = False):
+async def access_all_dashboards(
+    ops_test: OpsTest, relation_id: int, https: bool = False, skip: list[str] = []
+):
     """Check if all dashboard instances are accessible."""
 
     dashboard_credentials = await get_secret_by_label(
@@ -173,12 +178,18 @@ async def access_all_dashboards(ops_test: OpsTest, relation_id: int, https: bool
     # We only get it once for pipeline efficiency, as it's the same on all units
     if https:
         unit = ops_test.model.applications[APP_NAME].units[0].name
-        assert get_dashboard_ca_cert(ops_test.model.name, unit), "CA certificates missing."
+        if unit not in skip and not get_dashboard_ca_cert(ops_test.model.name, unit):
+            return False
 
     function = access_dashboard if not https else access_dashboard_https
     result = True
     for unit in ops_test.model.applications[APP_NAME].units:
+        if unit.name in skip:
+            continue
         host = get_private_address(ops_test.model.name, unit.name)
+        if not host:
+            logger.debug(f"Couldn't determine hostname for unit {unit.name}")
+            return False
         result &= function(host=host, password=dashboard_password)
     return result
 
