@@ -50,6 +50,8 @@ class TLSEvents(Object):
             getattr(self.charm.on, "set_tls_private_key_action"), self._set_tls_private_key
         )
 
+        self.framework.observe(getattr(self.charm.on, "config_changed"), self._on_config_changed)
+
     def _on_certs_relation_joined(self, event: RelationJoinedEvent) -> None:
         """Handler for `certificates_relation_joined` event."""
         # generate unit private key if not already created by action
@@ -115,6 +117,11 @@ class TLSEvents(Object):
         )
 
         self.charm.state.unit_server.update({"csr": new_csr.decode("utf-8").strip()})
+
+    def _on_config_changed(self, event: EventBase):
+        """If system configuration (such as IP) changes, certs have to be re-issued."""
+        if self.charm.state.unit_server.tls and not self.charm.tls_manager.certificate_valid():
+            self._on_certificate_expiring(event)
 
     def _on_certs_relation_broken(self, _) -> None:
         """Handler for `certificates_relation_broken` event."""

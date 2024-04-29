@@ -5,7 +5,6 @@
 """Charmed Machine Operator for Apache Opensearch Dashboards."""
 
 import logging
-import time
 
 from charms.rolling_ops.v0.rollingops import RollingOpsManager
 from ops.charm import CharmBase, InstallEvent, SecretChangedEvent
@@ -31,7 +30,6 @@ from literals import (
     MSG_WAITING_FOR_PEER,
     MSG_WAITING_FOR_USER_CREDENTIALS,
     PEER,
-    RESTART_TIMEOUT,
     SUBSTRATE,
 )
 from managers.config import ConfigManager
@@ -136,11 +134,15 @@ class OpensearchDasboardsCharm(CharmBase):
                 clear_status(self.app, MSG_DB_MISSING)
 
         # Maintain the correct unit status
-        if self.state.cluster.tls and not self.state.unit_server.tls:
-            self.unit.status = MaintenanceStatus(MSG_TLS_CONFIG)
-        else:
-            clear_status(self.unit, MSG_TLS_CONFIG)
 
+        # Request new certificates if IP changed
+        if self.state.unit_server.tls and self.state.unit_server.tls:
+            if self.tls_manager.certificate_valid():
+                clear_status(self.unit, MSG_TLS_CONFIG)
+            else:
+                self.unit.status = MaintenanceStatus(MSG_TLS_CONFIG)
+
+        # Restart on config change
         if (
             self.config_manager.config_changed()
             and self.state.unit_server.started
@@ -197,10 +199,6 @@ class OpensearchDasboardsCharm(CharmBase):
 
         logger.info(f"{self.unit.name} restarting...")
         self.workload.restart()
-
-        start_time = time.time()
-        while not self.workload.alive() and time.time() - start_time < RESTART_TIMEOUT:
-            time.sleep(5)
 
         clear_status(self.unit, [MSG_STARTING, MSG_STARTING_SERVER])
 
