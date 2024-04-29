@@ -5,6 +5,7 @@
 """Manager for building necessary files for Java TLS auth."""
 import logging
 import subprocess
+from subprocess import STDOUT, CalledProcessError
 
 import ops.pebble
 
@@ -131,3 +132,15 @@ class TLSManager:
         except (subprocess.CalledProcessError, ops.pebble.ExecError) as e:
             logger.error(str(e.stdout))
             raise e
+
+    def certificate_valid(self) -> bool:
+        """Check if server certificate is valid"""
+        cmd = f"openssl x509 -in {self.workload.paths.certificate} -subject -noout"
+        try:
+            response = subprocess.check_output(
+                cmd, stderr=STDOUT, shell=True, universal_newlines=True
+            )
+        except CalledProcessError as error:
+            logging.error(f"Checking certificate failed: {error.output}")
+            return False
+        return self.state.unit_server.private_ip in response
