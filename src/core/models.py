@@ -99,7 +99,7 @@ class OpensearchServer(StateBase):
     def endpoints(self) -> list[str]:
         """Connection endpoints for the client application to connect with."""
         endpoints_str = self.relation_data.get("endpoints")
-        return endpoints_str.split(",") if endpoints_str else []
+        return sorted(endpoints_str.split(",")) if endpoints_str else []
 
     @property
     def tls_ca(self) -> str | None:
