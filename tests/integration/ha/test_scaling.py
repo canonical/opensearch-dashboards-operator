@@ -40,7 +40,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
     charm = await ops_test.build_charm(".")
     await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=1)
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
-    # Pinning down opensearch revision to the last 2.10 one
+
     # NOTE: can't access 2/stable from the tests, only 'edge' available
     await ops_test.model.deploy(OPENSEARCH_APP_NAME, channel="2/edge", num_units=1)
 
@@ -52,7 +52,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
     )
 
     # Relate it to OpenSearch to set up TLS.
-    await ops_test.model.relate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
+    await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
     await ops_test.model.wait_for_idle(
         apps=[OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
     )
@@ -64,7 +64,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
 
     assert ops_test.model.applications[APP_NAME].status == "blocked"
 
-    pytest.relation = await ops_test.model.relate(OPENSEARCH_APP_NAME, APP_NAME)
+    pytest.relation = await ops_test.model.integrate(OPENSEARCH_APP_NAME, APP_NAME)
     await ops_test.model.wait_for_idle(
         apps=[OPENSEARCH_APP_NAME, APP_NAME], status="active", timeout=1000
     )
@@ -73,7 +73,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_horizontal_scale_up_http(ops_test: OpsTest) -> None:
-    """Tests that new added are functional."""
+    """Testing that newly added units are functional."""
     init_units_count = len(ops_test.model.applications[APP_NAME].units)
     amount = len(HTTP_UNITS) - 1
 
@@ -89,7 +89,7 @@ async def test_horizontal_scale_up_http(ops_test: OpsTest) -> None:
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_horizontal_scale_down_http(ops_test: OpsTest) -> None:
-    """Tests that decreasing units keeps functionality."""
+    """Testing that decreasing units keeps functionality."""
     init_units_count = len(ops_test.model.applications[APP_NAME].units)
     amount = len(HTTP_UNITS[1:])
 
@@ -107,7 +107,7 @@ async def test_horizontal_scale_down_http(ops_test: OpsTest) -> None:
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_horizontal_scale_down_to_zero_http(ops_test: OpsTest) -> None:
-    """Tests that decreasing units keeps functionality."""
+    """Testing that scaling down to 0 units is possible."""
     init_units_count = len(ops_test.model.applications[APP_NAME].units)
     unit_id = HTTP_UNITS[0]
 
@@ -123,12 +123,12 @@ async def test_horizontal_scale_down_to_zero_http(ops_test: OpsTest) -> None:
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_horizontal_scale_up_https(ops_test: OpsTest) -> None:
-    """Tests that new added are functional with TLS on."""
+    """Testing that new added are functional with TLS on."""
     await ops_test.model.applications[APP_NAME].add_unit(count=1)
     await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
 
     # Relate it to OpenSearch to set up TLS.
-    await ops_test.model.relate(APP_NAME, TLS_CERTIFICATES_APP_NAME)
+    await ops_test.model.integrate(APP_NAME, TLS_CERTIFICATES_APP_NAME)
     await ops_test.model.wait_for_idle(
         apps=[APP_NAME, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
     )
@@ -158,7 +158,7 @@ async def test_horizontal_scale_up_https(ops_test: OpsTest) -> None:
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_horizontal_scale_down_https(ops_test: OpsTest) -> None:
-    """Tests that decreasing units keeps functionality with TLS on."""
+    """Testing that decreasing units keeps functionality with TLS on."""
     init_units_count = len(ops_test.model.applications[APP_NAME].units)
 
     amount = len(HTTPS_UNITS[:-1])
@@ -177,7 +177,7 @@ async def test_horizontal_scale_down_https(ops_test: OpsTest) -> None:
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_horizontal_scale_down_to_zero_https(ops_test: OpsTest) -> None:
-    """Tests that decreasing units keeps functionality."""
+    """Testing that scaling down to 0 units is possible."""
     init_units_count = len(ops_test.model.applications[APP_NAME].units)
     unit_id = HTTPS_UNITS[-1]
 
