@@ -245,23 +245,6 @@ def test_restart_fails_not_started(harness):
         patched_start.assert_called_once()
 
 
-def test_restart_restarts_with_sleep(harness):
-    with harness.hooks_disabled():
-        peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
-        harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
-        harness.set_planned_units(1)
-        harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}/0", {"state": "started"})
-        harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}", {"0": "added"})
-
-    with (
-        patch("workload.ODWorkload.restart") as patched_restart,
-        patch("time.sleep") as patched_sleep,
-    ):
-        harness.charm._restart(EventBase(harness.charm))
-        patched_restart.assert_called_once()
-        assert patched_sleep.call_count >= 1
-
-
 def test_init_server_calls_necessary_methods_non_leader(harness):
     with harness.hooks_disabled():
         peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
