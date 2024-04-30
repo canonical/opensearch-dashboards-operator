@@ -13,14 +13,12 @@ from .helpers import (
     access_all_dashboards,
     access_dashboard,
     count_lines_with,
-    get_application_relation_data,
     get_leader_id,
     get_leader_name,
     get_private_address,
     get_secret_by_label,
     get_user_password,
     ping_servers,
-    set_opensearch_user_password,
     set_password,
 )
 
@@ -45,43 +43,6 @@ NUM_UNITS_APP = 3
 NUM_UNITS_DB = 2
 
 
-async def recreate_opensearch_kibanaserver(ops_test: OpsTest):
-    """Temporary helper function."""
-    #
-    # THIS HAS TO CHANGE AS https://warthogs.atlassian.net/browse/DPE-2944 is processed
-    #
-    # "Total Hack"
-    # Currently the 'kibanaserver' user is deleted on opensearch
-    # We are "re-adding" it so we could use it for the opensearch connection
-    # We are "re-adding" it using the password shared on the relation for the opensearch-client_<id> user
-    # that's currently used by the charm
-    #
-    # To make it EVEN worse: we set the opensearch charm update period to 1h,
-    # since on each status update opensearch is deleting all "unexpected" users :sweat_smile:
-    #
-    opensearch_endpoints = await get_application_relation_data(
-        ops_test, APP_NAME, "opensearch_client", "endpoints"
-    )
-    opensearch_endpoint = opensearch_endpoints.split(",")[0]
-
-    unit_name = f"{OPENSEARCH_APP_NAME}/0"
-    action = await ops_test.model.units.get(unit_name).run_action("get-password")
-    await action.wait()
-    opensearch_admin_password = action.results.get("password")
-
-    dashboard_credentials = await get_secret_by_label(
-        ops_test, f"opensearch-client.{pytest.relation.id}.user.secret"
-    )
-    dashboard_password = dashboard_credentials["password"]
-    set_opensearch_user_password(
-        opensearch_endpoint, opensearch_admin_password, dashboard_password
-    )
-
-    await ops_test.model.wait_for_idle(
-        apps=[OPENSEARCH_APP_NAME, APP_NAME], status="active", timeout=1000
-    )
-
-
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.charm
@@ -92,11 +53,7 @@ async def test_deploy_active(ops_test: OpsTest):
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
     # Pinning down opensearch revision to the last 2.10 one
     # NOTE: can't access 2/stable from the tests, only 'edge' available
-    test_charm_path = "./tests/integration/opensearch-operator"
-    opensearch_new_charm = await ops_test.build_charm(test_charm_path)
-    await ops_test.model.deploy(
-        opensearch_new_charm, application_name=OPENSEARCH_APP_NAME, num_units=NUM_UNITS_DB
-    )
+    await ops_test.model.deploy(OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB)
 
     config = {"ca-common-name": "CN_CA"}
     await ops_test.model.deploy(TLS_CERTIFICATES_APP_NAME, channel="stable", config=config)
@@ -123,7 +80,6 @@ async def test_deploy_active(ops_test: OpsTest):
     await ops_test.model.wait_for_idle(
         apps=[OPENSEARCH_APP_NAME, APP_NAME], status="active", timeout=1000
     )
-    await recreate_opensearch_kibanaserver(ops_test)
 
 
 @pytest.mark.group(1)
