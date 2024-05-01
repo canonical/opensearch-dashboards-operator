@@ -136,11 +136,17 @@ class OpensearchDasboardsCharm(CharmBase):
         # Maintain the correct unit status
 
         # Request new certificates if IP changed
+        # Self-healing mechanism is to prevent from getting stuck waiting for a new cert
+        # in case anything may go wrong with the 'config-changed' event on a network cut
         if self.state.unit_server.tls and self.state.unit_server.tls:
             if self.tls_manager.certificate_valid():
                 clear_status(self.unit, MSG_TLS_CONFIG)
+                self.tls_manager.reset_self_healing()
             else:
                 self.unit.status = MaintenanceStatus(MSG_TLS_CONFIG)
+                if self.tls_manager.start_self_healing():
+                    self.tls_events._on_config_changed(event)
+                self.tls_manager.reset_self_healing()
 
         # Restart on config change
         if (

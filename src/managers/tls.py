@@ -5,6 +5,7 @@
 """Manager for building necessary files for Java TLS auth."""
 import logging
 import subprocess
+from datetime import datetime, timedelta
 from subprocess import STDOUT, CalledProcessError
 
 import ops.pebble
@@ -144,3 +145,16 @@ class TLSManager:
             logging.error(f"Checking certificate failed: {error.output}")
             return False
         return self.state.unit_server.private_ip in response
+
+    def start_self_healing(self) -> bool:
+        if not self.state.unit_server.relation_data.get("self_healing_tls"):
+            self.state.unit_server.update({"self_healing_tls": str(datetime.now())})
+            return False
+
+        then = datetime.fromtimestamp(
+            int(self.state.unit_server.relation_data["self_healing_tls"])
+        )
+        return then - datetime.now() > timedelta(180)
+
+    def reset_self_healing(self) -> None:
+        self.state.unit_server.update({"self_healing_tls": ""})
