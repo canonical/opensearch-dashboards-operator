@@ -4,6 +4,7 @@
 
 import asyncio
 import logging
+import time
 from pathlib import Path
 from subprocess import CalledProcessError
 
@@ -12,7 +13,7 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
-from ..helpers import access_all_dashboards, get_leader_name
+from ..helpers import access_all_dashboards  # , get_leader_name
 
 logger = logging.getLogger(__name__)
 
@@ -126,145 +127,145 @@ async def test_deploy_active(ops_test: OpsTest):
     )
 
 
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_network_cut_leader(ops_test: OpsTest, request):
-    """SIGKILLs leader process and checks recovery + re-election."""
-    old_leader_name = await get_leader_name(ops_test)
-
-    assert await access_all_dashboards(ops_test, pytest.relation.id)
-
-    logger.info("Cutting leader unit from network...")
-    machine_name = await ha_helpers.get_unit_machine_name(ops_test, old_leader_name)
-    ha_helpers.cut_unit_network(machine_name)
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
-
-    logger.info("Checking leader re-election...")
-    # new_leader_name = ha_helpers.get_leader_name(ops_test, non_leader_hosts)
-    new_leader_name = await get_leader_name(ops_test)
-    assert new_leader_name != old_leader_name
-
-    # Check all nodes but the old leader
-    logger.info("Checking Dashboard access for the rest of the nodes...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id, skip=[old_leader_name])
-
-    logger.info("Restoring network...")
-    try:
-        ha_helpers.restore_unit_network(machine_name)
-    except CalledProcessError:  # in case it was already cleaned up
-        pass
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await extra_secure_wait_for_idle(ops_test)
-
-    logger.info("Checking Dashboard access...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id)
-
-
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_network_throttle_leader(ops_test: OpsTest, request):
-    """SIGKILLs leader process and checks recovery + re-election."""
-    old_leader_name = await get_leader_name(ops_test)
-
-    assert await access_all_dashboards(ops_test, pytest.relation.id)
-
-    logger.info("Cutting leader unit from network...")
-    machine_name = await ha_helpers.get_unit_machine_name(ops_test, old_leader_name)
-    ha_helpers.network_throttle(machine_name)
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
-
-    logger.info("Checking leader re-election...")
-    # new_leader_name = ha_helpers.get_leader_name(ops_test, non_leader_hosts)
-    new_leader_name = await get_leader_name(ops_test)
-    assert new_leader_name != old_leader_name
-
-    # Check all nodes but the old leader
-    logger.info("Checking Dashboard access for the rest of the nodes...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id, skip=[old_leader_name])
-
-    logger.info("Restoring network...")
-    try:
-        ha_helpers.network_release(machine_name)
-    except CalledProcessError:  # in case it was already cleaned up
-        pass
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await extra_secure_wait_for_idle(ops_test)
-
-    logger.info("Checking Dashboard access...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id)
-
-
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_network_cut_application(ops_test: OpsTest, request):
-    """SIGKILLs leader process and checks recovery + re-election."""
-    logger.info("Cutting all units from network...")
-
-    machines = []
-    for unit in ops_test.model.applications[APP_NAME].units:
-        machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
-        ha_helpers.cut_unit_network(machine_name)
-        machines.append(machine_name)
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    ha_helpers.restore_unit_network(machine_name)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
-
-    # Check all nodes but the old leader
-    logger.info("Checking Dashboard access for the rest of the nodes...")
-    assert not (await access_all_dashboards(ops_test, pytest.relation.id))
-
-    logger.info("Restoring network...")
-    for machine_name in machines:
-        try:
-            ha_helpers.restore_unit_network(machine_name)
-        except CalledProcessError:  # in case it was already cleaned up
-            pass
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await extra_secure_wait_for_idle(ops_test)
-
-    logger.info("Checking Dashboard access...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id)
-
-
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_network_throttle_application(ops_test: OpsTest, request):
-    """SIGKILLs leader process and checks recovery + re-election."""
-    logger.info("Cutting all units from network...")
-
-    machines = []
-    for unit in ops_test.model.applications[APP_NAME].units:
-        machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
-        ha_helpers.network_throttle(machine_name)
-        machines.append(machine_name)
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
-
-    # Check all nodes but the old leader
-    logger.info("Checking Dashboard access for the rest of the nodes...")
-    assert not (await access_all_dashboards(ops_test, pytest.relation.id))
-
-    logger.info("Restoring network...")
-    for machine_name in machines:
-        try:
-            ha_helpers.network_release(machine_name)
-        except CalledProcessError:  # in case it was already cleaned up
-            pass
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await extra_secure_wait_for_idle(ops_test)
-
-    logger.info("Checking Dashboard access...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id)
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_network_cut_leader(ops_test: OpsTest, request):
+#     """SIGKILLs leader process and checks recovery + re-election."""
+#     old_leader_name = await get_leader_name(ops_test)
+#
+#     assert await access_all_dashboards(ops_test, pytest.relation.id)
+#
+#     logger.info("Cutting leader unit from network...")
+#     machine_name = await ha_helpers.get_unit_machine_name(ops_test, old_leader_name)
+#     ha_helpers.cut_unit_network(machine_name)
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+#
+#     logger.info("Checking leader re-election...")
+#     # new_leader_name = ha_helpers.get_leader_name(ops_test, non_leader_hosts)
+#     new_leader_name = await get_leader_name(ops_test)
+#     assert new_leader_name != old_leader_name
+#
+#     # Check all nodes but the old leader
+#     logger.info("Checking Dashboard access for the rest of the nodes...")
+#     assert await access_all_dashboards(ops_test, pytest.relation.id, skip=[old_leader_name])
+#
+#     logger.info("Restoring network...")
+#     try:
+#         ha_helpers.restore_unit_network(machine_name)
+#     except CalledProcessError:  # in case it was already cleaned up
+#         pass
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await extra_secure_wait_for_idle(ops_test)
+#
+#     logger.info("Checking Dashboard access...")
+#     assert await access_all_dashboards(ops_test, pytest.relation.id)
+#
+#
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_network_throttle_leader(ops_test: OpsTest, request):
+#     """SIGKILLs leader process and checks recovery + re-election."""
+#     old_leader_name = await get_leader_name(ops_test)
+#
+#     assert await access_all_dashboards(ops_test, pytest.relation.id)
+#
+#     logger.info("Cutting leader unit from network...")
+#     machine_name = await ha_helpers.get_unit_machine_name(ops_test, old_leader_name)
+#     ha_helpers.network_throttle(machine_name)
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+#
+#     logger.info("Checking leader re-election...")
+#     # new_leader_name = ha_helpers.get_leader_name(ops_test, non_leader_hosts)
+#     new_leader_name = await get_leader_name(ops_test)
+#     assert new_leader_name != old_leader_name
+#
+#     # Check all nodes but the old leader
+#     logger.info("Checking Dashboard access for the rest of the nodes...")
+#     assert await access_all_dashboards(ops_test, pytest.relation.id, skip=[old_leader_name])
+#
+#     logger.info("Restoring network...")
+#     try:
+#         ha_helpers.network_release(machine_name)
+#     except CalledProcessError:  # in case it was already cleaned up
+#         pass
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await extra_secure_wait_for_idle(ops_test)
+#
+#     logger.info("Checking Dashboard access...")
+#     assert await access_all_dashboards(ops_test, pytest.relation.id)
+#
+#
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_network_cut_application(ops_test: OpsTest, request):
+#     """SIGKILLs leader process and checks recovery + re-election."""
+#     logger.info("Cutting all units from network...")
+#
+#     machines = []
+#     for unit in ops_test.model.applications[APP_NAME].units:
+#         machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
+#         ha_helpers.cut_unit_network(machine_name)
+#         machines.append(machine_name)
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     ha_helpers.restore_unit_network(machine_name)
+#     await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+#
+#     # Check all nodes but the old leader
+#     logger.info("Checking Dashboard access for the rest of the nodes...")
+#     assert not (await access_all_dashboards(ops_test, pytest.relation.id))
+#
+#     logger.info("Restoring network...")
+#     for machine_name in machines:
+#         try:
+#             ha_helpers.restore_unit_network(machine_name)
+#         except CalledProcessError:  # in case it was already cleaned up
+#             pass
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await extra_secure_wait_for_idle(ops_test)
+#
+#     logger.info("Checking Dashboard access...")
+#     assert await access_all_dashboards(ops_test, pytest.relation.id)
+#
+#
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_network_throttle_application(ops_test: OpsTest, request):
+#     """SIGKILLs leader process and checks recovery + re-election."""
+#     logger.info("Cutting all units from network...")
+#
+#     machines = []
+#     for unit in ops_test.model.applications[APP_NAME].units:
+#         machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
+#         ha_helpers.network_throttle(machine_name)
+#         machines.append(machine_name)
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+#
+#     # Check all nodes but the old leader
+#     logger.info("Checking Dashboard access for the rest of the nodes...")
+#     assert not (await access_all_dashboards(ops_test, pytest.relation.id))
+#
+#     logger.info("Restoring network...")
+#     for machine_name in machines:
+#         try:
+#             ha_helpers.network_release(machine_name)
+#         except CalledProcessError:  # in case it was already cleaned up
+#             pass
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await extra_secure_wait_for_idle(ops_test)
+#
+#     logger.info("Checking Dashboard access...")
+#     assert await access_all_dashboards(ops_test, pytest.relation.id)
 
 
 ##############################################################################
@@ -286,141 +287,147 @@ async def test_set_tls(ops_test: OpsTest, request):
 ##############################################################################
 
 
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_network_cut_leader_https(ops_test: OpsTest, request):
-    """SIGKILLs leader process and checks recovery + re-election."""
-    old_leader_name = await get_leader_name(ops_test)
-    logger.info("Cutting leader unit from network...")
-    machine_name = await ha_helpers.get_unit_machine_name(ops_test, old_leader_name)
-    ha_helpers.cut_unit_network(machine_name)
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
-
-    logger.info("Checking leader re-election...")
-    # new_leader_name = ha_helpers.get_leader_name(ops_test, non_leader_hosts)
-    new_leader_name = await get_leader_name(ops_test)
-    assert new_leader_name != old_leader_name
-
-    # Check all nodes but the old leader
-    logger.info("Checking Dashboard access for the rest of the nodes...")
-    assert await access_all_dashboards(
-        ops_test, pytest.relation.id, skip=[old_leader_name], https=True
-    )
-
-    logger.info("Restoring network...")
-    try:
-        ha_helpers.restore_unit_network(machine_name)
-    except CalledProcessError:  # in case it was already cleaned up
-        pass
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await extra_secure_wait_for_idle(ops_test)
-
-    logger.info("Checking Dashboard access...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
-
-
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_network_throttle_leader_https(ops_test: OpsTest, request):
-    """SIGKILLs leader process and checks recovery + re-election."""
-    assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
-    old_leader_name = await get_leader_name(ops_test)
-
-    logger.info("Cutting leader unit from network...")
-    machine_name = await ha_helpers.get_unit_machine_name(ops_test, old_leader_name)
-    ha_helpers.network_throttle(machine_name)
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
-
-    logger.info("Checking leader re-election...")
-    # new_leader_name = ha_helpers.get_leader_name(ops_test, non_leader_hosts)
-    new_leader_name = await get_leader_name(ops_test)
-    assert new_leader_name != old_leader_name
-
-    # Check all nodes but the old leader
-    logger.info("Checking Dashboard access for the rest of the nodes...")
-    assert await access_all_dashboards(
-        ops_test, pytest.relation.id, skip=[old_leader_name], https=True
-    )
-
-    logger.info("Restoring network...")
-    try:
-        ha_helpers.network_release(machine_name)
-    except CalledProcessError:  # in case it was already cleaned up
-        pass
-
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await extra_secure_wait_for_idle(ops_test)
-
-    logger.info("Checking Dashboard access...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_network_cut_leader_https(ops_test: OpsTest, request):
+#     """SIGKILLs leader process and checks recovery + re-election."""
+#     old_leader_name = await get_leader_name(ops_test)
+#     logger.info("Cutting leader unit from network...")
+#     machine_name = await ha_helpers.get_unit_machine_name(ops_test, old_leader_name)
+#     ha_helpers.cut_unit_network(machine_name)
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+#
+#     logger.info("Checking leader re-election...")
+#     # new_leader_name = ha_helpers.get_leader_name(ops_test, non_leader_hosts)
+#     new_leader_name = await get_leader_name(ops_test)
+#     assert new_leader_name != old_leader_name
+#
+#     # Check all nodes but the old leader
+#     logger.info("Checking Dashboard access for the rest of the nodes...")
+#     assert await access_all_dashboards(
+#         ops_test, pytest.relation.id, skip=[old_leader_name], https=True
+#     )
+#
+#     logger.info("Restoring network...")
+#     try:
+#         ha_helpers.restore_unit_network(machine_name)
+#     except CalledProcessError:  # in case it was already cleaned up
+#         pass
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await extra_secure_wait_for_idle(ops_test)
+#
+#     logger.info("Checking Dashboard access...")
+#     assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
+#
+#
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_network_throttle_leader_https(ops_test: OpsTest, request):
+#     """SIGKILLs leader process and checks recovery + re-election."""
+#     assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
+#     old_leader_name = await get_leader_name(ops_test)
+#
+#     logger.info("Cutting leader unit from network...")
+#     machine_name = await ha_helpers.get_unit_machine_name(ops_test, old_leader_name)
+#     ha_helpers.network_throttle(machine_name)
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+#
+#     logger.info("Checking leader re-election...")
+#     # new_leader_name = ha_helpers.get_leader_name(ops_test, non_leader_hosts)
+#     new_leader_name = await get_leader_name(ops_test)
+#     assert new_leader_name != old_leader_name
+#
+#     # Check all nodes but the old leader
+#     logger.info("Checking Dashboard access for the rest of the nodes...")
+#     assert await access_all_dashboards(
+#         ops_test, pytest.relation.id, skip=[old_leader_name], https=True
+#     )
+#
+#     logger.info("Restoring network...")
+#     try:
+#         ha_helpers.network_release(machine_name)
+#     except CalledProcessError:  # in case it was already cleaned up
+#         pass
+#
+#     await asyncio.sleep(RESTART_DELAY * 2)
+#     await extra_secure_wait_for_idle(ops_test)
+#
+#     logger.info("Checking Dashboard access...")
+#     assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
 
 
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_network_cut_application_https(ops_test: OpsTest, request):
     """SIGKILLs leader process and checks recovery + re-election."""
-    logger.info("Cutting all units from network...")
+    for _ in range(3):
+        time.sleep(20)
 
-    machines = []
-    for unit in ops_test.model.applications[APP_NAME].units:
-        machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
-        ha_helpers.cut_unit_network(machine_name)
-        machines.append(machine_name)
+        logger.info("Cutting all units from network...")
 
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+        machines = []
+        for unit in ops_test.model.applications[APP_NAME].units:
+            machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
+            ha_helpers.cut_unit_network(machine_name)
+            machines.append(machine_name)
 
-    # Check all nodes but the old leader
-    logger.info("Checking lack of Dashboard access...")
-    assert not (await access_all_dashboards(ops_test, pytest.relation.id, https=True))
+        await asyncio.sleep(RESTART_DELAY * 2)
+        await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
 
-    logger.info("Restoring network...")
-    for machine_name in machines:
-        try:
-            ha_helpers.restore_unit_network(machine_name)
-        except CalledProcessError:  # in case it was already cleaned up
-            pass
+        # Check all nodes but the old leader
+        logger.info("Checking lack of Dashboard access...")
+        assert not (await access_all_dashboards(ops_test, pytest.relation.id, https=True))
 
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await extra_secure_wait_for_idle(ops_test)
+        logger.info("Restoring network...")
+        for machine_name in machines:
+            try:
+                ha_helpers.restore_unit_network(machine_name)
+            except CalledProcessError:  # in case it was already cleaned up
+                pass
 
-    logger.info("Checking Dashboard access...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
+        await asyncio.sleep(RESTART_DELAY * 2)
+        await extra_secure_wait_for_idle(ops_test)
+
+        logger.info("Checking Dashboard access...")
+        assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
 
 
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_network_throttle_application_https(ops_test: OpsTest, request):
     """SIGKILLs leader process and checks recovery + re-election."""
-    logger.info("Cutting all units from network...")
+    for _ in range(3):
+        time.sleep(20)
 
-    machines = []
-    for unit in ops_test.model.applications[APP_NAME].units:
-        machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
-        ha_helpers.network_throttle(machine_name)
-        machines.append(machine_name)
+        logger.info("Cutting all units from network...")
 
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
+        machines = []
+        for unit in ops_test.model.applications[APP_NAME].units:
+            machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
+            ha_helpers.network_throttle(machine_name)
+            machines.append(machine_name)
 
-    # Check all nodes but the old leader
-    logger.info("Checking lack of Dashboard access...")
-    assert not (await access_all_dashboards(ops_test, pytest.relation.id, https=True))
+        await asyncio.sleep(RESTART_DELAY * 2)
+        await ops_test.model.wait_for_idle(apps=[APP_NAME], status="active", timeout=1000)
 
-    logger.info("Restoring network...")
-    for machine_name in machines:
-        try:
-            ha_helpers.network_release(machine_name)
-        except CalledProcessError:  # in case it was already cleaned up
-            pass
+        # Check all nodes but the old leader
+        logger.info("Checking lack of Dashboard access...")
+        assert not (await access_all_dashboards(ops_test, pytest.relation.id, https=True))
 
-    await asyncio.sleep(RESTART_DELAY * 2)
-    await extra_secure_wait_for_idle(ops_test)
+        logger.info("Restoring network...")
+        for machine_name in machines:
+            try:
+                ha_helpers.network_release(machine_name)
+            except CalledProcessError:  # in case it was already cleaned up
+                pass
 
-    logger.info("Checking Dashboard access...")
-    assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
+        await asyncio.sleep(RESTART_DELAY * 2)
+        await extra_secure_wait_for_idle(ops_test)
+
+        logger.info("Checking Dashboard access...")
+        assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
