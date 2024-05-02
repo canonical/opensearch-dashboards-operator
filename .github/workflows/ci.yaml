@@ -159,9 +159,13 @@ jobs:
           # juju deploy ./opensearch_ubuntu-22.04-amd64.charm
           # cd ${RETURN}
 
-          juju relate opensearch self-signed-certificates
           juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")'
-          juju wait-for application self-signed-certificates --query='name=="self-signed-certificates" && (status=="active" || status=="idle")'
+          juju relate opensearch self-signed-certificates
+          for i in 1 2 3: 
+          do
+              juju wait-for application self-signed-certificates --query='name=="self-signed-certificates" && (status=="active" || status=="idle")'
+              juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")'
+          done
           juju status
 
           KIBANASERVER_PW=$(juju run opensearch/0 get-password username=kibanaserver | grep password | cut -d: -f2 | tr -d ' ')
