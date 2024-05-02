@@ -159,9 +159,14 @@ jobs:
           # juju deploy ./opensearch_ubuntu-22.04-amd64.charm
           # cd ${RETURN}
 
-          juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")'
+          for i in 1 2 3
+          do
+              sleep 30
+              juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")'
+          done
+
           juju relate opensearch self-signed-certificates
-          for i in 1 2 3: 
+          for i in 1 2 3 4 5
           do
               sleep 30
               juju wait-for application self-signed-certificates --query='name=="self-signed-certificates" && (status=="active" || status=="idle")'
@@ -189,7 +194,7 @@ jobs:
 
           # Runs on a timeout
           # juju wait-for application traefik --query='name=="traefik" && (status=="active" || status=="idle")'
-          for i in 1 2 3: 
+          for i in 1 2 3
           do
               sleep 30
               juju wait-for application opensearch-dashboards --query='name=="opensearch-dashboards" && (status=="active" || status=="idle")'
