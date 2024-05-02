@@ -163,6 +163,7 @@ jobs:
           juju relate opensearch self-signed-certificates
           for i in 1 2 3: 
           do
+              sleep 30
               juju wait-for application self-signed-certificates --query='name=="self-signed-certificates" && (status=="active" || status=="idle")'
               juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")'
           done
@@ -188,7 +189,10 @@ jobs:
 
           # Runs on a timeout
           # juju wait-for application traefik --query='name=="traefik" && (status=="active" || status=="idle")'
-          juju wait-for application opensearch-dashboards --query='name=="opensearch-dashboards" && (status=="active" || status=="idle")'
+          for i in 1 2 3: 
+          do
+              sleep 30
+              juju wait-for application opensearch-dashboards --query='name=="opensearch-dashboards" && (status=="active" || status=="idle")'
 
           # Attempt to access the interface using valid authentication
           authenticate_ok=$(curl -i  -k -XPOST http://${IP}:5601/auth/login \
