@@ -163,10 +163,9 @@ jobs:
           juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")'
           juju wait-for application self-signed-certificates --query='name=="self-signed-certificates" && (status=="active" || status=="idle")'
           juju status
-          juju debug-log --replay
 
           KIBANASERVER_PW=$(juju run opensearch/0 get-password username=kibanaserver | grep password | cut -d: -f2 | tr -d ' ')
-          juju run opensearch/0 get-password username=kibanaserver | grep password | cut -d: -f2 | tr -d ' '
+          juju run opensearch/0 get-password username=kibanaserver
           IP=$(juju status | grep opensearch-dashboards/0 | awk -F ' *' '{ print $5 }')
 
           echo "Relating Dashboard to Opensearch"
