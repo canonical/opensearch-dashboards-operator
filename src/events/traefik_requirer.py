@@ -26,7 +26,7 @@ class TraefikRequirerEvents(Object):
         super().__init__(charm, "provider")
         self.charm: "OpensearchDasboardsCharm" = charm
 
-        self.ingress = IngressPerAppRequirer(self.charm, port=5601)
+        self.ingress = IngressPerAppRequirer(self.charm, host="dashboard", port=5601)
 
         self.framework.observe(self.ingress.on.ready, self._on_ingress_ready)
         self.framework.observe(self.ingress.on.revoked, self._on_ingress_revoked)
