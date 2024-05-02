@@ -24,20 +24,6 @@ APP_NAME = METADATA["name"]
 logger = logging.getLogger(__name__)
 
 
-def application_active(ops_test: OpsTest, expected_units: int) -> bool:
-    units = ops_test.model.applications[APP_NAME].units
-
-    if len(units) != expected_units:
-        return False
-
-    for unit in units:
-        if unit.workload_status != "active":
-            return False
-
-    return True
->>>>>>> 5ef8075 (Scaling tests)
-
-
 async def get_password(ops_test) -> str:
     secret_data = await get_secret_by_label(ops_test, f"{APP_NAME}.app")
     return secret_data.get("super-password")
