@@ -5,6 +5,7 @@
 """Charmed Machine Operator for Apache Opensearch Dashboards."""
 
 import logging
+import time
 
 from charms.rolling_ops.v0.rollingops import RollingOpsManager
 from ops.charm import CharmBase, InstallEvent, SecretChangedEvent
@@ -24,12 +25,14 @@ from literals import (
     CHARM_USERS,
     MSG_DB_MISSING,
     MSG_INSTALLING,
+    MSG_RECONFIG,
     MSG_STARTING,
     MSG_STARTING_SERVER,
     MSG_TLS_CONFIG,
     MSG_WAITING_FOR_PEER,
     MSG_WAITING_FOR_USER_CREDENTIALS,
     PEER,
+    RESTART_TIMEOUT,
     SUBSTRATE,
 )
 from managers.config import ConfigManager
@@ -116,6 +119,9 @@ class OpensearchDasboardsCharm(CharmBase):
 
     def reconcile(self, event: EventBase) -> None:
         """Generic handler for all 'something changed, update' events across all relations."""
+
+        logger.debug("[SECRET_CHANGE_DEBUG] Reconciling")
+
         # not all methods called
         if not self.state.peer_relation:
             return
@@ -128,17 +134,18 @@ class OpensearchDasboardsCharm(CharmBase):
         if getattr(event, "departing_unit", None) == self.unit:
             return
 
+        outdated_status = []
         # Maintain the correct app status
         if self.unit.is_leader():
             if self.state.opensearch_server:
-                clear_status(self.app, MSG_DB_MISSING)
+                outdated_status.append(MSG_DB_MISSING)
 
         # Maintain the correct unit status
 
         # Request new certificates if IP changed
-        if self.state.unit_server.tls and self.state.unit_server.tls:
-            if self.tls_manager.certificate_valid():
-                clear_status(self.unit, MSG_TLS_CONFIG)
+        if self.state.cluster.tls:
+            if self.state.unit_server.tls and self.tls_manager.certificate_valid():
+                outdated_status.append(MSG_TLS_CONFIG)
             else:
                 self.unit.status = MaintenanceStatus(MSG_TLS_CONFIG)
 
@@ -148,10 +155,23 @@ class OpensearchDasboardsCharm(CharmBase):
             and self.state.unit_server.started
             # and self.upgrade_events.idle
         ):
+            # NOTE: We never clean up MSG_RECONFIG, as it MUST be replaced by rolling_ops statuses
+            # (Otherwise the server is out-of-date)
+            # It is to ensure continuality of non-active status as needed
+            self.unit.status = MaintenanceStatus(MSG_RECONFIG)
             self.on[f"{self.restart.name}"].acquire_lock.emit()
+
+        # Clear all possible irrelevant statuses
+        for status in outdated_status:
+            clear_status(self.unit, status)
+
+        logger.info(f"[SECRET_CHANGE_DEBUG] Unit status {self.unit.status}")
+        logger.debug(f"[SECRET_CHANGE_DEBUG] Event {event} processed")
 
     def _on_secret_changed(self, event: SecretChangedEvent):
         """Reconfigure services on a secret changed event."""
+        logger.debug(f"[SECRET_CHANGE_DEBUG] Secret changed event (charm) {event.secret.label}")
+
         if not event.secret.label:
             return
 
@@ -190,6 +210,9 @@ class OpensearchDasboardsCharm(CharmBase):
 
     def _restart(self, event: EventBase) -> None:
         """Handler for emitted restart events."""
+
+        logger.debug("[SECRET_CHANGE_DEBUG] Restarting")
+
         # if not self.state.stable or not self.upgrade_events.idle:
         #     event.defer()
         #     return
@@ -200,7 +223,13 @@ class OpensearchDasboardsCharm(CharmBase):
         logger.info(f"{self.unit.name} restarting...")
         self.workload.restart()
 
+        start_time = time.time()
+        while not self.workload.alive() and time.time() - start_time < RESTART_TIMEOUT:
+            time.sleep(5)
+
         clear_status(self.unit, [MSG_STARTING, MSG_STARTING_SERVER])
+
+        logger.debug("[SECRET_CHANGE_DEBUG] Restarted")
 
     # --- CONVENIENCE METHODS ---
 

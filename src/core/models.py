@@ -156,9 +156,11 @@ class ODServer(StateBase):
         data_interface: Data,
         component: Unit,
         substrate: SUBSTRATES,
+        # db_credentials: dict[str:str],
     ):
         super().__init__(relation, data_interface, component, substrate)
         self.unit = component
+        # self.db_credentials = db_credentials
 
     @property
     def unit_id(self) -> int:
@@ -268,3 +270,36 @@ class ODServer(StateBase):
             "sans_ip": [self.private_ip],
             "sans_dns": [self.hostname, self.fqdn],
         }
+
+    #
+    # def service_available(self) -> bool:
+    #     """Availability of the unit."""
+    #     if not self.db_credentials:
+    #         return False
+    #
+    #     host = self.private_ip
+    #     try:
+    #         # Normal IP address
+    #         socket.inet_aton(host)
+    #     except OSError:
+    #         socket.inet_pton(socket.AF_INET6, host)
+    #         host = f"[{self.private_ip}]"
+    #
+    #     protocol = "http" if not self.tls else "https"
+    #     url = f"{protocol}://{host}:5601/auth/login"
+    #     data = {
+    #         "username": self.db_credentials.get("username", ""),
+    #         "password": self.db_credentials.get("password", "")
+    #     }
+    #     headers = {
+    #         "Accept": "application/json",
+    #         "Content-Type": "application/json",
+    #         "osd-xsrf": "true",
+    #     }
+    #
+    #     arguments = {"url": url, "headers": headers, "json": data}
+    #     if self.tls:
+    #         arguments["verify"] = "./ca.pem"
+    #
+    #     response = requests.post(**arguments)
+    #     return response.status_code == 200

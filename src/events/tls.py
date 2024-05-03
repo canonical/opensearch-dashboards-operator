@@ -81,6 +81,8 @@ class TLSEvents(Object):
 
         self.certificates.request_certificate_creation(certificate_signing_request=csr)
 
+        logger.info("[SECRET_CHANGE_DEBUG] Certfificate relation joined, certificate requested")
+
     def _on_certificate_available(self, event: CertificateAvailableEvent) -> None:
         """Handler for `certificates_available` event after provider updates signed certs."""
         # avoid setting tls files and restarting
@@ -97,6 +99,8 @@ class TLSEvents(Object):
         self.charm.tls_manager.set_certificate()
         # self.charm.tls_manager.set_truststore()
         # self.charm.tls_manager.set_p12_keystore()
+
+        logger.info("[SECRET_CHANGE_DEBUG] New certfificates fetched, peer secret updated")
 
     def _on_certificate_expiring(self, _: EventBase) -> None:
         """Handler for `certificates_expiring` event when certs need renewing."""

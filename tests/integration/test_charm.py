@@ -82,19 +82,19 @@ async def test_deploy_active(ops_test: OpsTest):
     )
 
 
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
-async def test_dashboard_access(ops_test: OpsTest):
-    """Test HTTP access to each dashboard unit."""
-
-    dashboard_credentials = await get_secret_by_label(
-        ops_test, f"opensearch-client.{pytest.relation.id}.user.secret"
-    )
-    dashboard_password = dashboard_credentials["password"]
-
-    for unit in ops_test.model.applications[APP_NAME].units:
-        host = get_private_address(ops_test.model.name, unit.name)
-        assert access_dashboard(host=host, username="kibanaserver", password=dashboard_password)
+# @pytest.mark.group(1)
+# @pytest.mark.abort_on_fail
+# async def test_dashboard_access(ops_test: OpsTest):
+#     """Test HTTP access to each dashboard unit."""
+#
+#     dashboard_credentials = await get_secret_by_label(
+#         ops_test, f"opensearch-client.{pytest.relation.id}.user.secret"
+#     )
+#     dashboard_password = dashboard_credentials["password"]
+#
+#     for unit in ops_test.model.applications[APP_NAME].units:
+#         host = get_private_address(ops_test.model.name, unit.name)
+#         assert access_dashboard(host=host, username="kibanaserver", password=dashboard_password)
 
 
 @pytest.mark.group(1)

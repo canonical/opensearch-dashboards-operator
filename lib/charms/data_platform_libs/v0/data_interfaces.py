@@ -585,6 +585,7 @@ class CachedSecret:
 
         label = self.label if not label else label
 
+        logger.debug(f"[SECRET_CHANGE_DEBUG] Adding secret with label {label}")
         secret = self.component.add_secret(content, label=label)
         if relation and relation.app != self._model.app:
             # If it's not a peer relation, grant is to be applied
@@ -606,6 +607,7 @@ class CachedSecret:
                 except SecretNotFoundError:
                     pass
                 else:
+                    logger.debug(f"[SECRET_CHANGE_DEBUG] Fetched secret with label {label}")
                     if label != self.label:
                         self.current_label = label
                     break
@@ -613,6 +615,7 @@ class CachedSecret:
             # If still not found, to be checked by URI, to be labelled with the proposed label
             if not self._secret_meta and self._secret_uri:
                 self._secret_meta = self._model.get_secret(id=self._secret_uri, label=self.label)
+                logger.debug(f"[SECRET_CHANGE_DEBUG] Fetched secret by URI, added label {self.label}")
         return self._secret_meta
 
     def get_content(self) -> Dict[str, str]:
@@ -660,6 +663,12 @@ class CachedSecret:
 
         if content:
             self._move_to_new_label_if_needed()
+            logger.debug(
+                f"[SECRET_CHANGE_DEBUG] Setting secret content for {self.meta.label}, "
+                f"revision before the change: {self.get_info().revision}."
+            )
+            old_content = self.get_content()
+            logger.debug(f"[SECRET_CHANGE_DEBUG] New content is different from old content: {old_content == content}")
             self.meta.set_content(content)
             self._secret_content = content
         else:
@@ -2007,6 +2016,10 @@ class DataPeerData(RequirerData, ProviderData):
 
     def _on_secret_changed_event(self, event: SecretChangedEvent) -> None:
         """Event emitted when the secret has changed."""
+        logger.debug(
+            f"[SECRET_CHANGE_DEBUG] Secret changed event (libs) {event.secret.label} "
+            "-- emtpy handler"
+        )
         pass
 
     # Overrides of Relation Data handling functions
@@ -2156,6 +2169,10 @@ class DataPeerEventHandlers(RequirerEventHandlers):
 
     def _on_secret_changed_event(self, event: SecretChangedEvent) -> None:
         """Event emitted when the secret has changed."""
+        logger.debug(
+            f"[SECRET_CHANGE_DEBUG] Secret changed event (libs) {event.secret.label} "
+            "-- emtpy handler 2"
+        )
         pass
 
 
@@ -2748,6 +2765,10 @@ class DatabaseRequirerEventHandlers(RequirerEventHandlers):
 
     def _on_secret_changed_event(self, event: SecretChangedEvent):
         """Event notifying about a new value of a secret."""
+        logger.debug(
+            f"[SECRET_CHANGE_DEBUG] Secret changed event (libs) {event.secret.label} "
+            "-- emtpy handler 3"
+        )
         pass
 
     def _assign_relation_alias(self, relation_id: int) -> None:
@@ -3154,6 +3175,10 @@ class KafkaRequirerEventHandlers(RequirerEventHandlers):
 
     def _on_secret_changed_event(self, event: SecretChangedEvent):
         """Event notifying about a new value of a secret."""
+        logger.debug(
+            f"[SECRET_CHANGE_DEBUG] Secret changed event (libs) {event.secret.label} "
+            "-- emtpy handler 4"
+        )
         pass
 
     def _on_relation_changed_event(self, event: RelationChangedEvent) -> None:
@@ -3378,6 +3403,10 @@ class OpenSearchRequiresEventHandlers(RequirerEventHandlers):
 
     def _on_secret_changed_event(self, event: SecretChangedEvent):
         """Event notifying about a new value of a secret."""
+        logger.debug(
+            f"[SECRET_CHANGE_DEBUG] Secret changed event (libs) {event.secret.label} "
+            "-- OpenSearch relation handler"
+        )
         if not event.secret.label:
             return
 

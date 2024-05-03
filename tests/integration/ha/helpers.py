@@ -55,7 +55,7 @@ def srvr(host: str) -> dict:
     """Calls srvr 4lw command to specified host.
 
     Args:
-        host: ZooKeeper address and port to issue srvr 4lw command to
+        host: Opensearch Dashboards address and port to issue srvr 4lw command to
 
     Returns:
         Dict of srvr command output key/values
@@ -88,20 +88,19 @@ def get_hosts_from_status(
     Args:
         ops_test: OpsTest
         app_name: the Juju application to get hosts from
-            Defaults to `zookeeper`
-        port: the desired ZooKeeper port.
-            Defaults to `2181`
+            Defaults to `opensearch-dashboards`
 
     Returns:
-        List of ZooKeeper server addresses and ports
+        List of Opensearch Dashboards server addresses and ports
     """
     ips = subprocess.check_output(
-        f"JUJU_MODEL={ops_test.model_full_name} juju status {app_name} --format json | jq '.. .\"public-address\"? // empty' | xargs | tr -d '\"'",
+        f"JUJU_MODEL={ops_test.model_full_name} juju status {app_name} | grep '{APP_NAME}/[0-9]' "
+        " | sed -e s/\*// | awk -F ' *' '{ print $1 \":\" $5 }'",
         shell=True,
         universal_newlines=True,
     ).split()
 
-    return [f"{ip}:{port}" for ip in ips]
+    return {ip.split(":")[0]: ip.split(":")[1] for ip in ips}
 
 
 def get_hosts(ops_test: OpsTest, app_name: str = APP_NAME, port: int = SERVER_PORT) -> str:
