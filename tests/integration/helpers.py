@@ -2,38 +2,73 @@
 # Copyright 2022 Canonical Ltd.
 # See LICENSE file for licensing details.
 
+import asyncio
 import json
 import logging
 import re
 import socket
 import subprocess
+from datetime import datetime, timedelta
 from pathlib import Path
-from subprocess import PIPE, check_output
+from subprocess import PIPE, check_output, STDOUT
 from typing import Dict, List, Optional
 
 import requests
 import yaml
+from ops.model import Unit
 from pytest_operator.plugin import OpsTest
 
 from core.workload import ODPaths
-
-logger = logging.getLogger(__name__)
 
 METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
 
 
-def application_active(ops_test: OpsTest, expected_units: int) -> bool:
-    units = ops_test.model.applications[APP_NAME].units
+logger = logging.getLogger(__name__)
 
-    if len(units) != expected_units:
+
+def application_active_idle(
+    ops_test: OpsTest, application: str = APP_NAME, expected_units: int | None = None
+) -> bool:
+    """Extending base 'wait_for_idle()' with checking individual unit status."""
+    units = ops_test.model.applications[application].units
+
+    if expected_units and len(units) != expected_units:
+        return False
+
+    if ops_test.model.applications[application].status != "active":
         return False
 
     for unit in units:
-        if unit.workload_status != "active":
+        if unit.workload_status != "active" or unit.agent_status != "idle":
             return False
 
     return True
+
+
+async def extra_secure_wait_for_idle(
+    ops_test: OpsTest, apps: list[str] = [APP_NAME], timeout: int = 6000
+):
+    """Particularly strong, specific wait_for_idle time period.
+
+    Given that both recovery from the network cut AND a TLS credentials exchange
+    has to happen, we can't rely on a simple 'wait_for_idle()'.
+    """
+    status_cmd = f"JUJU_MODEL={ops_test.model.name} juju status --relations"
+    keep_going = False
+    start = datetime.now()
+    while not keep_going and datetime.now() - start < timedelta(timeout):
+        try:
+            await ops_test.model.wait_for_idle(apps=apps, status="active", timeout=1000)
+        except asyncio.exceptions.TimeoutError:
+            status = check_output(status_cmd, stderr=STDOUT, shell=True, universal_newlines=True)
+            logger.info(f"Juju status:\n{status}\n")
+
+        for app in apps:
+            keep_going = keep_going and not application_active_idle(ops_test, app)
+
+        if not keep_going:
+            break
 
 
 async def get_password(ops_test) -> str:
@@ -147,20 +182,25 @@ def access_dashboard(
 
 def access_dashboard_https(host: str, password: str):
     """This function should be rather replaced by a 'requests' call, if we can figure out the source of discrepancy."""
-    curl_cmd = check_output(
-        [
-            "bash",
-            "-c",
-            'curl  -XPOST -H "Content-Type: application/json" -H "osd-xsrf: true" -H "Accept: application/json" '
-            + f"https://{host}:5601/auth/login -d "
-            + "'"
-            + '{"username":"kibanaserver","password": "'
-            + f"{password}"
-            + '"'
-            + "}' --cacert ca.pem --verbose",
-        ],
-        text=True,
-    )
+    try:
+        curl_cmd = check_output(
+            [
+                "bash",
+                "-c",
+                'curl  -XPOST -H "Content-Type: application/json" -H "osd-xsrf: true" -H "Accept: application/json" '
+                + f"https://{host}:5601/auth/login -d "
+                + "'"
+                + '{"username":"kibanaserver","password": "'
+                + f"{password}"
+                + '"'
+                + "}' --cacert ca.pem --verbose",
+            ],
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+    except subprocess.CalledProcessError as err:
+        logger.error(f"{err}, {err.output}")
+        return False
     return "roles" in curl_cmd
 
 
@@ -191,6 +231,10 @@ async def access_all_dashboards(
             logger.debug(f"Couldn't determine hostname for unit {unit.name}")
             return False
         result &= function(host=host, password=dashboard_password)
+        if result:
+            logger.info(f"Host {unit.name}, {host} passed access check")
+        else:
+            dump_all(ops_test, unit)
     return result
 
 
@@ -248,21 +292,30 @@ def get_dashboard_ca_cert(model_full_name: str, unit: str):
     return False
 
 
-def check_jaas_config(model_full_name: str, unit: str):
-    config = check_output(
-        f"JUJU_MODEL={model_full_name} juju ssh {unit} sudo -i 'cat {ODPaths().jaas}'",
-        stderr=PIPE,
-        shell=True,
-        universal_newlines=True,
-    )
+def get_file_contents(ops_test: OpsTest, unit: Unit, filename: str) -> str:
+    try:
+        output = subprocess.check_output(
+            [
+                "bash",
+                "-c",
+                f"JUJU_MODEL={ops_test.model.name} juju ssh {unit.name} sudo cat {filename}",
+            ]
+        )
+    except subprocess.CalledProcessError as err:
+        logger.error(f"{err}")
+        output = ""
+    return output
 
-    user_lines = {}
-    for line in config.splitlines():
-        matched = re.search(pattern=r"user_([a-zA-Z\-\d]+)=\"([a-zA-Z0-9]+)\"", string=line)
-        if matched:
-            user_lines[matched[1]] = matched[2]
 
-    return user_lines
+def dump_all(ops_test: OpsTest, unit: Unit):
+    for file in [
+        "/var/snap/opensearch-dashboards/current/etc/opensearch-dashboards/certificates/ca.pem",
+        "/var/snap/opensearch-dashboards/current/etc/opensearch-dashboards/opensearch_dashboards.yml",
+        "/var/snap/opensearch-dashboards/common/var/log/opensearch-dashboards/opensearch_dashboards.log",
+    ]:
+        output = get_file_contents(ops_test, unit, file)
+        if output:
+            print(output)
 
 
 async def get_address(ops_test: OpsTest, app_name=APP_NAME, unit_num=0) -> str:
