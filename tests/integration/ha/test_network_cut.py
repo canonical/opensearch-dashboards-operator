@@ -250,7 +250,7 @@ async def test_set_tls(ops_test: OpsTest, request):
         apps=[APP_NAME, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
     )
     await extra_secure_wait_for_idle(ops_test, APP_AND_TLS)
-    await asyncio.sleep(RESTART_DELAY * 2)
+    await asyncio.sleep(RESTART_DELAY * 10)
 
     logger.info("Checking Dashboard access after TLS is configured")
     assert await access_all_dashboards(ops_test, pytest.relation.id, https=True)
