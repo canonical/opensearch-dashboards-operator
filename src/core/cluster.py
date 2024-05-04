@@ -76,6 +76,12 @@ class ClusterState(Object):
             data_interface=self.peer_unit_data,
             component=self.model.unit,
             substrate=self.substrate,
+            # db_credentials={
+            #     "username": self.opensearch_server.username,
+            #     "password": self.opensearch_server.password,
+            # }
+            # if self.opensearch_server
+            # else {},
         )
 
     @property
