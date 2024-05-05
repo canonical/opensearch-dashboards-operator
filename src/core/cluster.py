@@ -173,12 +173,6 @@ class ClusterState(Object):
 
     # --- HEALTH ---
 
-    # @property
-    # def healthy(self) -> bool:
-    #     """Flag to check if the cluster is safe to update members."""
-    #     # TBD
-    #     return True
-
     @property
     def stable(self) -> bool:
         """Flag to check if the quorum is in a stable state, with all members up-to-date."""

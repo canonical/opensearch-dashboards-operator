@@ -39,8 +39,6 @@ from managers.config import ConfigManager
 from managers.tls import TLSManager
 from workload import ODWorkload
 
-# from events.upgrade import ODUpgradeEvents, OpensearchDasboardsDependencyModel
-
 
 logger = logging.getLogger(__name__)
 
@@ -59,12 +57,6 @@ class OpensearchDasboardsCharm(CharmBase):
         self.password_action_events = PasswordActionEvents(self)
         self.tls_events = TLSEvents(self)
         self.requirer_events = RequirerEvents(self)
-        # self.upgrade_events = ODUpgradeEvents(
-        #     self,
-        #     dependency_model=OpensearchDasboardsDependencyModel(
-        #         **DEPENDENCIES  # pyright: ignore[reportGeneralTypeIssues]
-        #     ),
-        # )
 
         # --- MANAGERS ---
 

@@ -60,16 +60,6 @@ class TLSEvents(Object):
                 {"private-key": generate_private_key().decode("utf-8")}
             )
 
-        # generate unit key/truststore password if not already created by action
-        # self.charm.state.unit_server.update(
-        #     {
-        #         "keystore-password": self.charm.state.unit_server.keystore_password
-        #         or self.charm.workload.generate_password(),
-        #         "truststore-password": self.charm.state.unit_server.truststore_password
-        #         or self.charm.workload.generate_password(),
-        #     }
-        # )
-
         csr = generate_csr(
             private_key=self.charm.state.unit_server.private_key.encode("utf-8"),
             subject=self.charm.state.unit_server.host,
@@ -95,8 +85,6 @@ class TLSEvents(Object):
         self.charm.tls_manager.set_private_key()
         self.charm.tls_manager.set_ca()
         self.charm.tls_manager.set_certificate()
-        # self.charm.tls_manager.set_truststore()
-        # self.charm.tls_manager.set_p12_keystore()
 
     def _on_certificate_expiring(self, _: EventBase) -> None:
         """Handler for `certificates_expiring` event when certs need renewing."""

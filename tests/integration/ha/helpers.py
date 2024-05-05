@@ -179,18 +179,6 @@ async def get_unit_machine_name(ops_test: OpsTest, unit_name: str) -> str:
     return raw_hostname.strip()
 
 
-def disable_lxd_dnsmasq() -> None:
-    """Disables DNS resolution in LXD."""
-    disable_dnsmasq_cmd = "lxc network set lxdbr0 dns.mode=none"
-    subprocess.check_call(disable_dnsmasq_cmd.split())
-
-
-def enable_lxd_dnsmasq() -> None:
-    """Disables DNS resolution in LXD."""
-    enable_dnsmasq = "lxc network unset lxdbr0 dns.mode"
-    subprocess.check_call(enable_dnsmasq.split())
-
-
 def cut_unit_network(machine_name: str) -> None:
     """Cuts network access for a given LXD container (will result in an IP address change).
 

@@ -90,8 +90,6 @@ class OpensearchServer(StateBase):
     @property
     def username(self) -> str | None:
         """The generated username for the client application."""
-        # Until we settle user credential questions we statically return 'kibanaserver'
-        # return self.relation_data.get("username")
         return "kibanaserver"
 
     @property
@@ -231,16 +229,6 @@ class ODServer(StateBase):
     def private_key(self) -> str:
         """The private-key contents for the unit to use for TLS."""
         return self.relation_data.get("private-key", "")
-
-    # @property
-    # def keystore_password(self) -> str:
-    #     """The Java Keystore password for the unit to use for TLS."""
-    #     return self.relation_data.get("keystore-password", "")
-    #
-    # @property
-    # def truststore_password(self) -> str:
-    #     """The Java Truststore password for the unit to use for TLS."""
-    #     return self.relation_data.get("truststore-password", "")
 
     @property
     def csr(self) -> str:

@@ -433,23 +433,6 @@ async def get_application_relation_data(
         return relation_data[0]["local-unit"].get("data", {}).get(key)
 
 
-def set_opensearch_user_password(
-    opensearch_endpoint: str,
-    opensearch_admin_password: str,
-    dashboard_password: str,
-    user: str = "kibanaserver",
-) -> bool:
-    """Setting the password for a user in opensearch."""
-    session = requests.Session()
-    session.auth = ("admin", opensearch_admin_password)
-
-    url = f"https://{opensearch_endpoint}/_plugins/_security/api/internalusers/{user}"
-    payload = {"password": dashboard_password}
-    headers = {"Content-Type": "application/json"}
-    response = session.put(url, json=payload, headers=headers, verify=False)
-    return response.status_code == 200
-
-
 async def get_leader_name(ops_test: OpsTest, app_name: str = APP_NAME):
     """Get the leader unit name."""
     for unit in ops_test.model.applications[app_name].units:
