@@ -28,7 +28,6 @@ APP_NAME = METADATA["name"]
 OPENSEARCH_APP_NAME = "opensearch"
 OPENSEARCH_CONFIG = {
     "logging-config": "<root>=INFO;unit=DEBUG",
-    "update-status-hook-interval": "1h",
     "cloudinit-userdata": """postruncmd:
         - [ 'sysctl', '-w', 'vm.max_map_count=262144' ]
         - [ 'sysctl', '-w', 'fs.file-max=1048576' ]
