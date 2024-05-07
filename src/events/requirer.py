@@ -63,7 +63,7 @@ class RequirerEvents(Object):
         Args:
             event: used for passing `RelationBrokenEvent` to subsequent methods
         """
-        # Don't remove anything if ZooKeeper is going down
+        # Don't remove anything if the service is going down
         if self.charm.app.planned_units == 0 or not self.charm.unit.is_leader():
             return
 

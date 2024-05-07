@@ -144,25 +144,6 @@ class ClusterState(Object):
     # --- CLUSTER INIT ---
 
     @property
-    def endpoints(self) -> list[str]:
-        """The connection uris for all started units.
-
-        Returns:
-            List of unit addresses
-        """
-        return sorted(
-            [
-                server.host if self.substrate == "k8s" else server.private_ip
-                for server in self.servers
-            ]
-        )
-
-    @property
-    def started_servers(self) -> set[ODServer]:
-        """The server states of all started peer-related Units."""
-        return {server for server in self.servers if server.started}
-
-    @property
     def all_units_related(self) -> bool:
         """Checks if currently related units make up all planned units.
 

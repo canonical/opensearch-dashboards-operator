@@ -39,7 +39,6 @@ from managers.config import ConfigManager
 from managers.tls import TLSManager
 from workload import ODWorkload
 
-
 logger = logging.getLogger(__name__)
 
 

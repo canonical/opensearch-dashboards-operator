@@ -102,17 +102,17 @@ def get_unit_state_from_status(
 
 
 def get_hosts(ops_test: OpsTest, app_name: str = APP_NAME, port: int = SERVER_PORT) -> str:
-    """Gets all ZooKeeper server addresses for a given application.
+    """Gets all addresses for a given application.
 
     Args:
         ops_test: OpsTest
         app_name: the Juju application to get hosts from
             Defaults to `zookeeper`
-        port: the desired ZooKeeper port.
+        port: the desired port.
             Defaults to `2181`
 
     Returns:
-        Comma-delimited string of ZooKeeper server addresses and ports
+        Comma-delimited string of server addresses and ports
     """
     return ",".join(
         [
@@ -125,18 +125,18 @@ def get_hosts(ops_test: OpsTest, app_name: str = APP_NAME, port: int = SERVER_PO
 def get_unit_host(
     ops_test: OpsTest, unit_name: str, app_name: str = APP_NAME, port: int = 2181
 ) -> str:
-    """Gets ZooKeeper server address for a given unit name.
+    """Gets server address for a given unit name.
 
     Args:
         ops_test: OpsTest
         unit_name: the Juju unit to get host from
         app_name: the Juju application the unit belongs to
             Defaults to `zookeeper`
-        port: the desired ZooKeeper port.
+        port: the desired port.
             Defaults to `2181`
 
     Returns:
-        String of ZooKeeper server address and port
+        String of server address and port
     """
     return [
         f"{unit.public_address}:{str(port)}"
@@ -146,12 +146,12 @@ def get_unit_host(
 
 
 def get_unit_name_from_host(ops_test: OpsTest, host: str, app_name: str = APP_NAME) -> str:
-    """Gets unit name for a given ZooKeeper server address.
+    """Gets unit name for a given server address.
 
     Args:
         ops_test: OpsTest
-        host: the ZooKeeper ip address and port
-        app_name: the Juju application the ZooKeeper server belongs to
+        host: the ip address and port
+        app_name: the Juju application the server belongs to
             Defaults to `zookeeper`
 
     Returns:
@@ -232,43 +232,17 @@ def network_release(machine_name: str) -> None:
     restore_unit_network(machine_name=machine_name)
 
 
-def get_storage_id(ops_test, unit_name: str) -> str:
-    """Gets the current Juju storage ID for a given unit name.
-
-    Args:
-        ops_test: OpsTest
-        unit_name: the Juju unit name to get storage ID of
-
-    Returns:
-        String of Juju storage ID
-    """
-    proc = subprocess.check_output(
-        f"JUJU_MODEL={ops_test.model_full_name} juju storage --format yaml",
-        stderr=subprocess.PIPE,
-        shell=True,
-        universal_newlines=True,
-    )
-    response = yaml.safe_load(proc)
-    storages = response["storage"]
-
-    for storage_id, storage in storages.items():
-        if unit_name in storage["attachments"]["units"]:
-            return storage_id
-
-    raise Exception(f"storage id not found for {unit_name}")
-
-
 async def send_control_signal(
     ops_test: OpsTest, unit_name: str, signal: str, app_name: str = APP_NAME
 ) -> None:
-    """Issues given job control signals to a ZooKeeper process on a given Juju unit.
+    """Issues given job control signals to a server process on a given Juju unit.
 
     Args:
         ops_test: OpsTest
-        unit_name: the Juju unit running the ZooKeeper process
+        unit_name: the Juju unit running the server process
         signal: the signal to issue
             e.g `SIGKILL`, `SIGSTOP`, `SIGCONT` etc
-        app_name: the ZooKeeper Juju application
+        app_name: the Juju application
     """
     if len(ops_test.model.applications[app_name].units) < 3:
         await ops_test.model.applications[app_name].add_unit(count=1)
