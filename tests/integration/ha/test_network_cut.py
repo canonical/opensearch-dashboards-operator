@@ -212,7 +212,7 @@ async def network_cut_application(ops_test: OpsTest, https: bool = False):
         machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
         ip = await get_address(ops_test, unit.name)
 
-        logger.info("Cutting unit {unit.name} from network...")
+        logger.info(f"Cutting unit {unit.name} from network...")
         ha_helpers.cut_unit_network(machine_name)
 
         machines.append(machine_name)
@@ -273,7 +273,7 @@ async def network_throttle_application(ops_test: OpsTest, https: bool = False):
         machine_name = await ha_helpers.get_unit_machine_name(ops_test, unit.name)
         ip = await get_address(ops_test, unit.name)
 
-        logger.info("Cutting unit {unit.name} from network...")
+        logger.info(f"Cutting unit {unit.name} from network...")
         ha_helpers.network_throttle(machine_name)
 
         machines.append(machine_name)
