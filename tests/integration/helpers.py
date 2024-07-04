@@ -266,7 +266,6 @@ async def access_all_dashboards(
             logger.error(f"Couldn't retrieve host certificate for unit {unit}")
             return False
 
-    function = access_dashboard if not https else access_dashboard_https
     result = True
     for unit in ops_test.model.applications[APP_NAME].units:
         if unit.name in skip:
@@ -276,7 +275,7 @@ async def access_all_dashboards(
             logger.error(f"No hostname found for {unit.name}, can't check connection.")
             return False
 
-        result &= function(host=host, password=dashboard_password)
+        result &= access_dashboard(host=host, password=dashboard_password, ssl=https)
         if result:
             logger.info(f"Host {unit.name}, {host} passed access check")
         else:
