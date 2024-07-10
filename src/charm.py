@@ -7,6 +7,8 @@
 import logging
 import time
 
+# from events.provider import ProviderEvents
+from charms.grafana_agent.v0.cos_agent import COSAgentProvider
 from charms.rolling_ops.v0.rollingops import RollingOpsManager
 from ops.charm import CharmBase, InstallEvent, SecretChangedEvent
 from ops.framework import EventBase
@@ -16,14 +18,14 @@ from ops.model import BlockedStatus, MaintenanceStatus, WaitingStatus
 from core.cluster import ClusterState
 from events.password_actions import PasswordActionEvents
 from events.requirer import RequirerEvents
-
-# from events.provider import ProviderEvents
 from events.tls import TLSEvents
 from events.upgrade import ODUpgradeEvents, OpensearchDashboardsDependencyModel
 from helpers import clear_status
 from literals import (
     CHARM_KEY,
     CHARM_USERS,
+    COS_PORT,
+    COS_RELATION_NAME,
     DEPENDENCIES,
     MSG_DB_MISSING,
     MSG_INSTALLING,
@@ -77,6 +79,17 @@ class OpensearchDasboardsCharm(CharmBase):
         # --- LIB EVENT HANDLERS ---
 
         self.restart = RollingOpsManager(self, relation="restart", callback=self._restart)
+
+        # --- COS ---
+        self.cos_integration = COSAgentProvider(
+            self,
+            relation_name=COS_RELATION_NAME,
+            metrics_endpoints=[],
+            scrape_configs=self._scrape_config,
+            refresh_events=[self.on.config_changed],
+            # metrics_rules_dir="./src/alert_rules/prometheus",
+            # log_slots=["opensearch:logs"],
+        )
 
         # --- CORE EVENTS ---
 
@@ -244,6 +257,19 @@ class OpensearchDasboardsCharm(CharmBase):
 
         if self.unit.is_leader() and not self.state.opensearch_server:
             self.app.status = BlockedStatus(MSG_DB_MISSING)
+
+    def _scrape_config(self) -> list[dict]:
+        """Generates the scrape config as needed."""
+        return [
+            {
+                "metrics_path": "/metrics",
+                "static_configs": [
+                    {"targets": [f"{self.state.unit_server.private_ip}:{COS_PORT}"]}
+                ],
+                "tls_config": {"ca": self.state.unit_server.ca},
+                "scheme": "http",
+            }
+        ]
 
 
 if __name__ == "__main__":

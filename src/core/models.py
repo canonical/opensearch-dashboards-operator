@@ -12,7 +12,7 @@ from charms.data_platform_libs.v0.data_interfaces import Data, DataDict
 from ops.model import Application, Relation, Unit
 from typing_extensions import override
 
-from literals import CHARM_USERS
+from literals import CHARM_USERS, COS_USER
 
 logger = logging.getLogger(__name__)
 
@@ -177,6 +177,16 @@ class ODServer(StateBase):
     def started(self) -> bool:
         """Flag to check if the unit has started the service."""
         return self.relation_data.get("state", None) == "started"
+
+    @property
+    def cos_user(self) -> str | None:
+        """The generated password for the client application."""
+        return COS_USER
+
+    @property
+    def cos_password(self) -> str | None:
+        """The generated password for the client application."""
+        return self.relation_data.get("monitor-password")
 
     @property
     def password_rotated(self) -> bool:
