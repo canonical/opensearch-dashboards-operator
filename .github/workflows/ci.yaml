@@ -85,3 +85,168 @@ jobs:
       artifact-prefix: packed-charm-cache-true
       cloud: lxd
       juju-agent-version: 3.4.3
+
+  cross-model-ha:
+    name: Test COS functionality
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # needs:
+    #   - integration-test
+    steps:
+      - name: Setup operator environment
+        # TODO: Replace with custom image on self-hosted runner
+        uses: charmed-kubernetes/actions-operator@main
+        with:
+          provider: microk8s
+          channel: "1.27-strict/stable"
+          bootstrap-options: "--agent-version 3.1.6 --add-model=cos-test"
+          juju-channel: "3.1/stable"
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install tox & poetry
+        run: |
+          pipx install tox
+          pipx install poetry
+      - name: Create lxd controller
+        run: |
+          sudo snap install jq
+
+          LXD_CONTROLLER="controller-lxd"
+          LXD_MODEL="dashboard-tests"
+          K8S_CONTROLLER=${CONTROLLER_NAME}
+          K8S_MODEL="cos"
+          sudo sysctl -w vm.max_map_count=262144
+          sudo sysctl -w vm.swappiness=0
+          sudo sysctl -w net.ipv4.tcp_retries2=5
+
+          echo "microk8s settings"
+          sudo microk8s enable storage dns
+          sudo microk8s enable hostpath-storage
+          IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
+          sudo microk8s enable metallb:$IPADDR-$IPADDR
+          sudo microk8s kubectl rollout status deployments/hostpath-provisioner -n kube-system -w
+          sudo microk8s kubectl rollout status deployments/coredns -n kube-system -w
+          sudo microk8s kubectl rollout status daemonset.apps/speaker -n metallb-system -w
+
+          echo "Bootstrap LXD controller (for Opensearch Dashboards charm)"
+          juju bootstrap localhost ${LXD_CONTROLLER} --add-model ${LXD_CONTROLLER}
+          cat <<EOF > cloudinit-userdata.yaml
+          cloudinit-userdata: |
+            postruncmd:
+              - [ 'sysctl', '-w', 'vm.max_map_count=262144' ]
+              - [ 'sysctl', '-w', 'vm.swappiness=0' ]
+              - [ 'sysctl', '-w', 'net.ipv4.tcp_retries2=5' ]
+              - [ 'sysctl', '-w', 'fs.file-max=1048576' ]
+          EOF
+          juju model-config --file ./cloudinit-userdata.yaml
+          
+          echo "Deploying cos"
+          juju switch ${K8S_CONTROLLER}
+          juju add-model ${K8S_MODEL}
+          curl -L https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/offers-overlay.yaml -O
+          curl -L https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/storage-small-overlay.yaml -O
+
+          juju deploy cos-lite \
+            --trust \
+            --overlay ./offers-overlay.yaml \
+            --overlay ./storage-small-overlay.yaml
+          juju wait-for application traefik --query='name=="traefik" && (status=="active" || status=="idle")' > /dev/null 2>&1
+          TRAEFIK_IP=$( juju status | grep traefik/0 | awk -F ' *' '{ print $7 }' )
+
+          echo "Building an deploying charm"
+          juju switch ${LXD_CONTROLLER}
+          poetry export --only main,charm-libs --output requirements.txt
+          charmcraft pack
+          juju deploy ./opensearch-dashboards_ubuntu-22.04-amd64.charm
+          juju status
+
+          echo "Deploying Opensearch"
+          juju deploy self-signed-certificates
+          juju deploy opensearch --channel=2/edge
+          for i in 1 2 3
+          do
+              echo "Waiting until Opensearch is deployed"
+              sleep 30
+              juju wait-for application opensearch --query='name=="opensearch" && (status=="blocked" || status=="idle")' > /dev/null 2>&1
+          done
+          juju relate opensearch self-signed-certificates
+          for i in 1 2 3 4 5
+          do
+              echo "Waiting until Opensearch is has TLS configured"
+              sleep 30
+              juju wait-for application self-signed-certificates --query='name=="self-signed-certificates" && (status=="active" || status=="idle")' > /dev/null 2>&1
+              juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")' > /dev/null 2>&1
+          done
+          juju status
+          KIBANASERVER_PW=$(juju run opensearch/0 get-password username=kibanaserver | grep password | cut -d: -f2 | tr -d ' ')
+          UNIT_IP=$(juju status | grep opensearch-dashboards/0 | awk -F ' *' '{ print $5 }')
+
+          echo "Relating Dashboard to Opensearch"
+          juju relate opensearch opensearch-dashboards
+          juju wait-for application opensearch --query='name=="opensearch" && (status=="active" || status=="idle")' > /dev/null 2>&1
+          juju wait-for application opensearch-dashboards --query='name=="opensearch-dashboards" && (status=="active" || status=="idle")' > /dev/null 2>&1
+          juju status
+          
+          # Set up exporter on OSD side
+          juju ssh opensearch-dashboards/0 "sudo add-apt-repository -y ppa:lvoytek/dp-prometheus-kibana-exporter && sudo apt update && sudo apt install -y prometheus-kibana-exporter"
+          CMD="sh -c 'nohup kibana-prometheus-exporter -kibana.uri https://${UNIT_IP}:5601 -kibana.username kibanaserver -kibana.password ${KIBANASERVER_PW} -kibana.skip-tls true  >output 2>&1 & '; sleep 15 "
+          juju ssh opensearch-dashboards/0 "$CMD"
+
+          # Test exporter
+          exporter_ok=$(curl http://${UNIT_IP}:9684/metrics -i | grep 200)
+          if [ ! "$exporter_ok" ]; then
+            echo "ERROR: Exporter is missing...">&2
+            exit 1
+          fi
+
+          echo "Relate Dashboards to cos"
+          juju switch ${LXD_CONTROLLER}
+          juju deploy grafana-agent --channel edge
+          juju find-offers -m ${K8S_CONTROLLER}:cos2
+          juju consume ${K8S_CONTROLLER}:admin/cos6.alertmanager-karma-dashboard
+          juju consume ${K8S_CONTROLLER}:admin/cos6.loki-logging
+          juju consume ${K8S_CONTROLLER}:admin/cos6.prometheus-receive-remote-write
+          juju consume ${K8S_CONTROLLER}:admin/cos6.grafana-dashboards
+          juju relate opensearch-dashboards grafana-agent
+
+          juju relate grafana-agent prometheus-receive-remote-write
+          for i in 1 2 3
+          do
+              echo "Waiting for grafana-agent to be deployed"
+              sleep 30
+              juju wait-for application grafana-agent --query='name=="grafana-agent" && (status=="active" || status=="idle")'
+          done
+          juju status --relations
+          juju relate grafana-agent prometheus-receive-remote-write
+          juju relate grafana-agent loki-logging
+          juju relate grafana-agent grafana-dashboards
+
+          # Runs on a timeout
+          for i in 1 2 3
+          do
+              echo "Waiting until Opensearch Dashboards and COS to be ready"
+              sleep 30
+              juju wait-for application opensearch-dashboards --query='name=="opensearch-dashboards" && (status=="active" || status=="idle")'
+              juju wait-for application grafana-agant --query='name=="grafana-agent" && (status=="active" || status=="idle")'
+          done
+          # Attempt to access the interface using valid authentication
+          authenticate_ok=$(curl -i  -k -XPOST http://${UNIT_IP}:5601/auth/login \
+            -H 'Accept: application/json' \
+            -H 'Content-Type: application/json' \
+            -H 'osd-xsrf:true' \
+            -d '{"username":"kibanaserver","password":"'${KIBANASERVER_PW}'"}' | grep "200 OK")
+          if [ ! "$authenticate_ok" ]; then
+            echo "ERROR: Authentication to OSD failed. Aborting..." >&2
+            exit 1
+          fi
+
+          prometheus_ok=$( curl -s http://${TRAEFIK_IP}/cos-prometheus-0/api/v1/query\?query\=kibana_requests_total | grep "opensearch-dashboards )
+
+          if [ ! "$prometheus_ok" ]; then
+            echo "ERROR: No Prometheus data." >&2
+            exit 1
+          fi
+
+
