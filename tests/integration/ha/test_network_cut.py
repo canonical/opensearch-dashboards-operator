@@ -32,6 +32,7 @@ OPENSEARCH_CONFIG = {
     """,
 }
 TLS_CERT_APP_NAME = "self-signed-certificates"
+ALL_APPS = [APP_NAME, TLS_CERT_APP_NAME, OPENSEARCH_APP_NAME]
 APP_AND_TLS = [APP_NAME, TLS_CERT_APP_NAME]
 PEER = "dashboard_peers"
 SERVER_PORT = 5601
@@ -145,6 +146,8 @@ async def network_cut_leader(ops_test: OpsTest, https: bool = False):
     assert new_ip != old_ip
     logger.info(f"Old IP {old_ip} has changed to {new_ip}...")
 
+    await ops_test.model.wait_for_idle(apps=ALL_APPS, wait_for_active=True, timeout=LONG_TIMEOUT)
+
     logger.info("Checking Dashboard access...")
     assert await access_all_dashboards(ops_test, https=https)
 
@@ -196,6 +199,8 @@ async def network_throttle_leader(ops_test: OpsTest, https: bool = False):
     # Double-checking that the network throttle didn't change the IP
     current_ip = await get_address(ops_test, old_leader_name)
     assert old_ip == current_ip
+
+    await ops_test.model.wait_for_idle(apps=ALL_APPS, wait_for_active=True, timeout=LONG_TIMEOUT)
 
     logger.info("Checking Dashboard access...")
     assert await access_all_dashboards(ops_test, https=https)
@@ -257,6 +262,8 @@ async def network_cut_application(ops_test: OpsTest, https: bool = False):
         timeout=LONG_TIMEOUT,
         wait_period=LONG_WAIT,
     )
+
+    await ops_test.model.wait_for_idle(apps=ALL_APPS, wait_for_active=True, timeout=LONG_TIMEOUT)
 
     logger.info("Checking Dashboard access...")
     assert await access_all_dashboards(ops_test, https=https)
@@ -321,6 +328,8 @@ async def network_throttle_application(ops_test: OpsTest, https: bool = False):
         and ha_helpers.get_hosts_from_status(ops_test)[unit] == unit_ip_map[unit]
         for unit in unit_ip_map
     )
+
+    await ops_test.model.wait_for_idle(apps=ALL_APPS, wait_for_active=True, timeout=LONG_TIMEOUT)
 
     logger.info("Checking Dashboard access...")
     assert await access_all_dashboards(ops_test, https=https)
