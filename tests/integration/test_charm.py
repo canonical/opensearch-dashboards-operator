@@ -19,11 +19,13 @@ from .helpers import (
     client_run_all_dashboards_request,
     client_run_db_request,
     count_lines_with,
+    get_address,
     get_leader_id,
     get_leader_name,
     get_private_address,
     get_relations,
     get_secret_by_label,
+    get_unit_relation_data,
     get_user_password,
     set_password,
 )
@@ -44,6 +46,8 @@ OPENSEARCH_CONFIG = {
     """,
 }
 TLS_CERTIFICATES_APP_NAME = "self-signed-certificates"
+COS_AGENT_APP_NAME = "grafana-agent"
+COS_AGENT_RELATION_NAME = "cos-agent"
 DB_CLIENT_APP_NAME = "application"
 
 NUM_UNITS_APP = 3
@@ -67,6 +71,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
 
     config = {"ca-common-name": "CN_CA"}
     await asyncio.gather(
+        ops_test.model.deploy(COS_AGENT_APP_NAME, num_units=1),
         ops_test.model.deploy(OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB),
         ops_test.model.deploy(TLS_CERTIFICATES_APP_NAME, channel="stable", config=config),
         ops_test.model.deploy(application_charm_build, application_name=DB_CLIENT_APP_NAME),
@@ -94,8 +99,11 @@ async def test_build_and_deploy(ops_test: OpsTest):
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, APP_NAME)
     await ops_test.model.integrate(DB_CLIENT_APP_NAME, OPENSEARCH_APP_NAME)
     await ops_test.model.wait_for_idle(
-        apps=[APP_NAME, DB_CLIENT_APP_NAME, OPENSEARCH_APP_NAME], status="active", timeout=1000
+        apps=[APP_NAME, DB_CLIENT_APP_NAME, OPENSEARCH_APP_NAME],
+        status="active",
+        timeout=1000,
     )
+    await ops_test.model.wait_for_idle(apps=[COS_AGENT_APP_NAME], timeout=1000)
 
 
 @pytest.mark.group(1)
@@ -205,6 +213,37 @@ async def test_dashboard_password_rotation(ops_test: OpsTest):
     opensearch_relation = get_relations(ops_test, OPENSEARCH_RELATION_NAME)[0]
 
     assert access_all_dashboards(ops_test, opensearch_relation, https=True)
+
+
+@pytest.mark.group(1)
+@pytest.mark.abort_on_fail
+async def test_cos_relations(ops_test: OpsTest):
+    await ops_test.model.integrate(COS_AGENT_APP_NAME, APP_NAME)
+    await ops_test.model.wait_for_idle(
+        apps=[APP_NAME], status="active", timeout=1000, idle_period=30
+    )
+    await ops_test.model.wait_for_idle(
+        apps=[COS_AGENT_APP_NAME], status="blocked", timeout=1000, idle_period=30
+    )
+
+    expected_results = [
+        {
+            "metrics_path": "/metrics",
+            "tls_config": {"ca": ""},
+            "scheme": "http",
+        }
+    ]
+    agent_unit = ops_test.model.applications[COS_AGENT_APP_NAME].units[0]
+    for unit in ops_test.model.applications[APP_NAME].units:
+        unit_ip = await get_address(ops_test, unit.name)
+        relation_data = get_unit_relation_data(
+            ops_test.model.name, agent_unit.name, COS_AGENT_RELATION_NAME
+        )
+        expected_results[0]["static_configs"] = [{"targets": [f"{unit_ip}:9684"]}]
+        unit_data = relation_data[unit.name]
+        unit_cos_config = json.loads(unit_data["data"]["config"])
+        for key, value in expected_results[0].items():
+            assert unit_cos_config["metrics_scrape_jobs"][0][key] == value
 
 
 @pytest.mark.group(1)

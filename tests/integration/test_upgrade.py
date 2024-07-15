@@ -10,7 +10,7 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
-from .helpers import access_all_dashboards, get_relation_data
+from .helpers import access_all_dashboards, get_app_relation_data
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +88,7 @@ async def test_in_place_upgrade_http(ops_test: OpsTest):
     await action.wait()
 
     # ensuring that the upgrade stack is correct
-    relation_data = get_relation_data(
+    relation_data = get_app_relation_data(
         model_full_name=ops_test.model_full_name, unit=f"{APP_NAME}/0", endpoint="upgrade"
     )
 
@@ -130,7 +130,7 @@ async def test_in_place_upgrade_https(ops_test: OpsTest):
     await action.wait()
 
     # ensuring that the upgrade stack is correct
-    relation_data = get_relation_data(
+    relation_data = get_app_relation_data(
         model_full_name=ops_test.model_full_name, unit=f"{APP_NAME}/0", endpoint="upgrade"
     )
 

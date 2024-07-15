@@ -346,12 +346,21 @@ def get_relation_id(model_full_name: str, unit: str, app_name: str):
     raise Exception("No relation found!")
 
 
-def get_relation_data(model_full_name: str, unit: str, endpoint: str):
+def get_app_relation_data(model_full_name: str, unit: str, endpoint: str):
     show_unit = _get_show_unit_json(model_full_name=model_full_name, unit=unit)
     d_relations = show_unit[unit]["relation-info"]
     for relation in d_relations:
         if relation["endpoint"] == endpoint:
             return relation["application-data"]
+    raise Exception("No relation found!")
+
+
+def get_unit_relation_data(model_full_name: str, unit: str, endpoint: str):
+    show_unit = _get_show_unit_json(model_full_name=model_full_name, unit=unit)
+    d_relations = show_unit[unit]["relation-info"]
+    for relation in d_relations:
+        if relation["endpoint"] == endpoint:
+            return relation["related-units"]
     raise Exception("No relation found!")
 
 
