@@ -16,10 +16,12 @@ from .helpers import (
     DASHBOARD_QUERY_PARAMS,
     access_all_dashboards,
     access_all_prometheus_exporters,
+    all_dashboards_unavailable,
     client_run_all_dashboards_request,
     client_run_db_request,
     count_lines_with,
     get_address,
+    get_leader_name,
     get_relations,
     get_unit_relation_data,
 )
@@ -60,8 +62,6 @@ async def test_build_and_deploy(ops_test: OpsTest):
 
     await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
-    # Pinning down opensearch revision to the last 2.10 one
-    # NOTE: can't access 2/stable from the tests, only 'edge' available
 
     config = {"ca-common-name": "CN_CA"}
     await asyncio.gather(
@@ -181,6 +181,56 @@ async def test_dashboard_client_data_access_https(ops_test: OpsTest):
     # Each dashboard query reports the same result as the uploaded data
     assert all(len(data_dicts) == len(res["hits"]["hits"]) for res in result)
     assert all([hit["_source"] in data_dicts for res in result for hit in res["hits"]["hits"]])
+
+
+@pytest.mark.group(1)
+@pytest.mark.abort_on_fail
+async def test_dashboard_status_changes(ops_test: OpsTest):
+    """Test HTTPS access to each dashboard unit."""
+    # integrate it to OpenSearch to set up TLS.
+    await ops_test.juju("remove-relation", "opensearch", "opensearch-dashboards")
+    await ops_test.model.wait_for_idle(apps=[OPENSEARCH_APP_NAME], status="active", timeout=1000)
+
+    async with ops_test.fast_forward("30s"):
+        await ops_test.model.wait_for_idle(apps=[APP_NAME], status="blocked")
+
+    assert ops_test.model.applications[APP_NAME].status == "blocked"
+    assert all(
+        unit.workload_status == "blocked" for unit in ops_test.model.applications[APP_NAME].units
+    )
+
+    assert all_dashboards_unavailable(ops_test, https=True)
+
+    await ops_test.model.integrate(APP_NAME, OPENSEARCH_APP_NAME)
+    await ops_test.model.wait_for_idle(
+        apps=[APP_NAME, OPENSEARCH_APP_NAME], status="active", timeout=1000
+    )
+    assert ops_test.model.applications[APP_NAME].status == "active"
+    assert all(
+        unit.workload_status == "active" for unit in ops_test.model.applications[APP_NAME].units
+    )
+
+    opensearch_relation = get_relations(ops_test, OPENSEARCH_RELATION_NAME)[0]
+    assert access_all_dashboards(ops_test, opensearch_relation, https=True)
+
+
+@pytest.mark.group(1)
+@pytest.mark.abort_on_fail
+async def test_dashboard_password_rotation(ops_test: OpsTest):
+    """Test HTTPS access to each dashboard unit."""
+    db_leader_name = await get_leader_name(ops_test, OPENSEARCH_APP_NAME)
+    db_leader_unit = ops_test.model.units.get(db_leader_name)
+    user = "kibanaserver"
+
+    action = await db_leader_unit.run_action("set-password", **{"username": user})
+    await action.wait()
+
+    await ops_test.model.wait_for_idle(
+        apps=[APP_NAME, OPENSEARCH_APP_NAME], status="active", timeout=1000, idle_period=30
+    )
+    opensearch_relation = get_relations(ops_test, OPENSEARCH_RELATION_NAME)[0]
+
+    assert access_all_dashboards(ops_test, opensearch_relation, https=True)
 
 
 @pytest.mark.group(1)
