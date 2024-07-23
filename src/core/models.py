@@ -12,7 +12,7 @@ from charms.data_platform_libs.v0.data_interfaces import Data, DataDict
 from ops.model import Application, Relation, Unit
 from typing_extensions import override
 
-from literals import COS_USER
+from literals import SERVER_PORT
 
 logger = logging.getLogger(__name__)
 
@@ -166,16 +166,6 @@ class ODServer(StateBase):
         return self.relation_data.get("state", None) == "started"
 
     @property
-    def cos_user(self) -> str | None:
-        """The generated password for the client application."""
-        return COS_USER
-
-    @property
-    def cos_password(self) -> str | None:
-        """The generated password for the client application."""
-        return self.relation_data.get("monitor-password")
-
-    @property
     def password_rotated(self) -> bool:
         """Flag to check if the unit has rotated their internal passwords."""
         return bool(self.relation_data.get("password-rotated", None))
@@ -258,3 +248,10 @@ class ODServer(StateBase):
             "sans_ip": [self.private_ip],
             "sans_dns": [self.hostname, self.fqdn],
         }
+
+    @property
+    def url(self) -> str:
+        """Service URL."""
+        if self.tls:
+            return f"https://{self.private_ip}:{SERVER_PORT}"
+        return f"http://{self.private_ip}:{SERVER_PORT}"

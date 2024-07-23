@@ -7,13 +7,12 @@
 import logging
 import time
 
-# from events.provider import ProviderEvents
 from charms.grafana_agent.v0.cos_agent import COSAgentProvider
 from charms.rolling_ops.v0.rollingops import RollingOpsManager
 from ops.charm import CharmBase, InstallEvent, SecretChangedEvent
 from ops.framework import EventBase
 from ops.main import main
-from ops.model import BlockedStatus, MaintenanceStatus, WaitingStatus
+from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus, WaitingStatus
 
 from core.cluster import ClusterState
 from events.requirer import RequirerEvents
@@ -29,6 +28,7 @@ from literals import (
     MSG_INSTALLING,
     MSG_STARTING,
     MSG_STARTING_SERVER,
+    MSG_STATUS,
     MSG_TLS_CONFIG,
     MSG_WAITING_FOR_PEER,
     PEER,
@@ -36,7 +36,9 @@ from literals import (
     SERVER_PORT,
     SUBSTRATE,
 )
+from managers.api import APIManager
 from managers.config import ConfigManager
+from managers.health import HealthManager
 from managers.tls import TLSManager
 from workload import ODWorkload
 
@@ -70,6 +72,12 @@ class OpensearchDasboardsCharm(CharmBase):
         )
         self.config_manager = ConfigManager(
             state=self.state, workload=self.workload, substrate=SUBSTRATE, config=self.config
+        )
+        self.api_manager = APIManager(
+            state=self.state, workload=self.workload, substrate=SUBSTRATE
+        )
+        self.health_manager = HealthManager(
+            state=self.state, workload=self.workload, substrate=SUBSTRATE
         )
 
         # --- LIB EVENT HANDLERS ---
@@ -123,9 +131,14 @@ class OpensearchDasboardsCharm(CharmBase):
     def reconcile(self, event: EventBase) -> None:
         """Generic handler for all 'something changed, update' events across all relations."""
 
+        outdated_status = []
+
         # not all methods called
         if not self.state.peer_relation:
+            self.unit.status = WaitingStatus(MSG_WAITING_FOR_PEER)
             return
+        else:
+            outdated_status.append(MSG_WAITING_FOR_PEER)
 
         # attempt startup of server
         if not self.state.unit_server.started:
@@ -135,11 +148,11 @@ class OpensearchDasboardsCharm(CharmBase):
         if getattr(event, "departing_unit", None) == self.unit:
             return
 
-        outdated_status = []
         # Maintain the correct app status
-        if self.unit.is_leader():
-            if self.state.opensearch_server:
-                outdated_status.append(MSG_DB_MISSING)
+        if self.state.opensearch_server:
+            outdated_status.append(MSG_DB_MISSING)
+        else:
+            self.unit.status = BlockedStatus(MSG_DB_MISSING)
 
         # Maintain the correct unit status
 
@@ -149,6 +162,8 @@ class OpensearchDasboardsCharm(CharmBase):
                 outdated_status.append(MSG_TLS_CONFIG)
             else:
                 self.unit.status = MaintenanceStatus(MSG_TLS_CONFIG)
+        else:
+            outdated_status.append(MSG_TLS_CONFIG)
 
         # Restart on config change
         if (
@@ -158,9 +173,31 @@ class OpensearchDasboardsCharm(CharmBase):
         ):
             self.on[f"{self.restart.name}"].acquire_lock.emit()
 
+        # Regular health-check
+        if isinstance(self.unit.status, ActiveStatus) or self.unit.status.message in MSG_STATUS:
+            healthy, msg = self.health_manager.healthy()
+
+            if healthy:
+                if msg:
+                    self.unit.status = ActiveStatus(msg)
+                else:
+                    outdated_status += MSG_STATUS
+            else:
+                self.unit.status = BlockedStatus(msg)
+
         # Clear all possible irrelevant statuses
         for status in outdated_status:
             clear_status(self.unit, status)
+            if self.unit.is_leader():
+                clear_status(self.app, status)
+
+        # # In case all units have the same status, we set app status accordingly
+        # if self.unit.is_leader():
+        #     status = self.unit.status
+        #     for unit in self.state.peer_relation.units:
+        #         if unit.status != status:
+        #             return
+        #     self.app.status = self.unit.status
 
     def _on_secret_changed(self, event: SecretChangedEvent):
         """Reconfigure services on a secret changed event."""
@@ -217,6 +254,7 @@ class OpensearchDasboardsCharm(CharmBase):
             time.sleep(5)
 
         clear_status(self.unit, [MSG_STARTING, MSG_STARTING_SERVER])
+        self.on.update_status.emit()
 
     # --- CONVENIENCE METHODS ---
 
@@ -229,6 +267,7 @@ class OpensearchDasboardsCharm(CharmBase):
         self.config_manager.set_dashboard_properties()
 
         logger.debug("starting Opensearch Dashboards service")
+
         self.workload.start()
 
         # open port

@@ -32,7 +32,7 @@ class ClusterState(Object):
     """Collection of global cluster state for Framework/Object."""
 
     def __init__(self, charm: Framework | Object, substrate: SUBSTRATES):
-        super().__init__(parent=charm, key="charm_state")
+        super().__init__(parent=charm, key="osd_charm_state")
         self.substrate: SUBSTRATES = substrate
         self._servers_data = {}
 
@@ -59,7 +59,10 @@ class ClusterState(Object):
     @property
     def opensearch_relation(self) -> Relation | None:
         """The Opensearch Server relation."""
-        return self.model.get_relation(OPENSEARCH_REL_NAME)
+        try:
+            return self.model.get_relation(OPENSEARCH_REL_NAME)
+        except KeyError:
+            return None
 
     @property
     def tls_relation(self) -> Relation | None:

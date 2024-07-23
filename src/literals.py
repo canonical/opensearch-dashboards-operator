@@ -53,8 +53,20 @@ MSG_DB_MISSING = "Opensearch connection is missing"
 MSG_TLS_CONFIG = "Waiting for TLS to be fully configured..."
 MSG_INCOMPATIBLE_UPGRADE = "Incompatible upgrade, rollback required"
 
+MSG_STATUS_UNAVAIL = "Service unavailable"
+MSG_STATUS_UNHEALTHY = "Service is not in a green health state"
+MSG_STATUS_ERROR = "Service is an error state"
+MSG_STATUS_WORKLOAD_DOWN = "Workload is not alive"
+MSG_STATUS_UNKNOWN = "Workload status is not known"
+
+MSG_STATUS = [
+    MSG_STATUS_UNAVAIL,
+    MSG_STATUS_UNHEALTHY,
+    MSG_STATUS_WORKLOAD_DOWN,
+    MSG_STATUS_UNKNOWN,
+]
+
 # COS
 
 COS_RELATION_NAME = "cos-agent"
-COS_USER = "monitor"
 COS_PORT = 9684
