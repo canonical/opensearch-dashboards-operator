@@ -40,6 +40,7 @@ class StateBase:
     @property
     def relation_data(self) -> MutableMapping[str, str]:
         """The raw relation data."""
+        logger.debug("Fetching relation data for %s", str(self.relation))
         return self._relation_data.data if isinstance(self._relation_data, DataDict) else {}
 
     def update(self, items: dict[str, str]) -> None:
