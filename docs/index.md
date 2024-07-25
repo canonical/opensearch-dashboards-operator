@@ -42,3 +42,4 @@ All of the software in the OpenSearch project is released under the [Apache Soft
   1. [Connect to OpenSearch](how-to/h-db-connect.md)
   1. [Change credentials](how-to/h-change-credentials.md)
   1. [Enable TLS](how-to/h-encryption.md)
+  1. [Enable Monitoring](how-to/h-mointoring.md)
