@@ -23,7 +23,7 @@ juju model-config --file cloudinit-userdata.yaml
 We can deploy Opensearch with TLS:
 
 ```
-juju deploy opensearch --channel=2/edge
+juju deploy opensearch --channel=2/edge -n 2
 juju deploy self-signed-certificates
 juju relate  self-signed-certificates opensearch
 ```

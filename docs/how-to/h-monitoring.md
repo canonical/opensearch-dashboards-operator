@@ -29,9 +29,7 @@ To offer the COS interfaces, run
 
 ```shell
 juju offer grafana:grafana-dashboard
-
 juju offer loki:logging
-
 juju offer prometheus:receive-remote-write
 ```
 
@@ -49,9 +47,7 @@ To consume offers to be reachable in the current model, run
 
 ```shell
 juju consume <k8s_cos_controller>:admin/cos.grafana
-
 juju consume <k8s_cos_controller>:admin/cos.loki
-
 juju consume <k8s_cos_controller>:admin/cos.prometheus
 ```
 
@@ -62,28 +58,21 @@ First, deploy [grafana-agent](https://charmhub.io/grafana-agent):
 ```shell
 juju deploy grafana-agent
 ```
-
-Then, integrate (previously known as "[relate](https://juju.is/docs/juju/integration)") it with Charmed OpenSearch:
+Then integrate `grafana-agent` with consumed COS offers:
 
 ```shell
 juju integrate grafana-agent grafana
-
 juju integrate grafana-agent loki
-
 juju integrate grafana-agent prometheus
 ```
 
-Finally, integrate `grafana-agent` with consumed COS offers:
+Finally integrate (previously known as "[relate](https://juju.is/docs/juju/integration)") it with Charmed OpenSearch Dashboards:
 
 ```shell
-juju integrate grafana-agent-k8s opensearch:grafana-dashboard
-
-juju integrate grafana-agent-k8s opensearch:logging
-
-juju integrate grafana-agent-k8s opensearch:metrics-endpoint
+juju integrate grafana-agent-k8s opensearch-dashboards
 ```
 
-After this is complete, Grafana will show the new dashboard `Charmed OpenSearch Dashboards` and will allow access to Charmed OpenSearch logs on Loki.
+After this is complete, Grafana will show the new dashboard `Charmed OpenSearch Dashboards` and will allow access to Charmed OpenSearch Dashboards logs on Loki.
 
 ## Connect to the Grafana web interface
 
