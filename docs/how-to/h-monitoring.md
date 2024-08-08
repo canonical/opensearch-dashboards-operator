@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-* A deployed [Charmed OpenSearch operator with a Charmed Opensearch Dadhboards operator](/t/charmed-opensearch-dashboards-tutorial-deployment/14122)
+* A deployed [Charmed OpenSearch operator with a Charmed Opensearch Dashboards operator](/t/14122)
 * A deployed [`cos-lite` bundle in a Kubernetes environment](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s)
 
 ## Summary
@@ -72,11 +72,13 @@ Finally integrate (previously known as "[relate](https://juju.is/docs/juju/integ
 juju integrate grafana-agent-k8s opensearch-dashboards
 ```
 
-After this is complete, Grafana will show the new dashboard `Charmed OpenSearch Dashboards` and will allow access to Charmed OpenSearch Dashboards logs on Loki.
+After the integration is complete, Grafana will show the new dashboard `Charmed OpenSearch Dashboards` and will allow access to Charmed OpenSearch Dashboards logs on Loki.
 
 ## Connect to the Grafana web interface
 
 To connect to the Grafana web interface, follow the [Browse dashboards](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s?_ga=2.201254254.1948444620.1704703837-757109492.1701777558#heading--browse-dashboards) section of the MicroK8s "Getting started" guide.
+
+You can obtain the admin password as follows:
 
 ```shell
 juju run grafana/leader get-admin-password --model <k8s_cos_controller>:<cos_model_name>
