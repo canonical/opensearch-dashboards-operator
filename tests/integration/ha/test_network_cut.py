@@ -11,7 +11,12 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
-from ..helpers import access_all_dashboards, get_address, get_leader_name
+from ..helpers import (
+    access_all_dashboards,
+    all_dashboards_unavailable,
+    get_address,
+    get_leader_name,
+)
 
 logger = logging.getLogger(__name__)
 
