@@ -81,4 +81,9 @@ class TLSManager:
         except CalledProcessError as error:
             logging.error(f"Checking certificate failed: {error.output}")
             return False
+
+        logger.debug(f"Response of openssl cert decode: {response}")
+        logger.debug(
+            f"Currently recognized IP using 'gethostbyname': {self.state.unit_server.private_ip}"
+        )
         return self.state.unit_server.private_ip in response
