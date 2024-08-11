@@ -59,13 +59,6 @@ class TLSEvents(Object):
                 {"private-key": generate_private_key().decode("utf-8")}
             )
 
-        logger.debug(
-            "Requesting certificate for: "
-            f"host {self.charm.state.unit_server.host},"
-            f"with IP {self.charm.state.unit_server.sans.get('sans_ip', [])},"
-            f"DNS {self.charm.state.unit_server.sans.get('sans_dns', [])}"
-        )
-
         csr = generate_csr(
             private_key=self.charm.state.unit_server.private_key.encode("utf-8"),
             subject=self.charm.state.unit_server.host,
