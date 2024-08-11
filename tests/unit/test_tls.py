@@ -11,6 +11,7 @@ from ops.testing import Harness
 
 from charm import OpensearchDasboardsCharm
 from literals import CERTS_REL_NAME, CHARM_KEY, PEER
+from src.events.tls import TLSEvents
 
 CONFIG = str(yaml.safe_load(Path("./config.yaml").read_text()))
 ACTIONS = str(yaml.safe_load(Path("./actions.yaml").read_text()))
@@ -115,6 +116,7 @@ def test_certificates_broken(harness):
             remove_cert_files=DEFAULT,
         ),
         patch("workload.ODWorkload.configure") as workload_config,
+        patch("events.tls.TLSCertificatesRequiresV3.request_certificate_revocation"),
     ):
 
         harness.remove_relation(certs_rel_id)
