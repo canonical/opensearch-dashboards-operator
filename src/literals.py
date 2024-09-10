@@ -20,10 +20,10 @@ SERVER_PORT = 5601
 
 DEPENDENCIES = {
     "osd_upstream": {
-        "dependencies": {"opensearch": "2.14"},
+        "dependencies": {"opensearch": "2.16"},
         "name": "opensearch-dashboards",
         "upgrade_supported": ">=2",
-        "version": "2.14",
+        "version": "2.16",
     },
 }
 
