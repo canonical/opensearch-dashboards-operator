@@ -1,0 +1,787 @@
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:286 Cutting all units from network...
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:294 Cutting unit opensearch-dashboards/0 from network...
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:294 Cutting unit opensearch-dashboards/1 from network...
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:303 Waiting until units ['opensearch-dashboards/0', 'opensearch-dashboards/1'] are not reachable
+[31m[1mERROR   [0m integration.ha.helpers:helpers.py:48 timed out
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:310 Waiting until unit ['opensearch-dashboards/0', 'opensearch-dashboards/1'] are 'lost'
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:320 Checking lack of Dashboard access...
+[32mINFO    [0m integration.helpers:helpers.py:213 Couldn't retrieve host certificate for unit <Unit entity_id="opensearch-dashboards/0">
+[32mINFO    [0m integration.helpers:helpers.py:213 Couldn't retrieve host certificate for unit <Unit entity_id="opensearch-dashboards/1">
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:323 Restoring network...
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:330 Waiting until units ['opensearch-dashboards/0', 'opensearch-dashboards/1'] are reachable again
+[32mINFO    [0m juju.model:model.py:2972 Waiting for model:
+  opensearch-dashboards/0 [idle] active: 
+  opensearch-dashboards/1 [idle] active: 
+  self-signed-certificates/0 [idle] active: 
+  opensearch/0 [idle] active: 
+  opensearch/1 [idle] active: 
+  opensearch/2 [idle] active: 
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:346 Checking Dashboard access...
+[32mINFO    [0m integration.helpers:helpers.py:308 Host opensearch-dashboards/0, 10.5.102.216 passed access check
+[32mINFO    [0m integration.helpers:helpers.py:308 Host opensearch-dashboards/1, 10.5.102.167 passed access check
+[32mINFO    [0m pytest_operator.plugin:plugin.py:862 Model status:
+
+Model  Controller           Cloud/Region         Version  SLA          Timestamp
+test   localhost-localhost  localhost/localhost  3.4.3    unsupported  02:36:43Z
+
+App                       Version  Status  Scale  Charm                     Channel        Rev  Exposed  Message
+opensearch                         active      3  opensearch                2/edge         143  no       
+opensearch-dashboards              active    0/2  opensearch-dashboards                      0  no       
+self-signed-certificates           active      1  self-signed-certificates  latest/stable  155  no       
+
+Unit                         Workload  Agent  Machine  Public address  Ports     Message
+opensearch-dashboards/0      unknown   lost   0        10.5.102.216    5601/tcp  agent lost, see 'juju show-status-log opensearch-dashboards/0'
+opensearch-dashboards/1      unknown   lost   1        10.5.102.167    5601/tcp  agent lost, see 'juju show-status-log opensearch-dashboards/1'
+opensearch/0*                active    idle   2        10.5.102.230    9200/tcp  
+opensearch/1                 active    idle   3        10.5.102.184    9200/tcp  
+opensearch/2                 active    idle   4        10.5.102.117    9200/tcp  
+self-signed-certificates/0*  active    idle   5        10.5.102.50               
+
+Machine  State    Address       Inst id        Base          AZ  Message
+0        down     10.5.102.216  juju-eb7cc7-0  ubuntu@22.04      Running
+1        down     10.5.102.167  juju-eb7cc7-1  ubuntu@22.04      Running
+2        started  10.5.102.230  juju-eb7cc7-2  ubuntu@22.04      Running
+3        started  10.5.102.184  juju-eb7cc7-3  ubuntu@22.04      Running
+4        started  10.5.102.117  juju-eb7cc7-4  ubuntu@22.04      Running
+5        started  10.5.102.50   juju-eb7cc7-5  ubuntu@22.04      Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:868 Juju error logs:
+
+machine-1: 01:30:57 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 01:30:57 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 01:30:57 ERROR juju.worker.dependency "broker-tracker" manifold worker returned unexpected error: no container types determined
+unit-opensearch-dashboards-1: 01:30:57 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-2: 01:30:58 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 01:30:58 ERROR juju.worker.dependency "broker-tracker" manifold worker returned unexpected error: no container types determined
+machine-2: 01:30:58 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-0: 01:30:58 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-5: 01:30:58 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-5: 01:30:58 ERROR juju.worker.dependency "broker-tracker" manifold worker returned unexpected error: no container types determined
+machine-5: 01:30:58 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-self-signed-certificates-0: 01:30:58 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-0: 01:31:00 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 01:31:00 ERROR juju.worker.dependency "broker-tracker" manifold worker returned unexpected error: no container types determined
+machine-0: 01:31:00 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-0: 01:31:00 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-3: 01:31:02 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-3: 01:31:02 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-3: 01:31:02 ERROR juju.worker.dependency "broker-tracker" manifold worker returned unexpected error: no container types determined
+unit-opensearch-1: 01:31:02 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-4: 01:31:03 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-4: 01:31:03 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-4: 01:31:03 ERROR juju.worker.dependency "broker-tracker" manifold worker returned unexpected error: no container types determined
+unit-opensearch-2: 01:31:03 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+unit-opensearch-0: 01:32:09 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:10 ERROR unit.opensearch/0.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:10 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:11 ERROR unit.opensearch/0.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:11 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:12 ERROR unit.opensearch/0.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:12 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:12 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:13 ERROR unit.opensearch/0.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:13 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:13 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:13 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:13 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:13 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:14 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:14 ERROR unit.opensearch/0.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:15 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:15 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:15 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:16 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:16 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:16 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:16 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:16 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:16 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:16 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:16 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:16 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:16 ERROR unit.opensearch/1.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:17 ERROR unit.opensearch/0.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:19 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:20 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:20 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:20 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:21 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:21 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:21 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:22 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:22 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:22 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:22 ERROR unit.opensearch/0.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:22 ERROR unit.opensearch/0.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:22 ERROR unit.opensearch/0.juju-log certificates:6: Cannot connect to the OpenSearch server...
+unit-opensearch-0: 01:32:22 ERROR unit.opensearch/0.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:22 ERROR unit.opensearch/0.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:22 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:22 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:22 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:23 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:23 ERROR unit.opensearch/0.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-0: 01:32:23 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:23 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:23 ERROR unit.opensearch/1.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:23 ERROR unit.opensearch/1.juju-log certificates:6: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:23 ERROR unit.opensearch/1.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:23 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:23 ERROR unit.opensearch/0.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-0: 01:32:24 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:24 ERROR unit.opensearch/0.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:24 ERROR unit.opensearch/1.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:24 ERROR unit.opensearch/1.juju-log certificates:6: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:24 ERROR unit.opensearch/1.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:26 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:26 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:26 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:27 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:27 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:27 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:27 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:27 ERROR unit.opensearch/0.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:27 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:27 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:27 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:28 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:28 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:28 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:29 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:29 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:29 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:30 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:30 ERROR unit.opensearch/0.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:30 ERROR unit.opensearch/1.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:30 ERROR unit.opensearch/1.juju-log certificates:6: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:30 ERROR unit.opensearch/1.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:31 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:32 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:32 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:32 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:32 ERROR unit.opensearch/2.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:32 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:32 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:32 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:33 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:33 ERROR unit.opensearch/0.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:34 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:34 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:34 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:34 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:34 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:34 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:35 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:35 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:35 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:35 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:36 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:36 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:36 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:36 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:37 ERROR unit.opensearch/2.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:37 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:37 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:37 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:37 ERROR unit.opensearch/2.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:37 ERROR unit.opensearch/2.juju-log certificates:6: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:37 ERROR unit.opensearch/2.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:38 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:38 ERROR unit.opensearch/1.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:38 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:38 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:38 ERROR unit.opensearch/2.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:38 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:38 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:39 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:39 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:39 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:39 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:39 ERROR unit.opensearch/2.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:39 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:40 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:40 ERROR unit.opensearch/1.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:40 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:40 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:40 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:40 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:40 ERROR unit.opensearch/2.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:40 ERROR unit.opensearch/2.juju-log upgrade-version-a:5: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:40 ERROR unit.opensearch/2.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:40 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:40 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:40 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:41 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:41 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:41 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:41 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:41 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:41 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:42 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:42 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:42 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:42 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:42 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:42 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:42 ERROR unit.opensearch/1.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:42 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:42 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:42 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:42 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:43 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:43 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:43 ERROR unit.opensearch/2.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:43 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:43 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:43 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:44 ERROR unit.opensearch/2.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:44 ERROR unit.opensearch/2.juju-log certificates:6: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:44 ERROR unit.opensearch/2.juju-log certificates:6: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:44 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:44 ERROR unit.opensearch/1.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:44 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:44 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:45 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:45 ERROR unit.opensearch/1.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:45 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:45 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:45 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:45 ERROR unit.opensearch/2.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:45 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:46 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:46 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:46 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:46 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:46 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:46 ERROR unit.opensearch/2.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:46 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:47 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:47 ERROR unit.opensearch/2.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:47 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:47 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:48 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:48 ERROR unit.opensearch/2.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:48 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:49 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:49 ERROR unit.opensearch/2.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:49 ERROR unit.opensearch/2.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:49 ERROR unit.opensearch/2.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:49 ERROR unit.opensearch/2.juju-log upgrade-version-a:5: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:49 ERROR unit.opensearch/2.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:50 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:50 ERROR unit.opensearch/2.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:50 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:50 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:50 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:51 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:32:51 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-2: 01:32:51 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:51 ERROR unit.opensearch/2.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:51 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:51 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:51 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:52 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:52 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:52 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:52 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:52 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:52 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:52 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:52 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:52 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:52 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:53 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:53 ERROR unit.opensearch/2.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-2: 01:32:53 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:53 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:53 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:53 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:53 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:53 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:53 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:53 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:54 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:54 ERROR unit.opensearch/1.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:54 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:54 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:54 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:54 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:55 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:55 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:56 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:56 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:56 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:56 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:56 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:56 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:56 ERROR unit.opensearch/1.juju-log upgrade-version-a:5: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:57 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:57 ERROR unit.opensearch/1.juju-log Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:57 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:57 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:57 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:57 ERROR unit.opensearch/1.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:32:58 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:58 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:58 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:59 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:59 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:59 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:32:59 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:32:59 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:01 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:33:02 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:06 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:06 ERROR unit.opensearch/1.juju-log opensearch-peers:4: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:33:06 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:06 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:06 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:06 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:07 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:07 ERROR unit.opensearch/1.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:07 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:07 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:33:07 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:08 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:08 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:08 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:08 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:08 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:08 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:08 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:09 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:09 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: Cannot connect to the OpenSearch server...
+unit-opensearch-1: 01:33:09 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:10 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:11 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:11 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:11 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:12 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-1: 01:33:12 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:12 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:33:12 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:33:12 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:33:12 ERROR unit.opensearch/0.juju-log [Errno 111] Connection refused
+unit-opensearch-0: 01:33:15 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:15 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:15 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:15 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:33:17 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:33:17 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-2: 01:33:17 ERROR unit.opensearch/2.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:18 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:18 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:18 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-1: 01:33:18 ERROR unit.opensearch/1.juju-log node-lock-fallback:3: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:18 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-0: 01:33:18 ERROR unit.opensearch/0.juju-log opensearch-peers:4: [Errno 111] Connection refused
+unit-opensearch-dashboards-0: 01:34:22 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:25 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:25 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: Request GET to http://10.5.102.83:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: http://10.5.102.83:5601/api/status
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:34:26 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: Request GET to http://10.5.102.83:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: http://10.5.102.83:5601/api/status
+unit-opensearch-dashboards-0: 01:35:39 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:35:39 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:35:39 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:35:39 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:35:39 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:35:39 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:35:40 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-1: 01:36:58 ERROR juju.worker.dependency "reboot-executor" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.102:59570->10.5.102.145:17070: read: connection timed out
+machine-1: 01:36:58 ERROR juju.worker.dependency "instance-mutater" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.102:59570->10.5.102.145:17070: read: connection timed out
+machine-1: 01:36:58 ERROR juju.worker.dependency "machiner" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.102:59570->10.5.102.145:17070: read: connection timed out
+machine-1: 01:36:58 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.102:59570->10.5.102.145:17070: read: connection timed out
+machine-1: 01:37:01 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:37:04 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:37:09 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:37:15 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:37:21 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:37:28 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:37:38 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:37:48 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:38:00 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:38:16 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:38:35 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+unit-opensearch-dashboards-1: 01:38:58 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:38:58 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:38:58 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:38:58 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:38:58 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:38:58 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:39:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:39:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:39:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:39:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:39:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:39:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:39:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:43:30 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:43:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:43:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:43:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:43:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:43:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:43:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:44:33 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:44:33 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:44:33 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:44:33 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:44:33 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:44:33 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 01:44:33 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-0: 01:45:13 ERROR juju.worker.dependency "logging-config-updater" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.83:33790->10.5.102.145:17070: read: no route to host
+machine-0: 01:45:13 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.83:33790->10.5.102.145:17070: read: no route to host
+machine-0: 01:45:16 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 01:45:22 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 01:45:28 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 01:45:34 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 01:45:40 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 01:45:49 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 01:46:02 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 01:46:14 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 01:46:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 01:46:47 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 01:47:07 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 01:47:31 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 01:47:58 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:48:01 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:48:05 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:48:10 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:48:16 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:48:22 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:48:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 01:48:32 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:48:38 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:48:49 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:49:02 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 01:49:14 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:49:17 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:49:34 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 01:49:56 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:49:57 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:50:26 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 01:50:55 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 01:50:56 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+unit-opensearch-dashboards-0: 01:51:59 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:51:59 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:51:59 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:51:59 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:51:59 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:51:59 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:16 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:16 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:16 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:16 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:16 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:16 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:16 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:16 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:2: Request GET to http://10.5.102.162:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.5.102.162', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7e0cf13817e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:54 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:54 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:54 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:54 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:54 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:54 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:52:54 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:56:57 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:56:57 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:56:57 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:56:57 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:56:57 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:56:57 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:56:57 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:58:31 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:58:31 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:58:31 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:58:31 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:58:31 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:58:31 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 01:58:31 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-1: 01:59:53 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.252:45018->10.5.102.145:17070: read: no route to host
+machine-1: 01:59:56 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-1: 02:00:02 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-1: 02:00:08 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-1: 02:00:14 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 02:00:17 ERROR juju.worker.dependency "api-address-updater" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:51674->10.5.102.145:17070: read: no route to host
+machine-0: 02:00:17 ERROR juju.worker.dependency "upgrade-series" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:51674->10.5.102.145:17070: read: no route to host
+machine-0: 02:00:17 ERROR juju.worker.dependency "proxy-config-updater" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:51674->10.5.102.145:17070: read: no route to host
+machine-0: 02:00:17 ERROR juju.worker.dependency "migration-inactive-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:51674->10.5.102.145:17070: read: no route to host
+machine-0: 02:00:17 ERROR juju.worker.dependency "valid-credential-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:51674->10.5.102.145:17070: read: no route to host
+machine-0: 02:00:17 ERROR juju.worker.dependency "migration-minion" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:51674->10.5.102.145:17070: read: no route to host
+machine-0: 02:00:17 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:51674->10.5.102.145:17070: read: no route to host
+machine-0: 02:00:21 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-1: 02:00:23 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 02:00:27 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-1: 02:00:33 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 02:00:35 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:00:43 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-1: 02:00:45 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:00:52 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-1: 02:00:57 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 02:01:03 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-1: 02:01:13 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 02:01:14 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:01:29 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-1: 02:01:31 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 02:01:44 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-1: 02:01:54 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:02:04 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-1: 02:02:20 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:02:27 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-1: 02:02:48 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:02:52 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+unit-opensearch-dashboards-0: 02:03:25 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:03:25 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:03:25 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:03:25 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:03:25 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:03:25 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:04:03 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:04:03 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:04:03 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:04:03 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:04:03 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:04:03 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:04:03 ERROR unit.opensearch-dashboards/0.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-1: 02:05:26 ERROR juju.worker.dependency "migration-minion" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.252:47460->10.5.102.145:17070: read: connection timed out
+machine-1: 02:05:26 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.252:47460->10.5.102.145:17070: read: connection timed out
+machine-1: 02:05:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:05:33 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:05:38 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:05:43 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:05:50 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:05:58 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:06:08 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:06:19 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:06:32 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:06:49 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:07:09 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:07:31 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+unit-opensearch-dashboards-1: 02:08:00 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:00 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:00 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:00 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:00 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:00 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:01 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:01 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:01 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:01 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:02 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:02 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:02 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:02 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:02 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:02 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:08:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:23 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:23 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:23 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:23 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:23 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:23 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:23 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:13:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-0: 02:14:34 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:47956->10.5.102.145:17070: read: connection timed out
+machine-0: 02:14:34 ERROR juju.worker.dependency "migration-inactive-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:47956->10.5.102.145:17070: read: connection timed out
+machine-0: 02:14:34 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:47956->10.5.102.145:17070: read: connection timed out
+machine-0: 02:14:40 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:14:47 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:14:52 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 02:15:00 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 02:15:09 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:15:20 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:15:32 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: i/o timeout
+machine-0: 02:15:45 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: no route to host
+machine-0: 02:17:00 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.162:43096->10.5.102.145:17070: read: connection timed out
+machine-0: 02:17:03 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:17:03 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:17:07 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:17:07 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:17:12 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:17:12 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:17:17 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:17:18 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:17:24 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:17:24 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:17:32 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:17:32 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:17:40 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:17:40 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:17:51 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:17:51 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:18:03 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:18:03 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:18:20 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:18:20 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:18:37 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:18:39 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:19:01 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:19:03 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:19:28 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:19:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:20:01 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:20:05 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:20:39 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:20:47 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:21:27 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:21:33 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:22:21 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-0: 02:22:31 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-0" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+machine-1: 02:23:23 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [e6eb93] "machine-1" cannot open api: unable to connect to API: dial tcp 10.5.102.145:17070: connect: network is unreachable
+unit-opensearch-dashboards-1: 02:24:50 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:50 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:50 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:50 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:50 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:50 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:51 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:51 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:51 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:51 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:54 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:54 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:54 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:54 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:54 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:54 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:57 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:57 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:57 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:57 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:57 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:57 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:57 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:24:57 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:2: Request GET to https://10.5.102.167:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.5.102.167', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f730d529900>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 02:25:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:25:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:25:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:25:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:25:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:25:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:25:38 ERROR unit.opensearch-dashboards/1.juju-log restart:0: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:31 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:53 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:53 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:53 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:53 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:53 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:53 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:28:53 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:29:54 ERROR juju.worker.dependency "meter-status" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.216:33318->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "api-address-updater" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "reboot-executor" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "ssh-authkeys-updater" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "state-converter" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "valid-credential-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "instance-mutater" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "machiner" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "fan-configurer" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "upgrade-series" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+machine-1: 02:30:01 ERROR juju.worker.dependency "machine-action-runner" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.5.102.167:47140->10.5.102.145:17070: read: connection timed out
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:947 Forgetting model main...
