@@ -63,6 +63,7 @@ class APIManager:
             payload: JSON / map body payload.
 
         Raises:
+            ReadTimeout: We distinguish if the service was fully unresponsive
             RequestException (including any descendants from requests.exceptions)
         """
 
