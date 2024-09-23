@@ -27,9 +27,11 @@ from literals import (
     MSG_APP_STATUS,
     MSG_INCOMPATIBLE_UPGRADE,
     MSG_INSTALLING,
+    MSG_ROLLING_RESTART,
     MSG_STARTING,
     MSG_STARTING_SERVER,
     MSG_STATUS_DB_MISSING,
+    MSG_STATUS_HANGING,
     MSG_TLS_CONFIG,
     MSG_UNIT_STATUS,
     MSG_WAITING_FOR_PEER,
@@ -150,9 +152,18 @@ class OpensearchDasboardsCharm(CharmBase):
         if getattr(event, "departing_unit", None) == self.unit:
             return
 
-        # 2. Restart on config change
+        # 2. Restart if the service is down or on config change
+        service_stopped = not self.workload.alive() and not self.unit.status == MaintenanceStatus(
+            MSG_ROLLING_RESTART
+        )
+
+        # Evaluat unit health at this point (as it may trigger a restart)
+        unit_healthy, unit_msg = self.health_manager.unit_healthy()
+
         if (
-            self.config_manager.config_changed()
+            service_stopped
+            or (not unit_healthy and unit_msg == MSG_STATUS_HANGING)
+            or self.config_manager.config_changed()
             and self.state.unit_server.started
             and self.upgrade_events.idle
         ):
@@ -198,8 +209,6 @@ class OpensearchDasboardsCharm(CharmBase):
             outdated_status += MSG_APP_STATUS
 
         # Checks purely on unit level
-        unit_healthy, unit_msg = self.health_manager.unit_healthy()
-
         if not unit_healthy:
             self.unit.status = BlockedStatus(unit_msg)
             return
