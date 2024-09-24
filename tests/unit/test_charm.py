@@ -3,6 +3,7 @@
 # See LICENSE file for licensing details.
 
 import logging
+import time
 from pathlib import Path
 from unittest.mock import patch
 
@@ -20,6 +21,8 @@ from src.literals import (
     MSG_INCOMPATIBLE_UPGRADE,
     MSG_STATUS_ERROR,
     MSG_STATUS_UNHEALTHY,
+    RESTART_TIMEOUT,
+    SERVICE_AVAILABLE_TIMEOUT,
 )
 
 logger = logging.getLogger(__name__)
@@ -257,6 +260,99 @@ def test_restart_fails_not_started(harness):
         patched_start.assert_called_once()
 
 
+@responses.activate
+def test_restart_sleep_no_wait_once_service_up(harness):
+    """We are giving a "grace period" for the service to establish after a restart.
+
+    Reason: to avoid unhealthy charm state set by 'update-status' premature run.
+    """
+
+    expected_response = {
+        "status": {
+            "overall": {
+                "state": "green",
+            },
+        }
+    }
+
+    responses.add(
+        method="GET",
+        url=f"{harness.charm.state.unit_server.url}/api/status",
+        status=200,
+        json=expected_response,
+    )
+
+    # Let's assume that the service has started already, and has a healthy DB connection
+    with harness.hooks_disabled():
+        peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
+        harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
+        harness.set_planned_units(1)
+        harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}/0", {"state": "started"})
+        opensearch_rel_id = harness.add_relation(OPENSEARCH_REL_NAME, "opensearch")
+        harness.add_relation_unit(opensearch_rel_id, "opensearch/0")
+
+    # Let's assume that we don't need to wait for workload to come up
+    # to reduce the scope of the test to the service availability delay
+    with (
+        patch("workload.ODWorkload.alive", return_value=True),
+        patch("workload.ODWorkload.restart") as patched_restart,
+        patch("managers.config.ConfigManager.set_dashboard_properties"),
+        patch("src.charm.time.sleep") as patched_sleep,
+    ):
+        harness.charm._restart(EventBase(harness.charm))
+        patched_restart.assert_called_once()
+
+        # sleep() was only called to allow the service to establish
+        assert patched_sleep.call_count == 0
+
+
+def test_restart_sleep_with_timeout_if_service_down(harness):
+    """We are giving a "grace period" for the service to establish after a restart.
+
+    Reason: to avoid unhealthy charm state set by 'update-status' premature run.
+    """
+
+    expected_response = {
+        "status": {
+            "overall": {
+                "state": "red",
+            },
+        }
+    }
+
+    responses.add(
+        method="GET",
+        url=f"{harness.charm.state.unit_server.url}/api/status",
+        status=200,
+        json=expected_response,
+    )
+
+    # Let's assume that the service has started already, and has a healthy DB connection
+    with harness.hooks_disabled():
+        peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
+        harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
+        harness.set_planned_units(1)
+        harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}/0", {"state": "started"})
+        opensearch_rel_id = harness.add_relation(OPENSEARCH_REL_NAME, "opensearch")
+        harness.add_relation_unit(opensearch_rel_id, "opensearch/0")
+
+    # Let's assume that we don't need to wait for workload to come up
+    # to reduce the scope of the test to the service availability delay
+    with (
+        patch("workload.ODWorkload.alive", return_value=True),
+        patch("workload.ODWorkload.restart") as patched_restart,
+        patch("managers.config.ConfigManager.set_dashboard_properties"),
+        patch("time.sleep") as patched_sleep,
+    ):
+        start_time = time.time()
+        harness.charm._restart(EventBase(harness.charm))
+        end_time = time.time()
+        patched_restart.assert_called_once()
+
+        assert patched_sleep.call_count > 2
+        assert end_time - start_time >= SERVICE_AVAILABLE_TIMEOUT
+
+
 def test_restart_restarts_with_sleep(harness):
     with harness.hooks_disabled():
         peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
@@ -321,6 +417,7 @@ def test_config_changed_applies_relation_data(harness):
         harness.set_leader(True)
 
     with (
+        patch("workload.ODWorkload.alive", return_value=True),
         patch("managers.config.ConfigManager.config_changed") as patched,
         patch("core.cluster.ClusterState.stable", return_value=True),
         patch("core.cluster.ClusterState.all_units_related", return_value=True),
@@ -346,6 +443,7 @@ def test_workload_down_blocked_status(harness):
         patch("workload.ODWorkload.alive", return_value=False),
         patch("workload.ODWorkload.write"),
         patch("workload.ODWorkload.start", return_value=True),
+        patch("workload.ODWorkload.restart", return_value=False),
         patch("managers.config.ConfigManager.config_changed", return_value=False),
         patch("managers.config.ConfigManager.set_dashboard_properties"),
     ):
