@@ -41,6 +41,7 @@ PEER_APP_SECRETS = [
 PEER_UNIT_SECRETS = ["ca-cert", "csr", "certificate", "private-key"]
 
 RESTART_TIMEOUT = 30
+SERVICE_AVAILABLE_TIMEOUT = 90
 REQUEST_TIMEOUT = 30
 
 

@@ -38,6 +38,7 @@ from literals import (
     PEER,
     RESTART_TIMEOUT,
     SERVER_PORT,
+    SERVICE_AVAILABLE_TIMEOUT,
     SUBSTRATE,
 )
 from managers.api import APIManager
@@ -273,9 +274,20 @@ class OpensearchDasboardsCharm(CharmBase):
         logger.info(f"{self.unit.name} restarting...")
         self.workload.restart()
 
+        # Allow the service to start up safely on the snap level
         start_time = time.time()
         while not self.workload.alive() and time.time() - start_time < RESTART_TIMEOUT:
             time.sleep(5)
+
+        # Allow the service to establish
+        # Reason: we are emitting an 'update-status' right after
+        # If the service is not yet functional, the status is set as
+        # 'Service unavailable' until the next 'update-status' hook execution
+        start_time = time.time()
+        unit_healthy, _ = self.health_manager.unit_healthy()
+        while not unit_healthy and time.time() - start_time < SERVICE_AVAILABLE_TIMEOUT:
+            time.sleep(5)
+            unit_healthy, _ = self.health_manager.unit_healthy()
 
         clear_status(self.unit, [MSG_STARTING, MSG_STARTING_SERVER])
         self.on.update_status.emit()
