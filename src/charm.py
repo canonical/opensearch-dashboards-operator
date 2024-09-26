@@ -27,15 +27,18 @@ from literals import (
     MSG_APP_STATUS,
     MSG_INCOMPATIBLE_UPGRADE,
     MSG_INSTALLING,
+    MSG_ROLLING_RESTART,
     MSG_STARTING,
     MSG_STARTING_SERVER,
     MSG_STATUS_DB_MISSING,
+    MSG_STATUS_HANGING,
     MSG_TLS_CONFIG,
     MSG_UNIT_STATUS,
     MSG_WAITING_FOR_PEER,
     PEER,
     RESTART_TIMEOUT,
     SERVER_PORT,
+    SERVICE_AVAILABLE_TIMEOUT,
     SUBSTRATE,
 )
 from managers.api import APIManager
@@ -151,9 +154,18 @@ class OpensearchDasboardsCharm(CharmBase):
         if getattr(event, "departing_unit", None) == self.unit:
             return
 
-        # 2. Restart on config change
+        # 2. Restart if the service is down or on config change
+        service_stopped = not self.workload.alive() and not self.unit.status == MaintenanceStatus(
+            MSG_ROLLING_RESTART
+        )
+
+        # Evaluat unit health at this point (as it may trigger a restart)
+        unit_healthy, unit_msg = self.health_manager.unit_healthy()
+
         if (
-            self.config_manager.config_changed()
+            service_stopped
+            or (not unit_healthy and unit_msg == MSG_STATUS_HANGING)
+            or self.config_manager.config_changed()
             and self.state.unit_server.started
             and self.upgrade_events.idle
         ):
@@ -199,8 +211,6 @@ class OpensearchDasboardsCharm(CharmBase):
             outdated_status += MSG_APP_STATUS
 
         # Checks purely on unit level
-        unit_healthy, unit_msg = self.health_manager.unit_healthy()
-
         if not unit_healthy:
             self.unit.status = BlockedStatus(unit_msg)
             return
@@ -265,9 +275,20 @@ class OpensearchDasboardsCharm(CharmBase):
         logger.info(f"{self.unit.name} restarting...")
         self.workload.restart()
 
+        # Allow the service to start up safely on the snap level
         start_time = time.time()
         while not self.workload.alive() and time.time() - start_time < RESTART_TIMEOUT:
             time.sleep(5)
+
+        # Allow the service to establish
+        # Reason: we are emitting an 'update-status' right after
+        # If the service is not yet functional, the status is set as
+        # 'Service unavailable' until the next 'update-status' hook execution
+        start_time = time.time()
+        unit_healthy, _ = self.health_manager.unit_healthy()
+        while not unit_healthy and time.time() - start_time < SERVICE_AVAILABLE_TIMEOUT:
+            time.sleep(5)
+            unit_healthy, _ = self.health_manager.unit_healthy()
 
         clear_status(self.unit, [MSG_STARTING, MSG_STARTING_SERVER])
         self.on.update_status.emit()
