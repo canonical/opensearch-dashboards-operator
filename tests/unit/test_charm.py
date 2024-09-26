@@ -21,8 +21,6 @@ from src.literals import (
     MSG_INCOMPATIBLE_UPGRADE,
     MSG_STATUS_ERROR,
     MSG_STATUS_UNHEALTHY,
-    RESTART_TIMEOUT,
-    SERVICE_AVAILABLE_TIMEOUT,
 )
 
 logger = logging.getLogger(__name__)
@@ -297,7 +295,7 @@ def test_restart_sleep_no_wait_once_service_up(harness):
         patch("workload.ODWorkload.alive", return_value=True),
         patch("workload.ODWorkload.restart") as patched_restart,
         patch("managers.config.ConfigManager.set_dashboard_properties"),
-        patch("src.charm.time.sleep") as patched_sleep,
+        patch("time.sleep") as patched_sleep,
     ):
         harness.charm._restart(EventBase(harness.charm))
         patched_restart.assert_called_once()
@@ -338,8 +336,11 @@ def test_restart_sleep_with_timeout_if_service_down(harness):
 
     # Let's assume that we don't need to wait for workload to come up
     # to reduce the scope of the test to the service availability delay
+    # Also decreasing timeout for faster run
+    patched_timeout = 5
     with (
         patch("workload.ODWorkload.alive", return_value=True),
+        patch("charm.SERVICE_AVAILABLE_TIMEOUT", patched_timeout),
         patch("workload.ODWorkload.restart") as patched_restart,
         patch("managers.config.ConfigManager.set_dashboard_properties"),
         patch("time.sleep") as patched_sleep,
@@ -350,7 +351,7 @@ def test_restart_sleep_with_timeout_if_service_down(harness):
         patched_restart.assert_called_once()
 
         assert patched_sleep.call_count > 2
-        assert end_time - start_time >= SERVICE_AVAILABLE_TIMEOUT
+        assert end_time - start_time >= patched_timeout
 
 
 def test_restart_restarts_with_sleep(harness):
@@ -362,6 +363,9 @@ def test_restart_restarts_with_sleep(harness):
         harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}", {"0": "added"})
 
     with (
+        # Harmlessly decreasing timeouts for faster test run
+        patch("charm.RESTART_TIMEOUT", 3),
+        patch("charm.SERVICE_AVAILABLE_TIMEOUT", 3),
         patch("workload.ODWorkload.restart") as patched_restart,
         patch("managers.config.ConfigManager.set_dashboard_properties"),
         patch("time.sleep") as patched_sleep,
@@ -440,6 +444,9 @@ def test_workload_down_blocked_status(harness):
         harness.set_leader(True)
 
     with (
+        # Harmlessly decreasing timeouts for faster test run
+        patch("charm.RESTART_TIMEOUT", 3),
+        patch("charm.SERVICE_AVAILABLE_TIMEOUT", 3),
         patch("workload.ODWorkload.alive", return_value=False),
         patch("workload.ODWorkload.write"),
         patch("workload.ODWorkload.start", return_value=True),
