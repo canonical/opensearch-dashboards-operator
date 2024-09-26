@@ -286,6 +286,8 @@ class OpensearchDasboardsCharm(CharmBase):
         # 'Service unavailable' until the next 'update-status' hook execution
         start_time = time.time()
         unit_healthy, _ = self.health_manager.unit_healthy()
+        import pdb; pdb.set_trace()
+
         while not unit_healthy and time.time() - start_time < SERVICE_AVAILABLE_TIMEOUT:
             time.sleep(5)
             unit_healthy, _ = self.health_manager.unit_healthy()

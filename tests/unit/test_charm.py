@@ -21,8 +21,7 @@ from src.literals import (
     MSG_INCOMPATIBLE_UPGRADE,
     MSG_STATUS_ERROR,
     MSG_STATUS_UNHEALTHY,
-    RESTART_TIMEOUT,
-    SERVICE_AVAILABLE_TIMEOUT,
+    # SERVICE_AVAILABLE_TIMEOUT,
 )
 
 logger = logging.getLogger(__name__)
@@ -36,27 +35,33 @@ OPENSEARCH_APP_NAME = "opensearch"
 
 @pytest.fixture
 def harness():
-    harness = Harness(OpensearchDasboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
+    with(
+        patch("src.literals.SERVICE_AVAILABLE_TIMEOUT", return_value=15),
+        patch("src.charm.SERVICE_AVAILABLE_TIMEOUT", return_value=15),
+        patch("src.literals.SERVICE_AVAILABLE_TIMEOUT", 15),
+        patch("src.charm.SERVICE_AVAILABLE_TIMEOUT", 15),
+    ):
+        harness = Harness(OpensearchDasboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
 
-    if SUBSTRATE == "k8s":
-        harness.set_can_connect(CONTAINER, True)
+        if SUBSTRATE == "k8s":
+            harness.set_can_connect(CONTAINER, True)
 
-    harness.add_relation("restart", CHARM_KEY)
-    upgrade_rel_id = harness.add_relation("upgrade", CHARM_KEY)
-    harness.update_relation_data(upgrade_rel_id, f"{CHARM_KEY}/0", {"state": "idle"})
-    harness._update_config({"log_level": "INFO"})
-    harness.begin()
-    harness.charm.upgrade_events.dependency_model = OpensearchDashboardsDependencyModel(
-        **{
-            "osd_upstream": {
-                "dependencies": {"opensearch": "2.12"},
-                "name": "opensearch-dashboards",
-                "upgrade_supported": ">=2",
-                "version": "2.12",
-            },
-        }
-    )
-    return harness
+        harness.add_relation("restart", CHARM_KEY)
+        upgrade_rel_id = harness.add_relation("upgrade", CHARM_KEY)
+        harness.update_relation_data(upgrade_rel_id, f"{CHARM_KEY}/0", {"state": "idle"})
+        harness._update_config({"log_level": "INFO"})
+        harness.begin()
+        harness.charm.upgrade_events.dependency_model = OpensearchDashboardsDependencyModel(
+            **{
+                "osd_upstream": {
+                    "dependencies": {"opensearch": "2.12"},
+                    "name": "opensearch-dashboards",
+                    "upgrade_supported": ">=2",
+                    "version": "2.12",
+                },
+            }
+        )
+        return harness
 
 
 def set_healthy_opensearch_connection(harness):
@@ -338,11 +343,14 @@ def test_restart_sleep_with_timeout_if_service_down(harness):
 
     # Let's assume that we don't need to wait for workload to come up
     # to reduce the scope of the test to the service availability delay
+    patch_timeout = 15
     with (
         patch("workload.ODWorkload.alive", return_value=True),
         patch("workload.ODWorkload.restart") as patched_restart,
         patch("managers.config.ConfigManager.set_dashboard_properties"),
-        patch("time.sleep") as patched_sleep,
+        patch("src.charm.time.sleep") as patched_sleep,
+        patch("src.literals.SERVICE_AVAILABLE_TIMEOUT", return_value=patch_timeout),
+        patch("src.charm.SERVICE_AVAILABLE_TIMEOUT", return_value=patch_timeout),
     ):
         start_time = time.time()
         harness.charm._restart(EventBase(harness.charm))
@@ -350,7 +358,7 @@ def test_restart_sleep_with_timeout_if_service_down(harness):
         patched_restart.assert_called_once()
 
         assert patched_sleep.call_count > 2
-        assert end_time - start_time >= SERVICE_AVAILABLE_TIMEOUT
+        assert end_time - start_time >= patch_timeout
 
 
 def test_restart_restarts_with_sleep(harness):
