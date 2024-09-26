@@ -21,7 +21,6 @@ from src.literals import (
     MSG_INCOMPATIBLE_UPGRADE,
     MSG_STATUS_ERROR,
     MSG_STATUS_UNHEALTHY,
-    # SERVICE_AVAILABLE_TIMEOUT,
 )
 
 logger = logging.getLogger(__name__)
