@@ -623,6 +623,13 @@ async def get_leader_id(ops_test: OpsTest, app_name: str = APP_NAME) -> str:
     return leader_name.split("/")[-1]
 
 
+async def get_leader_unit(ops_test: OpsTest, app_name: str = APP_NAME) -> Unit:
+    """Get the leader unit name."""
+    for unit in ops_test.model.applications[app_name].units:
+        if await unit.is_leader_from_status():
+            return unit
+
+
 def get_unit(ops_test: OpsTest, unit_name: str) -> str:
     """Get unit by name."""
     for unit in ops_test.model.units:
