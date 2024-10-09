@@ -15,6 +15,7 @@ from core.workload import WorkloadBase
 from exceptions import OSDAPIError
 from literals import (
     HEALTH_OPENSEARCH_STATUS_URL,
+    MSG_STATUS_APP_REMOVED,
     MSG_STATUS_DB_DOWN,
     MSG_STATUS_DB_MISSING,
     MSG_STATUS_ERROR,
@@ -62,6 +63,9 @@ class HealthManager:
 
     def opensearch_ok(self) -> tuple[bool, str]:
         """Verify if associated Opensearch service is up and running."""
+
+        if not self.state.url:
+            return False, MSG_STATUS_APP_REMOVED
 
         if not self.state.opensearch_server or not (
             os.path.exists(self.workload.paths.opensearch_ca)

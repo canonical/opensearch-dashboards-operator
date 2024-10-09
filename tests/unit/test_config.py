@@ -66,7 +66,7 @@ def test_log_level_changed(harness):
         patch("workload.ODWorkload.write") as write,
     ):
         assert harness.charm.config_manager.config_changed()
-        content = DEFAULT_CONF.format(ip=harness.charm.state.unit_server.private_ip)
+        content = DEFAULT_CONF.format(ip=harness.charm.state.bind_address)
         path = "/var/snap/opensearch-dashboards/current/etc/opensearch-dashboards/opensearch_dashboards.yml"
         write.assert_called_with(content=content, path=path)
 

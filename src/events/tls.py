@@ -63,18 +63,22 @@ class TLSEvents(Object):
         if self.charm.state.unit_server.tls:
             self._remove_certificates()
 
+        sans_ip = set(
+            self.charm.state.unit_server.sans.get("sans_ip", [])
+            + [str(self.charm.state.bind_address or "")]
+        )
+        sans_dns = set(self.charm.state.unit_server.sans.get("sans_dns", []))
+
         logger.debug(
             "Requesting certificate for: "
-            f"host {self.charm.state.unit_server.host},"
-            f"with IP {self.charm.state.unit_server.sans.get('sans_ip', [])},"
-            f"DNS {self.charm.state.unit_server.sans.get('sans_dns', [])}"
+            f"host {self.charm.state.unit_server.host}, with IP {sans_ip}, DNS {sans_dns}"
         )
 
         csr = generate_csr(
             private_key=self.charm.state.unit_server.private_key.encode("utf-8"),
-            subject=self.charm.state.unit_server.private_ip,
-            sans_ip=self.charm.state.unit_server.sans.get("sans_ip", []),
-            sans_dns=self.charm.state.unit_server.sans.get("sans_dns", []),
+            subject=str(self.charm.state.bind_address or self.charm.state.unit_server.private_ip),
+            sans_ip=list(sans_ip or ""),
+            sans_dns=list(sans_dns),
         )
 
         self.charm.state.unit_server.update({"csr": csr.decode("utf-8").strip()})

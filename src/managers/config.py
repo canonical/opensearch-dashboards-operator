@@ -102,7 +102,8 @@ class ConfigManager:
 
         opensearch_ca = self.workload.paths.opensearch_ca if self.state.opensearch_server else ""
 
-        properties += [f"server.host: '{self.state.unit_server.private_ip}'"]
+        # We are using the address exposed by Juju as service address
+        properties += [f"server.host: '{self.state.bind_address}'"]
         properties += (
             [
                 f"opensearch.username: {opensearch_user}",

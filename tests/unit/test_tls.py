@@ -58,7 +58,10 @@ def test_certificates_available_fails_wrong_csr(harness):
     harness.update_relation_data(cert_rel_id, f"{CHARM_KEY}/0", {"csr": "not-missing"})
 
     harness.charm.tls_events.certificates.on.certificate_available.emit(
-        certificate_signing_request="missing", certificate="cert", ca="ca", chain=["ca", "cert"]
+        certificate_signing_request="missing",
+        certificate="cert",
+        ca="ca",
+        chain=["ca", "cert"],
     )
 
     assert not harness.charm.state.unit_server.certificate
@@ -153,9 +156,11 @@ def test_certificates_expiring(harness):
         },
     )
 
-    with patch(
-        "charms.tls_certificates_interface.v3.tls_certificates.TLSCertificatesRequiresV3.request_certificate_renewal",
-        return_value=None,
+    with (
+        patch(
+            "charms.tls_certificates_interface.v3.tls_certificates.TLSCertificatesRequiresV3.request_certificate_renewal",
+            return_value=None,
+        ),
     ):
         harness.charm.tls_events.certificates.on.certificate_expiring.emit(
             certificate="cert", expiry=None
@@ -179,9 +184,11 @@ def test_set_tls_private_key(harness):
     )
     key = open("tests/keys/0.key").read()
 
-    with patch(
-        "charms.tls_certificates_interface.v3.tls_certificates.TLSCertificatesRequiresV3.request_certificate_renewal",
-        return_value=None,
+    with (
+        patch(
+            "charms.tls_certificates_interface.v3.tls_certificates.TLSCertificatesRequiresV3.request_certificate_renewal",
+            return_value=None,
+        ),
     ):
         harness.run_action("set-tls-private-key", {"internal-key": key})
 

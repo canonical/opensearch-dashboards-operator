@@ -135,7 +135,6 @@ class OpensearchDasboardsCharm(CharmBase):
 
     def reconcile(self, event: EventBase) -> None:
         """Generic handler for all 'something changed, update' events across all relations."""
-
         # 1. Block until peer relation is set
         if not self.state.peer_relation:
             self.unit.status = WaitingStatus(MSG_WAITING_FOR_PEER)

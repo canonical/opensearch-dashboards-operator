@@ -69,7 +69,7 @@ class APIManager:
         if None in [endpoint, method]:
             raise ValueError("endpoint or method missing")
 
-        full_url = f"{self.state.unit_server.url}/api/{endpoint}"
+        full_url = f"{self.state.url}/api/{endpoint}"
 
         request_kwargs = {
             "verify": self.workload.paths.ca,

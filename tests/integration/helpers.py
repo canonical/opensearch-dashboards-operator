@@ -31,6 +31,24 @@ from core.workload import ODPaths
 METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
 OPENSEARCH_APP_NAME = "opensearch"
+SERIES = "jammy"
+
+OPENSEARCH_APP_NAME = "opensearch"
+OPENSEARCH_RELATION_NAME = "opensearch-client"
+OPENSEARCH_CONFIG = {
+    "logging-config": "<root>=INFO;unit=DEBUG",
+    "cloudinit-userdata": """postruncmd:
+        - [ 'sysctl', '-w', 'vm.max_map_count=262144' ]
+        - [ 'sysctl', '-w', 'fs.file-max=1048576' ]
+        - [ 'sysctl', '-w', 'vm.swappiness=0' ]
+        - [ 'sysctl', '-w', 'net.ipv4.tcp_retries2=5' ]
+    """,
+}
+
+TLS_CERTIFICATES_APP_NAME = "self-signed-certificates"
+COS_AGENT_APP_NAME = "grafana-agent"
+COS_AGENT_RELATION_NAME = "cos-agent"
+DB_CLIENT_APP_NAME = "application"
 
 
 logger = logging.getLogger(__name__)
@@ -213,7 +231,7 @@ def all_dashboards_unavailable(ops_test: OpsTest, https: bool = False) -> bool:
                 logger.info(f"Couldn't retrieve host certificate for unit {unit}")
                 continue
 
-        host = get_private_address(ops_test.model.name, unit.name)
+        host = get_bind_address(ops_test.model.name, unit.name)
 
         # We should retry until a host could be retrieved
         if not host:
@@ -258,7 +276,6 @@ def access_dashboard(
     arguments = {"url": url, "headers": headers, "json": data}
     if ssl:
         arguments["verify"] = "./ca.pem"
-
     response = requests.post(**arguments)
     return response.status_code == 200
 
@@ -298,7 +315,7 @@ async def access_all_dashboards(
     for unit in ops_test.model.applications[APP_NAME].units:
         if unit.name in skip:
             continue
-        host = get_private_address(ops_test.model.name, unit.name)
+        host = get_bind_address(ops_test.model.name, unit.name)
         if not host:
             logger.error(f"No hostname found for {unit.name}, can't check connection.")
             return False
@@ -371,14 +388,19 @@ async def get_address(ops_test: OpsTest, unit_name: str) -> str:
     return address
 
 
-def get_private_address(model_full_name: str, unit: str):
+def get_bind_address(model_full_name: str, unit: str):
     try:
         private_ip = check_output(
             [
-                "bash",
-                "-c",
-                f"JUJU_MODEL={model_full_name} juju ssh {unit} ip a | "
-                "grep global | grep 'inet 10.*/24' | cut -d' ' -f6 | cut -d'/' -f1",
+                "juju",
+                "exec",
+                f"--model={model_full_name}",
+                "--unit",
+                unit,
+                "--",
+                "network-get",
+                OPENSEARCH_RELATION_NAME,
+                "--bind-address",
             ],
             text=True,
         )
@@ -742,7 +764,7 @@ async def client_run_all_dashboards_request(
         return False
 
     for dashboards_unit in ops_test.model.applications[APP_NAME].units:
-        host = get_private_address(ops_test.model.name, dashboards_unit.name)
+        host = get_bind_address(ops_test.model.name, dashboards_unit.name)
         if not host:
             logger.debug(f"No hostname found for {dashboards_unit.name}, can't check connection.")
             return False
@@ -774,3 +796,20 @@ async def destroy_cluster(ops_test, app: str = OPENSEARCH_APP_NAME):
             # This case we don't raise an error in the context manager which
             # fails to restore the `update-status-hook-interval` value to it's former state.
             assert n_apps_after == n_apps_before - 1, "old cluster not destroyed successfully."
+
+
+async def for_machines(ops_test, machines, state="started"):
+    for attempt in Retrying(stop=stop_after_attempt(10), wait=wait_fixed(wait=60)):
+        with attempt:
+            mach_status = json.loads(
+                subprocess.check_output(
+                    ["juju", "machines", f"--model={ops_test.model.name}", "--format=json"]
+                )
+            )["machines"]
+            for id in machines:
+                if (
+                    str(id) not in mach_status.keys()
+                    or mach_status[str(id)]["juju-status"]["current"] != state
+                ):
+                    logger.warning(f"machine-{id} either not exist yet or not in {state}")
+                    raise Exception()

@@ -59,6 +59,7 @@ MSG_STATUS_UNHEALTHY = "Service is not in a green health state"
 MSG_STATUS_ERROR = "Service is an error state"
 MSG_STATUS_WORKLOAD_DOWN = "Workload is not alive"
 MSG_STATUS_UNKNOWN = "Workload status is not known"
+MSG_STATUS_APP_REMOVED = "remove-application was requested: leaving..."
 
 MSG_APP_STATUS = [
     MSG_STATUS_DB_DOWN,

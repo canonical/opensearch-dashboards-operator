@@ -86,4 +86,4 @@ class TLSManager:
         logger.debug(
             f"Currently recognized IP using 'gethostbyname': {self.state.unit_server.private_ip}"
         )
-        return self.state.unit_server.private_ip in response
+        return str(self.state.bind_address) in response

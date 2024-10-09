@@ -5,14 +5,11 @@
 """Collection of state objects for relations, apps and units."""
 import logging
 import socket
-import subprocess
 from typing import Literal, MutableMapping
 
 from charms.data_platform_libs.v0.data_interfaces import Data, DataDict
 from ops.model import Application, Relation, Unit
 from typing_extensions import override
-
-from literals import SERVER_PORT
 
 logger = logging.getLogger(__name__)
 
@@ -178,24 +175,18 @@ class ODServer(StateBase):
     @property
     def fqdn(self) -> str:
         """The Fully Qualified Domain Name for the unit."""
-        return socket.getfqdn()
+        # return socket.getfqdn(self.private_ip)
+        return socket.getfqdn(self.private_ip)
 
     @property
     def private_ip(self) -> str:
-        """The IP for the unit."""
+        """The IP for the unit recovered using socket."""
         return socket.gethostbyname(self.hostname)
 
     @property
     def public_ip(self) -> str:
-        result = subprocess.check_output(
-            [
-                "bash",
-                "-c",
-                "ip a | grep global | grep -v 'inet 10.' | cut -d' ' -f6 | cut -d'/' -f1",
-            ],
-            text=True,
-        )
-        return result.rstrip()
+        """The public IP for the unit."""
+        return socket.gethostbyname(self.hostname)
 
     @property
     def host(self) -> str:
@@ -245,12 +236,6 @@ class ODServer(StateBase):
             return {}
 
         return {
-            "sans_ip": [self.private_ip],
-            "sans_dns": [self.hostname, self.fqdn],
+            "sans_ip": [self.private_ip, self.public_ip],
+            "sans_dns": [dns for dns in {self.hostname, self.fqdn} if dns],
         }
-
-    @property
-    def url(self) -> str:
-        """Service URL."""
-        scheme = "https" if self.tls else "http"
-        return f"{scheme}://{self.private_ip}:{SERVER_PORT}"

@@ -105,7 +105,7 @@ def test_health_status_ok(harness):
 
     responses.add(
         method="GET",
-        url=f"{harness.charm.state.unit_server.url}/api/status",
+        url=f"{harness.charm.state.url}/api/status",
         json=expected_response,
     )
 
@@ -119,7 +119,7 @@ def test_health_status_service_uniavail(harness):
 
     responses.add(
         method="GET",
-        url=f"{harness.charm.state.unit_server.url}/api/status",
+        url=f"{harness.charm.state.url}/api/status",
         status=503,
         body="OpenSearch Dashboards server is not ready yet",
     )
