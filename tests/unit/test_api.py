@@ -4,7 +4,7 @@
 
 import logging
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 import responses
@@ -177,8 +177,6 @@ def test_status(harness):
 @responses.activate
 def test_request_timeout(harness):
     """ReadTimeout is "bubbled up" to caller."""
-    responses.add(
-        method="GET", url=f"{harness.charm.state.unit_server.url}/api/status", body=ReadTimeout()
-    )
+    responses.add(method="GET", url=f"{harness.charm.state.url}/api/status", body=ReadTimeout())
     with pytest.raises(ReadTimeout):
         harness.charm.api_manager.service_status()

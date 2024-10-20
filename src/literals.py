@@ -55,7 +55,6 @@ MSG_STATUS_DB_MISSING = "Opensearch connection is missing"
 MSG_STATUS_DB_DOWN = "Opensearch service is (partially or fully) down"
 MSG_TLS_CONFIG = "Waiting for TLS to be fully configured..."
 MSG_INCOMPATIBLE_UPGRADE = "Incompatible Opensearch and Dashboards versions"
-MSG_ROLLING_RESTART = "Executing restart operation"
 
 MSG_STATUS_UNAVAIL = "Service unavailable"
 MSG_STATUS_UNHEALTHY = "Service is not in a green health state"
