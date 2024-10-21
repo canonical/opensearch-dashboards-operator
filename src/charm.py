@@ -161,8 +161,8 @@ class OpensearchDasboardsCharm(CharmBase):
         unit_healthy, unit_msg = self.health_manager.unit_healthy()
 
         if (
-            # not self.workload.alive()
-            or (not unit_healthy and unit_msg == MSG_STATUS_HANGING)
+            # not self.workload.alive() or
+            (not unit_healthy and unit_msg == MSG_STATUS_HANGING)
             or self.config_manager.config_changed()
             and self.state.unit_server.started
             and self.upgrade_events.idle
