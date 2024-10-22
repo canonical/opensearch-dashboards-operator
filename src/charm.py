@@ -27,7 +27,6 @@ from literals import (
     MSG_APP_STATUS,
     MSG_INCOMPATIBLE_UPGRADE,
     MSG_INSTALLING,
-    MSG_ROLLING_RESTART,
     MSG_STARTING,
     MSG_STARTING_SERVER,
     MSG_STATUS_DB_MISSING,
@@ -154,16 +153,12 @@ class OpensearchDasboardsCharm(CharmBase):
             return
 
         # 2. Restart if the service is down or on config change
-        service_stopped = not self.workload.alive() and not self.unit.status == MaintenanceStatus(
-            MSG_ROLLING_RESTART
-        )
 
         # Evaluat unit health at this point (as it may trigger a restart)
         unit_healthy, unit_msg = self.health_manager.unit_healthy()
 
         if (
-            service_stopped
-            or (not unit_healthy and unit_msg == MSG_STATUS_HANGING)
+            (not unit_healthy and unit_msg == MSG_STATUS_HANGING)
             or self.config_manager.config_changed()
             and self.state.unit_server.started
             and self.upgrade_events.idle
@@ -264,9 +259,6 @@ class OpensearchDasboardsCharm(CharmBase):
 
     def _restart(self, event: EventBase) -> None:
         """Handler for emitted restart events."""
-        # if not self.state.stable or not self.upgrade_events.idle:
-        #     event.defer()
-        #     return
         if not self.state.unit_server.started:
             self.reconcile(event)
             return
