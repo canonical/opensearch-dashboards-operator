@@ -265,6 +265,15 @@ def test_restart_sleep_no_wait_once_service_up(harness):
     Reason: to avoid unhealthy charm state set by 'update-status' premature run.
     """
 
+    # Let's assume that the service has started already, and has a healthy DB connection
+    with harness.hooks_disabled():
+        peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
+        harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
+        harness.set_planned_units(1)
+        harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}/0", {"state": "started"})
+        opensearch_rel_id = harness.add_relation(OPENSEARCH_REL_NAME, "opensearch")
+        harness.add_relation_unit(opensearch_rel_id, "opensearch/0")
+
     expected_response = {
         "status": {
             "overall": {
@@ -275,19 +284,10 @@ def test_restart_sleep_no_wait_once_service_up(harness):
 
     responses.add(
         method="GET",
-        url=f"{harness.charm.state.unit_server.url}/api/status",
+        url=f"{harness.charm.state.url}/api/status",
         status=200,
         json=expected_response,
     )
-
-    # Let's assume that the service has started already, and has a healthy DB connection
-    with harness.hooks_disabled():
-        peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
-        harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
-        harness.set_planned_units(1)
-        harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}/0", {"state": "started"})
-        opensearch_rel_id = harness.add_relation(OPENSEARCH_REL_NAME, "opensearch")
-        harness.add_relation_unit(opensearch_rel_id, "opensearch/0")
 
     # Let's assume that we don't need to wait for workload to come up
     # to reduce the scope of the test to the service availability delay
@@ -304,11 +304,21 @@ def test_restart_sleep_no_wait_once_service_up(harness):
         assert patched_sleep.call_count == 0
 
 
+@responses.activate
 def test_restart_sleep_with_timeout_if_service_down(harness):
     """We are giving a "grace period" for the service to establish after a restart.
 
     Reason: to avoid unhealthy charm state set by 'update-status' premature run.
     """
+
+    # Let's assume that the service has started already, and has a healthy DB connection
+    with harness.hooks_disabled():
+        peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
+        harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
+        harness.set_planned_units(1)
+        harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}/0", {"state": "started"})
+        opensearch_rel_id = harness.add_relation(OPENSEARCH_REL_NAME, "opensearch")
+        harness.add_relation_unit(opensearch_rel_id, "opensearch/0")
 
     expected_response = {
         "status": {
@@ -320,19 +330,10 @@ def test_restart_sleep_with_timeout_if_service_down(harness):
 
     responses.add(
         method="GET",
-        url=f"{harness.charm.state.unit_server.url}/api/status",
+        url=f"{harness.charm.state.url}/api/status",
         status=200,
         json=expected_response,
     )
-
-    # Let's assume that the service has started already, and has a healthy DB connection
-    with harness.hooks_disabled():
-        peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
-        harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
-        harness.set_planned_units(1)
-        harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}/0", {"state": "started"})
-        opensearch_rel_id = harness.add_relation(OPENSEARCH_REL_NAME, "opensearch")
-        harness.add_relation_unit(opensearch_rel_id, "opensearch/0")
 
     # Let's assume that we don't need to wait for workload to come up
     # to reduce the scope of the test to the service availability delay

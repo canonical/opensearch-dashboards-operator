@@ -136,7 +136,7 @@ def test_health_status_service_unresponsive(harness):
 
     responses.add(
         method="GET",
-        url=f"{harness.charm.state.unit_server.url}/api/status",
+        url=f"{harness.charm.state.url}/api/status",
         status=503,
         body=ReadTimeout(),
     )
