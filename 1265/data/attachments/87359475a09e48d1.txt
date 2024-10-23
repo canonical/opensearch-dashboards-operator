@@ -1,0 +1,72 @@
+[32mINFO    [0m pytest_operator.plugin:plugin.py:903 Model status:
+
+Model  Controller           Cloud/Region         Version  SLA          Timestamp
+test   localhost-localhost  localhost/localhost  3.5.3    unsupported  02:50:11Z
+
+App                       Version  Status   Scale  Charm                     Channel        Rev  Exposed  Message
+opensearch                         error        3  opensearch                2/edge         185  no       hook failed: "config-changed"
+opensearch-dashboards              blocked      2  opensearch-dashboards                      0  no       Opensearch connection is missing
+self-signed-certificates           active       1  self-signed-certificates  latest/stable  155  no       
+
+Unit                         Workload     Agent      Machine  Public address  Ports     Message
+opensearch-dashboards/0      maintenance  executing  0        10.27.204.202             (install) installing Opensearch Dashboards...
+opensearch-dashboards/1*     maintenance  idle       1        10.27.204.177   5601/tcp  starting...
+opensearch/0                 maintenance  executing  2        10.27.204.164             (install) Installing OpenSearch...
+opensearch/1*                active       executing  3        10.27.204.180             
+opensearch/2                 error        idle       4        10.27.204.152             hook failed: "config-changed"
+self-signed-certificates/0*  active       idle       5        10.27.204.223             
+
+Machine  State    Address        Inst id        Base          AZ  Message
+0        started  10.27.204.202  juju-9caf03-0  ubuntu@22.04      Running
+1        started  10.27.204.177  juju-9caf03-1  ubuntu@22.04      Running
+2        started  10.27.204.164  juju-9caf03-2  ubuntu@22.04      Running
+3        started  10.27.204.180  juju-9caf03-3  ubuntu@22.04      Running
+4        started  10.27.204.152  juju-9caf03-4  ubuntu@22.04      Running
+5        started  10.27.204.223  juju-9caf03-5  ubuntu@22.04      Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:909 Juju error logs:
+
+machine-1: 02:48:55 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:48:55 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-1: 02:48:56 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-3: 02:48:56 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-3: 02:48:56 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-1: 02:48:56 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-4: 02:49:00 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-4: 02:49:00 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-2: 02:49:00 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-2: 02:49:01 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:49:01 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 02:49:01 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 02:49:01 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-0: 02:49:01 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+unit-opensearch-dashboards-0: 02:49:01 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-5: 02:49:02 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-5: 02:49:02 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-self-signed-certificates-0: 02:49:02 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+unit-opensearch-2: 02:50:10 ERROR unit.opensearch/2.juju-log Uncaught exception while in charm code:
+Traceback (most recent call last):
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/./src/charm.py", line 221, in <module>
+    main(OpenSearchOperatorCharm)
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/venv/ops/main.py", line 553, in main
+    manager.run()
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/venv/ops/main.py", line 529, in run
+    self._emit()
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/venv/ops/main.py", line 518, in _emit
+    _emit_charm_event(self.charm, self.dispatcher.event_name, self._juju_context)
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/venv/ops/main.py", line 139, in _emit_charm_event
+    event_to_emit.emit(*args, **kwargs)
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/venv/ops/framework.py", line 347, in emit
+    framework._emit(event)
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/venv/ops/framework.py", line 853, in _emit
+    self._reemit(event_path)
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/venv/ops/framework.py", line 943, in _reemit
+    custom_handler(event)
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/lib/charms/opensearch/v0/opensearch_base_charm.py", line 746, in _on_config_changed
+    perf_profile_needs_restart = self.performance_profile.apply(
+  File "/var/lib/juju/agents/unit-opensearch-2/charm/lib/charms/opensearch/v0/opensearch_performance_profile.py", line 106, in apply
+    if self.charm.opensearch_peer_cm.deployment_desc().typ == DeploymentType.MAIN_ORCHESTRATOR:
+AttributeError: 'NoneType' object has no attribute 'typ'
+unit-opensearch-2: 02:50:10 ERROR juju.worker.uniter.operation hook "config-changed" (via hook dispatching script: dispatch) failed: exit status 1
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:991 Forgetting model main...
