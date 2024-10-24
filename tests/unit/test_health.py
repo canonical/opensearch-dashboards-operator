@@ -10,6 +10,7 @@ import pytest
 import responses
 import yaml
 from ops.testing import Harness
+from requests import ReadTimeout
 
 from charm import OpensearchDasboardsCharm
 from literals import (
@@ -19,7 +20,8 @@ from literals import (
     OPENSEARCH_REL_NAME,
     SUBSTRATE,
 )
-from src.literals import MSG_STATUS_DB_DOWN
+from src.literals import MSG_STATUS_DB_DOWN, MSG_STATUS_HANGING
+from tests.unit.test_charm import MSG_STATUS_UNHEALTHY
 
 logger = logging.getLogger(__name__)
 
@@ -127,6 +129,21 @@ def test_health_status_service_uniavail(harness):
     response = harness.charm.health_manager.status_ok()
     assert not response[0]
     assert response[1] == MSG_STATUS_UNAVAIL
+
+
+@responses.activate
+def test_health_status_service_unresponsive(harness):
+
+    responses.add(
+        method="GET",
+        url=f"{harness.charm.state.url}/api/status",
+        status=503,
+        body=ReadTimeout(),
+    )
+
+    response = harness.charm.health_manager.status_ok()
+    assert not response[0]
+    assert response[1] == MSG_STATUS_HANGING
 
 
 @responses.activate

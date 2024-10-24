@@ -4,12 +4,13 @@
 
 import logging
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 import responses
 import yaml
 from ops.testing import Harness
+from requests import ReadTimeout
 
 from charm import OpensearchDasboardsCharm
 from literals import CHARM_KEY, CONTAINER, OPENSEARCH_REL_NAME, SUBSTRATE
@@ -171,3 +172,11 @@ def test_status(harness):
     response = harness.charm.api_manager.service_status()
     assert all(field in response for field in ["status", "name", "version"])
     assert all(field in response["status"] for field in ["statuses", "overall"])
+
+
+@responses.activate
+def test_request_timeout(harness):
+    """ReadTimeout is "bubbled up" to caller."""
+    responses.add(method="GET", url=f"{harness.charm.state.url}/api/status", body=ReadTimeout())
+    with pytest.raises(ReadTimeout):
+        harness.charm.api_manager.service_status()
