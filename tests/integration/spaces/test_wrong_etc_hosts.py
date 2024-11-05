@@ -10,6 +10,7 @@ from pytest_operator.plugin import OpsTest
 
 from ..helpers import (
     APP_NAME,
+    CONFIG_OPTS,
     OPENSEARCH_APP_NAME,
     SERIES,
     TLS_CERTIFICATES_APP_NAME,
@@ -89,6 +90,7 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
         constraints="spaces=alpha,client,cluster,backup",
         bind={"": "cluster"},
         num_units=3,
+        config=CONFIG_OPTS,
     )
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, APP_NAME)
