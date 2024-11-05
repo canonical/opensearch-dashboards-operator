@@ -154,7 +154,7 @@ class OpensearchDasboardsCharm(CharmBase):
 
         # 2. Restart if the service is down or on config change
 
-        # Evaluat unit health at this point (as it may trigger a restart)
+        # Evaluate unit health at this point (as it may trigger a restart)
         unit_healthy, unit_msg = self.health_manager.unit_healthy()
 
         if (
@@ -282,7 +282,6 @@ class OpensearchDasboardsCharm(CharmBase):
             unit_healthy, _ = self.health_manager.unit_healthy()
 
         clear_status(self.unit, [MSG_STARTING, MSG_STARTING_SERVER])
-        self.on.update_status.emit()
 
     # --- CONVENIENCE METHODS ---
 
