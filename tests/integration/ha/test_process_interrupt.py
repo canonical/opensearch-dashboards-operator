@@ -11,7 +11,7 @@ import yaml
 from pytest_operator.plugin import OpsTest
 from tenacity import Retrying, stop_after_attempt, wait_fixed
 
-from ..helpers import access_all_dashboards, get_leader_name, get_relations
+from ..helpers import CONFIG_OPTS, access_all_dashboards, get_leader_name, get_relations
 from .helpers import (
     is_down,
     patch_restart_delay,
@@ -74,7 +74,9 @@ async def test_build_and_deploy(ops_test: OpsTest):
     # Opensearch
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
     # NOTE: can't access 2/stable from the tests, only 'edge' available
-    await ops_test.model.deploy(OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB)
+    await ops_test.model.deploy(
+        OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB, config=CONFIG_OPTS
+    )
 
     config = {"ca-common-name": "CN_CA"}
     await ops_test.model.deploy(TLS_CERT_APP_NAME, channel="stable", config=config)
