@@ -9,7 +9,7 @@ import pytest
 import yaml
 from ops.testing import Harness
 
-from charm import OpensearchDasboardsCharm
+from charm import OpensearchDashboardsCharm
 from literals import CHARM_KEY, CONTAINER, PEER, SUBSTRATE
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ path.data: /var/snap/opensearch-dashboards/common/var/lib/opensearch-dashboards"
 
 @pytest.fixture
 def harness():
-    harness = Harness(OpensearchDasboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
+    harness = Harness(OpensearchDashboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
 
     if SUBSTRATE == "k8s":
         harness.set_can_connect(CONTAINER, True)

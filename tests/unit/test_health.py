@@ -12,7 +12,7 @@ import yaml
 from ops.testing import Harness
 from requests import ReadTimeout
 
-from charm import OpensearchDasboardsCharm
+from charm import OpensearchDashboardsCharm
 from literals import (
     CHARM_KEY,
     CONTAINER,
@@ -21,7 +21,6 @@ from literals import (
     SUBSTRATE,
 )
 from src.literals import MSG_STATUS_DB_DOWN, MSG_STATUS_HANGING
-from tests.unit.test_charm import MSG_STATUS_UNHEALTHY
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ METADATA = str(yaml.safe_load(Path("./metadata.yaml").read_text()))
 
 @pytest.fixture
 def harness():
-    harness = Harness(OpensearchDasboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
+    harness = Harness(OpensearchDashboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
 
     if SUBSTRATE == "k8s":
         harness.set_can_connect(CONTAINER, True)

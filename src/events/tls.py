@@ -20,7 +20,7 @@ from ops.framework import EventBase, Object
 from literals import CERTS_REL_NAME
 
 if TYPE_CHECKING:
-    from charm import OpensearchDasboardsCharm
+    from charm import OpensearchDashboardsCharm
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class TLSEvents(Object):
 
     def __init__(self, charm):
         super().__init__(charm, "tls")
-        self.charm: "OpensearchDasboardsCharm" = charm
+        self.charm: "OpensearchDashboardsCharm" = charm
         self.certificates = TLSCertificatesRequiresV3(self.charm, CERTS_REL_NAME)
 
         self.framework.observe(

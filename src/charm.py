@@ -7,11 +7,12 @@
 import logging
 import time
 
+from charms.data_platform_libs.v0.data_interfaces import SecretGroup
 from charms.grafana_agent.v0.cos_agent import COSAgentProvider
 from charms.rolling_ops.v0.rollingops import RollingOpsManager
+from ops import main
 from ops.charm import CharmBase, InstallEvent, SecretChangedEvent
 from ops.framework import EventBase
-from ops.main import main
 from ops.model import BlockedStatus, MaintenanceStatus, WaitingStatus
 
 from core.cluster import ClusterState
@@ -50,7 +51,7 @@ from workload import ODWorkload
 logger = logging.getLogger(__name__)
 
 
-class OpensearchDasboardsCharm(CharmBase):
+class OpensearchDashboardsCharm(CharmBase):
     """Charmed Operator for Opensearch Dashboards."""
 
     def __init__(self, *args):
@@ -84,7 +85,7 @@ class OpensearchDasboardsCharm(CharmBase):
             state=self.state,
             workload=self.workload,
             substrate=SUBSTRATE,
-            dependency_model=dependency_model,
+            dependency_model=dependency_model.osd_upstream,
         )
 
         # --- LIB EVENT HANDLERS ---
@@ -142,8 +143,6 @@ class OpensearchDasboardsCharm(CharmBase):
             self.unit.status = WaitingStatus(MSG_WAITING_FOR_PEER)
             return
 
-        outdated_status = [MSG_WAITING_FOR_PEER]
-
         # attempt startup of server
         if not self.state.unit_server.started:
             self.init_server()
@@ -156,20 +155,22 @@ class OpensearchDasboardsCharm(CharmBase):
 
         # Evaluate unit health at this point (as it may trigger a restart)
         unit_healthy, unit_msg = self.health_manager.unit_healthy()
-
-        if (
-            (not unit_healthy and unit_msg == MSG_STATUS_HANGING)
-            or self.config_manager.config_changed()
+        if (not unit_healthy and unit_msg == MSG_STATUS_HANGING) or (
+            self.config_manager.config_changed()
             and self.state.unit_server.started
             and self.upgrade_events.idle
         ):
             self.on[f"{self.restart.name}"].acquire_lock.emit()
-            # No point in setting any status -- would be wiped out by rollingops after the restert
+            # No point in setting any status -- would be wiped out by rollingops after the restart
             return
 
         # 3. Maintain the correct app status
         # No further actions below but only status settings
+        self._reconcile_statuses()
 
+    def _reconcile_statuses(self) -> None:
+        """Reconcile the unit and app statuses."""
+        outdated_status = [MSG_WAITING_FOR_PEER]
         # Block until Opensearch is available and it's a compatible version
         if self.state.opensearch_server:
             outdated_status.append(MSG_STATUS_DB_MISSING)
@@ -205,6 +206,7 @@ class OpensearchDasboardsCharm(CharmBase):
             outdated_status += MSG_APP_STATUS
 
         # Checks purely on unit level
+        unit_healthy, unit_msg = self.health_manager.unit_healthy()
         if not unit_healthy:
             self.unit.status = BlockedStatus(unit_msg)
             return
@@ -230,13 +232,13 @@ class OpensearchDasboardsCharm(CharmBase):
         cluster_secret_label = self.state.cluster.data_interface._generate_secret_label(
             PEER,
             self.state.peer_relation.id,
-            "extra",  # type:ignore noqa
+            SecretGroup("extra"),
         )  # Changes with the soon upcoming new version of DP-libs STILL within this POC
 
         server_secret_label = self.state.unit_server.data_interface._generate_secret_label(
             PEER,
             self.state.peer_relation.id,
-            "extra",  # type:ignore noqa
+            SecretGroup("extra"),
         )  # Changes with the soon upcoming new version of DP-libs STILL within this POC
 
         if event.secret.label in [cluster_secret_label, server_secret_label]:
@@ -254,24 +256,24 @@ class OpensearchDasboardsCharm(CharmBase):
             event.defer()
             return
 
-        self.reconcile(event)
-        clear_status(self.unit, MSG_STARTING)
-
-    def _restart(self, event: EventBase) -> None:
-        """Handler for emitted restart events."""
-        if not self.state.unit_server.started:
-            self.reconcile(event)
-            return
-
-        logger.info(f"{self.unit.name} restarting...")
-        self.workload.restart()
-
         # Allow the service to start up safely on the snap level
         start_time = time.time()
         while not self.workload.alive() and time.time() - start_time < RESTART_TIMEOUT:
             time.sleep(5)
 
-        # Allow the service to establish
+        clear_status(self.unit, MSG_STARTING)
+        self._reconcile_statuses()
+
+    def _restart(self, _: EventBase) -> None:
+        """Handler for emitted restart events."""
+        if not self.state.unit_server.started:
+            self._reconcile_statuses()
+            return
+
+        logger.info(f"{self.unit.name} restarting...")
+        self.workload.restart()
+
+        # Allow the service to start up safely on the snap level + API
         # Reason: we are emitting an 'update-status' right after
         # If the service is not yet functional, the status is set as
         # 'Service unavailable' until the next 'update-status' hook execution
@@ -282,6 +284,7 @@ class OpensearchDasboardsCharm(CharmBase):
             unit_healthy, _ = self.health_manager.unit_healthy()
 
         clear_status(self.unit, [MSG_STARTING, MSG_STARTING_SERVER])
+        self._reconcile_statuses()
 
     # --- CONVENIENCE METHODS ---
 
@@ -325,4 +328,4 @@ class OpensearchDasboardsCharm(CharmBase):
 
 
 if __name__ == "__main__":
-    main(OpensearchDasboardsCharm)
+    main(OpensearchDashboardsCharm)

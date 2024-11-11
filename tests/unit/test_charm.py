@@ -14,7 +14,7 @@ from ops.framework import EventBase
 from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus, WaitingStatus
 from ops.testing import Harness
 
-from charm import OpensearchDasboardsCharm, OpensearchDashboardsDependencyModel
+from charm import OpensearchDashboardsCharm, OpensearchDashboardsDependencyModel
 from helpers import clear_status
 from literals import CHARM_KEY, CONTAINER, OPENSEARCH_REL_NAME, PEER, SUBSTRATE
 from src.literals import (
@@ -34,7 +34,7 @@ OPENSEARCH_APP_NAME = "opensearch"
 
 @pytest.fixture
 def harness():
-    harness = Harness(OpensearchDasboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
+    harness = Harness(OpensearchDashboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
 
     if SUBSTRATE == "k8s":
         harness.set_can_connect(CONTAINER, True)

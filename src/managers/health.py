@@ -46,7 +46,7 @@ class HealthManager:
         self.api_manager = APIManager(state, workload, substrate)
 
     def status_ok(self) -> tuple[bool, str]:
-        """Health status"""
+        """Health status."""
         try:
             status_data = self.api_manager.service_status()
         except HTTPError as err:

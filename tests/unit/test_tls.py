@@ -9,7 +9,7 @@ import pytest
 import yaml
 from ops.testing import Harness
 
-from charm import OpensearchDasboardsCharm
+from charm import OpensearchDashboardsCharm
 from literals import CERTS_REL_NAME, CHARM_KEY, PEER
 from src.events.tls import TLSEvents
 
@@ -20,7 +20,7 @@ METADATA = str(yaml.safe_load(Path("./metadata.yaml").read_text()))
 
 @pytest.fixture
 def harness():
-    harness = Harness(OpensearchDasboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
+    harness = Harness(OpensearchDashboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
     harness.add_relation(PEER, CHARM_KEY)
     harness.begin()
     return harness
