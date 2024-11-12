@@ -2,7 +2,7 @@
 # Copyright 2023 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-"""Manager for for handling configuration building + writing."""
+"""Manager for handling configuration building + writing."""
 import logging
 from typing import TYPE_CHECKING
 
