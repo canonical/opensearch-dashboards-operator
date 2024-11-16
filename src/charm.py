@@ -264,7 +264,7 @@ class OpensearchDashboardsCharm(CharmBase):
         clear_status(self.unit, MSG_STARTING)
         self._reconcile_statuses()
 
-    def _restart(self) -> None:
+    def _restart(self, _: EventBase) -> None:
         """Handler for emitted restart events."""
         if not self.state.unit_server.started:
             self._reconcile_statuses()
