@@ -15,11 +15,12 @@ from charms.data_platform_libs.v0.data_interfaces import (
 from ops.framework import Framework, Object
 from ops.model import Relation, Unit
 
-from core.models import SUBSTRATES, ODCluster, ODServer, OpensearchServer
+from core.models import SUBSTRATES, OAuth, ODCluster, ODServer, OpensearchServer
 from literals import (
     CERTS_REL_NAME,
     DASHBOARD_INDEX,
     DASHBOARD_ROLE,
+    OAUTH_REL_NAME,
     OPENSEARCH_REL_NAME,
     PEER,
     PEER_APP_SECRETS,
@@ -67,6 +68,11 @@ class ClusterState(Object):
     def tls_relation(self) -> Relation | None:
         """The cluster tls relation."""
         return self.model.get_relation(CERTS_REL_NAME)
+
+    @property
+    def oauth_relation(self) -> Relation | None:
+        """The cluster Oauth relation."""
+        return self.model.get_relation(OAUTH_REL_NAME)
 
     # --- CORE COMPONENTS---
 
@@ -141,6 +147,13 @@ class ClusterState(Object):
             component=self.opensearch_relation.app,
             substrate=self.substrate,
             local_app=self.cluster.app,
+        )
+
+    @property
+    def oauth(self) -> OAuth:
+        """The oauth relation state."""
+        return OAuth(
+            relation=self.oauth_relation,
         )
 
     @property

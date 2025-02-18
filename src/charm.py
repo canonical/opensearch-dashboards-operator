@@ -48,6 +48,7 @@ from managers.config import ConfigManager
 from managers.health import HealthManager
 from managers.tls import TLSManager
 from managers.upgrade import UpgradeManager
+from src.events.oauth import OAuthHandler
 from workload import ODWorkload
 
 logger = logging.getLogger(__name__)
@@ -68,6 +69,7 @@ class OpensearchDasboardsCharm(CharmBase):
         self.requirer_events = RequirerEvents(self)
         dependency_model = OpensearchDashboardsDependencyModel(**DEPENDENCIES)
         self.upgrade_events = ODUpgradeEvents(self, dependency_model=dependency_model)
+        self.oauth = OAuthHandler(self)
 
         # --- MANAGERS ---
 

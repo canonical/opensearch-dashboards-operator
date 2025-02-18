@@ -126,6 +126,17 @@ class ConfigManager:
                 "server.ssl.key": self.workload.paths.server_key,
             }
 
+        if self.state.oauth_relation:
+            properties |= {
+                "opensearch_security.auth.type": ["basicauth", "openid"],
+                "opensearch_security.auth.multiple_auth_enabled": True,
+                "opensearch_security.openid.connect_url": f"{self.state.oauth.issuer_url}/.well-known/openid-configuration",
+                "opensearch_security.openid.client_id": self.state.oauth.client_id,
+                "opensearch_security.openid.client_secret": self.state.oauth.client_secret,
+                "opensearch_security.openid.verify_hostnames": False,
+                "opensearch_security.openid.root_ca": opensearch_ca,
+            }
+
         # Log-level
         properties[self.log_level] = True
 

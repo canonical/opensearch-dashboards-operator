@@ -7,7 +7,9 @@ import logging
 import socket
 from typing import Literal, MutableMapping
 
+import requests
 from charms.data_platform_libs.v0.data_interfaces import Data, DataDict
+from ops import Secret
 from ops.model import Application, Relation, Unit
 from typing_extensions import override
 
@@ -239,3 +241,68 @@ class ODServer(StateBase):
             "sans_ip": [self.private_ip, self.public_ip],
             "sans_dns": [dns for dns in {self.hostname, self.fqdn} if dns],
         }
+
+
+class OAuth:
+    """State collection metadata for the oauth relation."""
+
+    def __init__(self, relation: Relation | None):
+        self.relation = relation
+
+    @property
+    def relation_data(self) -> MutableMapping[str, str]:
+        """Oauth relation data object."""
+        if not self.relation or not self.relation.app:
+            return {}
+
+        return self.relation.data[self.relation.app]
+
+    @property
+    def issuer_url(self) -> str:
+        """The issuer URL to identify the IDP."""
+        return self.relation_data.get("issuer_url", "")
+
+    @property
+    def client_id(self) -> str:
+        """Client ID created by Hydra."""
+        return self.relation_data.get("client_id", "")
+
+    @property
+    def client_secret(self) -> str:
+        """Client secret created by Hydra."""
+        return self._client_secret
+
+    @client_secret.setter
+    def client_secret(self, value):
+        # Validate that the secret_id exists in the databag
+        if not self.relation_data.get("client_secret_id"):
+            self._client_secret = ""
+            return
+
+        self._client_secret = value
+
+    @property
+    def jwks_endpoint(self) -> str:
+        """The JWKS endpoint needed to validate JWT tokens."""
+        return self.relation_data.get("jwks_endpoint", "")
+
+    @property
+    def introspection_endpoint(self) -> str:
+        """The introspection endpoint needed to validate non-JWT tokens."""
+        return self.relation_data.get("introspection_endpoint", "")
+
+    @property
+    def jwt_access_token(self) -> bool:
+        """A flag indicating if the access token is JWT or not."""
+        return self.relation_data.get("jwt_access_token", "false").lower() == "true"
+
+    @property
+    def uses_trusted_ca(self) -> bool:
+        """A flag indicating if the IDP uses certificates signed by a trusted CA."""
+        try:
+            requests.get(self.issuer_url, timeout=10)
+            return True
+        except requests.exceptions.SSLError:
+            return False
+        except requests.exceptions.RequestException:
+            return True
