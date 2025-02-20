@@ -73,10 +73,16 @@ async def test_build_and_deploy(ops_test: OpsTest):
     await asyncio.gather(
         ops_test.model.deploy(COS_AGENT_APP_NAME, series=SERIES),
         ops_test.model.deploy(
-            OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB, config=CONFIG_OPTS
+            OPENSEARCH_APP_NAME,
+            channel="2/edge",
+            num_units=NUM_UNITS_DB,
+            config=CONFIG_OPTS,
+            series=SERIES,
         ),
         ops_test.model.deploy(TLS_CERTIFICATES_APP_NAME, channel="stable", config=config),
-        ops_test.model.deploy(application_charm_build, application_name=DB_CLIENT_APP_NAME),
+        ops_test.model.deploy(
+            application_charm_build, application_name=DB_CLIENT_APP_NAME, series=SERIES
+        ),
     )
 
     await ops_test.model.wait_for_idle(
@@ -358,7 +364,11 @@ async def test_restore_opensearch_restores_osd(ops_test: OpsTest):
     await destroy_cluster(ops_test, app=OPENSEARCH_APP_NAME)
 
     await ops_test.model.deploy(
-        OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB, config=CONFIG_OPTS
+        OPENSEARCH_APP_NAME,
+        channel="2/edge",
+        num_units=NUM_UNITS_DB,
+        config=CONFIG_OPTS,
+        series=SERIES,
     ),
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
     async with ops_test.fast_forward("30s"):
