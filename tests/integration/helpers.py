@@ -28,6 +28,7 @@ from tenacity import (
 
 from core.workload import ODPaths
 
+SERIES = "noble"
 METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
 OPENSEARCH_APP_NAME = "opensearch"

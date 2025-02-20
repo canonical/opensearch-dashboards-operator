@@ -44,7 +44,7 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
     for _ in range(DEFAULT_NUM_UNITS):
         await ops_test.model.add_machine(
             spec=None,
-            constraints={"spaces": ["alpha", "cluster", "backup", "client"]},
+            constraints={"spaces": ["alpha", "cluster", "backup", "client"], "series": SERIES},
             series=SERIES,
         )
 
@@ -91,6 +91,7 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
         bind={"": "cluster"},
         num_units=3,
         config=CONFIG_OPTS,
+        series=SERIES,
     )
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, APP_NAME)
