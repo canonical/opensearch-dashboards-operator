@@ -80,9 +80,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
             series=SERIES,
         ),
         ops_test.model.deploy(TLS_CERTIFICATES_APP_NAME, channel="stable", config=config),
-        ops_test.model.deploy(
-            application_charm_build, application_name=DB_CLIENT_APP_NAME
-        ),
+        ops_test.model.deploy(application_charm_build, application_name=DB_CLIENT_APP_NAME),
     )
 
     await ops_test.model.wait_for_idle(
