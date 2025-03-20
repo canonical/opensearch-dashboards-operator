@@ -13,6 +13,7 @@ from pytest_operator.plugin import OpsTest
 
 from ..helpers import (
     CONFIG_OPTS,
+    TLS_STABLE_CHANNEL,
     access_all_dashboards,
     all_dashboards_unavailable,
     get_address,
@@ -38,6 +39,7 @@ OPENSEARCH_CONFIG = {
     """,
 }
 TLS_CERT_APP_NAME = "self-signed-certificates"
+
 ALL_APPS = [APP_NAME, TLS_CERT_APP_NAME, OPENSEARCH_APP_NAME]
 APP_AND_TLS = [APP_NAME, TLS_CERT_APP_NAME]
 PEER = "dashboard_peers"
@@ -67,7 +69,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
     )
 
     config = {"ca-common-name": "CN_CA"}
-    await ops_test.model.deploy(TLS_CERT_APP_NAME, channel="stable", config=config)
+    await ops_test.model.deploy(TLS_CERT_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config)
 
     # Relate it to OpenSearch to set up TLS.
     await ops_test.model.relate(OPENSEARCH_APP_NAME, TLS_CERT_APP_NAME)

@@ -14,6 +14,7 @@ from ..helpers import (
     OPENSEARCH_APP_NAME,
     SERIES,
     TLS_CERTIFICATES_APP_NAME,
+    TLS_STABLE_CHANNEL,
     access_all_dashboards,
     access_all_prometheus_exporters,
     for_machines,
@@ -83,7 +84,7 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
     config = {"ca-common-name": "CN_CA"}
     await ops_test.model.deploy(
         TLS_CERTIFICATES_APP_NAME,
-        channel="stable",
+        channel=TLS_STABLE_CHANNEL,
         constraints="spaces=alpha,client,cluster,backup",
         bind={"": "cluster"},
         config=config,
