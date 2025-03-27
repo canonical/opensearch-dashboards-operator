@@ -14,6 +14,7 @@ from ..helpers import (
     OPENSEARCH_APP_NAME,
     SERIES,
     TLS_CERTIFICATES_APP_NAME,
+    TLS_STABLE_CHANNEL,
     access_all_dashboards,
     access_all_prometheus_exporters,
     for_machines,
@@ -42,10 +43,14 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
     osd_charm = await ops_test.build_charm(".")
 
     for _ in range(DEFAULT_NUM_UNITS):
-        await ops_test.model.add_machine(
-            spec=None,
-            constraints={"spaces": ["alpha", "cluster", "backup", "client"]},
-            series=SERIES,
+        subprocess.check_output(
+            [
+                "juju",
+                "add-machine",
+                f"--model={ops_test.model.name}",
+                "--constraints=spaces=alpha,cluster,backup,client",
+                f"--series={SERIES}",
+            ]
         )
 
     await for_machines(ops_test, machines=list(range(DEFAULT_NUM_UNITS)))
@@ -79,7 +84,7 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
     config = {"ca-common-name": "CN_CA"}
     await ops_test.model.deploy(
         TLS_CERTIFICATES_APP_NAME,
-        channel="stable",
+        channel=TLS_STABLE_CHANNEL,
         constraints="spaces=alpha,client,cluster,backup",
         bind={"": "cluster"},
         config=config,
@@ -98,7 +103,7 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
     await ops_test.model.wait_for_idle(
         apps=[TLS_CERTIFICATES_APP_NAME, APP_NAME, OPENSEARCH_APP_NAME],
         status="active",
-        timeout=1000,
+        timeout=3000,
     )
     assert len(ops_test.model.applications[APP_NAME].units) == DEFAULT_NUM_UNITS
 

@@ -17,6 +17,8 @@ from .helpers import (
     CONFIG_OPTS,
     DASHBOARD_QUERY_PARAMS,
     SERIES,
+    TLS_CERTIFICATES_APP_NAME,
+    TLS_STABLE_CHANNEL,
     access_all_dashboards,
     access_all_prometheus_exporters,
     all_dashboards_unavailable,
@@ -46,7 +48,6 @@ OPENSEARCH_CONFIG = {
         - [ 'sysctl', '-w', 'net.ipv4.tcp_retries2=5' ]
     """,
 }
-TLS_CERTIFICATES_APP_NAME = "self-signed-certificates"
 COS_AGENT_APP_NAME = "grafana-agent"
 COS_AGENT_RELATION_NAME = "cos-agent"
 DB_CLIENT_APP_NAME = "application"
@@ -75,7 +76,9 @@ async def test_build_and_deploy(ops_test: OpsTest):
         ops_test.model.deploy(
             OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB, config=CONFIG_OPTS
         ),
-        ops_test.model.deploy(TLS_CERTIFICATES_APP_NAME, channel="stable", config=config),
+        ops_test.model.deploy(
+            TLS_CERTIFICATES_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config
+        ),
         ops_test.model.deploy(application_charm_build, application_name=DB_CLIENT_APP_NAME),
     )
 

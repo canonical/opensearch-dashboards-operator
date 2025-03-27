@@ -1,0 +1,122 @@
+rule_files:
+  - ../../../src/alert_rules/prometheus/prometheus_alerts.yaml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    input_series:
+      - series: up{juju_unit="opensearch-dashboards/1"}
+        values: '0x20'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: OpenSearchDashboardsScrapeFailed
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              juju_unit: opensearch-dashboards/1
+            exp_annotations:
+              description: Scrape on opensearch-dashboards/1 failed. Ensure that the OpenSearch Dashboards systemd service is healthy.
+              summary: OpenSearch exporter scrape failed
+
+  - interval: 1m
+    input_series:
+      - series: opensearch_dashboards_status{state="red",title="Red"}
+        values: '2x20'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: OpenSearchDashboardsRed
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              state: red
+              title: Red
+            exp_annotations:
+              description: "Dashboards status is red. The server may be down, it may have lost connection to Opensearch, or may suffer of partial unavailability."
+              summary: Server health status is red or plugins are down
+
+  - interval: 1m
+    input_series:
+      - series: opensearch_dashboards_status{state="yellow",title="Yellow"}
+        values: '1x50'
+    alert_rule_test:
+      - eval_time: 11m
+        alertname: OpenSearchDashboardsYellow
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              state: yellow
+              title: Yellow
+            exp_annotations:
+              description: Dashboards status is yellow. Plugins might be degraded or shards may be relocating or initializing.
+              summary: Dashboard health status is yellow
+
+  - interval: 1m
+    input_series:
+      # opensearch core is working fine
+      - series: opensearch_dashboards_statuses{state="green", id="core:opensearch@2.17.0", message="OpenSearch is available"}
+        values: '0x20'
+      # some plugin is missing a dependencies
+      - series: opensearch_dashboards_statuses{state="red", id="plugin:notificationsDashboards@2.17.0", message="Dependencies are broken"}
+        values: '2x20'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: OpenSearchDashboardsPluginRed
+        exp_alerts:
+          - exp_labels:
+              state: red
+              severity: critical
+              id: "plugin:notificationsDashboards@2.17.0"
+              message: Dependencies are broken
+            exp_annotations:
+              description: "Dashboards plugin:notificationsDashboards@2.17.0 status is red: Dependencies are broken"
+              summary: Dashboards plugin status is red
+
+  - interval: 1m
+    input_series:
+      # opensearch core is working fine
+      - series: opensearch_dashboards_statuses{state="green", id="core:opensearch@2.17.0", message="OpenSearch is available"}
+        values: '0x50'
+      # some plugin is missing a dependencies
+      - series: opensearch_dashboards_statuses{state="yellow", id="plugin:notificationsDashboards@2.17.0", message="Dependencies are not available"}
+        values: '1x50'
+    alert_rule_test:
+      - eval_time: 11m
+        alertname: OpenSearchDashboardsPluginYellow
+        exp_alerts:
+          - exp_labels:
+              state: yellow
+              severity: warning
+              id: "plugin:notificationsDashboards@2.17.0"
+              message: Dependencies are not available
+            exp_annotations:
+              description: "Dashboards plugin:notificationsDashboards@2.17.0 status is yellow: Dependencies are not available"
+              summary: Dashboards plugin status is yellow
+
+  - interval: 1m
+    input_series:
+      - series: opensearch_dashboards_up
+        values: '0x20'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: OpenSearchDashboardsNoMetrics
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+            exp_annotations:
+              description: Exporter failed to collect status metrics. Dashboards may be down or user and password may be invalid. Check the exporter logs.
+              summary: No metrics collected.
+
+  - interval: 1m
+    input_series:
+      - series: opensearch_dashboards_resp_time_avg
+        values: '300x20'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: OpenSearchDashboardsLongResponseTime
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+            exp_annotations:
+              description: The server is up and responsive, however with a high latency.
+              summary: High response time

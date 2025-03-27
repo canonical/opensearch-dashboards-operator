@@ -18,7 +18,12 @@ from core.cluster import ClusterState
 from events.requirer import RequirerEvents
 from events.tls import TLSEvents
 from events.upgrade import ODUpgradeEvents, OpensearchDashboardsDependencyModel
-from helpers import clear_global_status, clear_status, set_global_status
+from helpers import (
+    clear_global_status,
+    clear_status,
+    set_global_status,
+    update_grafana_dashboards_title,
+)
 from literals import (
     CHARM_KEY,
     COS_PORT,
@@ -91,17 +96,6 @@ class OpensearchDasboardsCharm(CharmBase):
 
         self.restart = RollingOpsManager(self, relation="restart", callback=self._restart)
 
-        # --- COS ---
-        self.cos_integration = COSAgentProvider(
-            self,
-            relation_name=COS_RELATION_NAME,
-            metrics_endpoints=[],
-            scrape_configs=self._scrape_config,
-            refresh_events=[self.on.config_changed],
-            metrics_rules_dir="./src/alert_rules/prometheus",
-            log_slots=["opensearch-dashboards:logs"],
-        )
-
         # --- CORE EVENTS ---
 
         self.framework.observe(getattr(self.on, "install"), self._on_install)
@@ -117,6 +111,17 @@ class OpensearchDasboardsCharm(CharmBase):
         self.framework.observe(getattr(self.on, f"{PEER}_relation_departed"), self.reconcile)
 
         self.framework.observe(getattr(self.on, "secret_changed"), self._on_secret_changed)
+
+        # --- COS ---
+        self.cos_integration = COSAgentProvider(
+            self,
+            relation_name=COS_RELATION_NAME,
+            metrics_endpoints=[],
+            scrape_configs=self._scrape_config,
+            refresh_events=[self.on.config_changed],
+            metrics_rules_dir="./src/alert_rules/prometheus",
+            log_slots=["opensearch-dashboards:logs"],
+        )
 
     # --- CORE EVENT HANDLERS ---
 
@@ -141,6 +146,8 @@ class OpensearchDasboardsCharm(CharmBase):
         if not self.state.peer_relation:
             self.unit.status = WaitingStatus(MSG_WAITING_FOR_PEER)
             return
+
+        update_grafana_dashboards_title(self)
 
         outdated_status = [MSG_WAITING_FOR_PEER]
 

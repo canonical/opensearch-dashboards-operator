@@ -4,8 +4,9 @@
 
 """Manager for for handling configuration building + writing."""
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
+import yaml
 from ops.model import ConfigData
 
 if TYPE_CHECKING:
@@ -17,22 +18,25 @@ from core.workload import WorkloadBase
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_PROPERTIES = """
-opensearch.ssl.verificationMode: full
-opensearch.requestHeadersWhitelist: [authorization, securitytenant]
-opensearch_security.multitenancy.enabled: true
-opensearch_security.multitenancy.tenants.preferred: [Private, Global]
-opensearch_security.readonly_mode.roles: [kibana_read_only]
-opensearch_security.cookie.secure: true
-"""
+DEFAULT_PROPERTIES = {
+    "opensearch.requestHeadersWhitelist": ["authorization", "securitytenant"],
+    "opensearch_security.multitenancy.enabled": True,
+    "opensearch_security.multitenancy.tenants.preferred": ["Private", "Global"],
+    "opensearch_security.readonly_mode.roles": ["kibana_read_only"],
+    "server.ssl.enabled": False,
+    "opensearch_security.cookie.secure": False,
+}
 
-TLS_PROPERTIES = """
-server.ssl.enabled: true
-"""
+# Overrides the DEFAULT_PROPERTIES if we have TLS enabled
+TLS_PROPERTIES = {
+    "server.ssl.enabled": True,
+    "opensearch.ssl.verificationMode": "full",
+    "opensearch_security.cookie.secure": True,
+}
 
-LOG_PROPERTIES = """
-logging.verbose: true
-"""
+LOG_PROPERTIES = {
+    "logging.verbose": True,
+}
 
 
 class ConfigManager:
@@ -79,13 +83,16 @@ class ConfigManager:
         return ""
 
     @property
-    def dashboard_properties(self) -> list[str]:
-        """Build the zoo.cfg content.
+    def dashboard_properties(self) -> dict[str, Any]:
+        """Build the opensearch_dashboards.yml content.
+
+        As we are building on top of the known templates above, we do not need to care about
+        merging lists, for example. We will override the default properties if needed.
 
         Returns:
-            List of properties to be set to zoo.cfg config file
+            List of properties to be set to opensearch_dashboards.yml config file
         """
-        properties = DEFAULT_PROPERTIES.split("\n")
+        properties = DEFAULT_PROPERTIES.copy()
 
         opensearch_user = (
             self.state.opensearch_server.username if self.state.opensearch_server else ""
@@ -94,43 +101,36 @@ class ConfigManager:
             self.state.opensearch_server.password if self.state.opensearch_server else ""
         )
 
-        opensearch_endpoints = (
-            ", ".join(f"https://{endpoint}" for endpoint in self.state.opensearch_server.endpoints)
-            if self.state.opensearch_server and len(self.state.opensearch_server.endpoints) > 0
-            else ""
-        )
+        if self.state.opensearch_server and len(self.state.opensearch_server.endpoints) > 0:
+            properties["opensearch.hosts"] = [
+                f"https://{endpoint}" for endpoint in self.state.opensearch_server.endpoints
+            ]
 
-        opensearch_ca = self.workload.paths.opensearch_ca if self.state.opensearch_server else ""
+        opensearch_ca = self.workload.paths.opensearch_ca if self.state.opensearch_server else None
 
         # We are using the address exposed by Juju as service address
-        properties += [f"server.host: '{self.state.bind_address}'"]
-        properties += (
-            [
-                f"opensearch.username: {opensearch_user}",
-                f"opensearch.password: {opensearch_password}",
-            ]
-            if opensearch_user and opensearch_password
-            else []
-        )
-
-        properties += (
-            [f"opensearch.hosts: [{opensearch_endpoints}]"] if opensearch_endpoints else []
-        )
+        properties["server.host"] = str(self.state.bind_address)
+        if opensearch_user and opensearch_password:
+            properties |= {
+                "opensearch.username": opensearch_user,
+                "opensearch.password": opensearch_password,
+            }
 
         if opensearch_ca:
-            properties += [f'opensearch.ssl.certificateAuthorities: [ "{opensearch_ca}" ]']
+            properties["opensearch.ssl.certificateAuthorities"] = [opensearch_ca]
 
         if self.state.unit_server.tls:
-            properties += TLS_PROPERTIES.split("\n") + [
-                f"server.ssl.certificate: {self.workload.paths.certificate}",
-                f"server.ssl.key: {self.workload.paths.server_key}",
-            ]
+            properties |= TLS_PROPERTIES
+            properties |= {
+                "server.ssl.certificate": self.workload.paths.certificate,
+                "server.ssl.key": self.workload.paths.server_key,
+            }
 
         # Log-level
-        properties += [f"{self.log_level}: true"]
+        properties[self.log_level] = True
 
         # Paths
-        properties += [f"path.data: {self.workload.paths.data_path}"]
+        properties["path.data"] = self.workload.paths.data_path
 
         return properties
 
@@ -139,61 +139,26 @@ class ConfigManager:
         """The current configuration properties set to zoo.cfg."""
         return self.workload.read(self.workload.paths.properties)
 
-    @property
-    def current_env(self) -> list[str]:
-        """The current /etc/environment variables."""
-        return self.workload.read(path="/etc/environment")
-
-    @property
-    def static_properties(self) -> list[str]:
-        """Build the zoo.cfg content, without dynamic options.
-
-        Returns:
-            List of static properties to compared to current zoo.cfg
-        """
-        return self.build_static_properties(self.dashboard_properties)
-
     def set_dashboard_properties(self) -> None:
         """Writes built config file."""
         self.workload.write(
-            content="\n".join(self.dashboard_properties),
+            content=yaml.dump(self.dashboard_properties),
             path=self.workload.paths.properties,
         )
 
-    @staticmethod
-    def build_static_properties(properties: list[str]) -> list[str]:
-        """Removes dynamic config options from list of properties.
-
-        Args:
-            properties: the properties to make static
-
-        Returns:
-            List of static properties
-        """
-        return [
-            prop
-            for prop in properties
-            if ("clientPort" not in prop and "secureClientPort" not in prop)
-        ]
+    def load_dashboard_properties(self) -> dict[str, Any]:
+        """Reads built config file."""
+        return yaml.safe_load(
+            "\n".join(
+                self.workload.read(
+                    path=self.workload.paths.properties,
+                )
+            )
+        )
 
     def config_changed(self) -> bool:
         """Compares expected vs actual config that would require a restart to apply."""
-        server_properties = self.build_static_properties(self.current_properties)
-        config_properties = self.static_properties
-
-        properties_changed = set(server_properties) ^ set(config_properties)
-
-        if not properties_changed:
+        if self.load_dashboard_properties() == self.dashboard_properties:
             return False
-
-        if properties_changed:
-            logger.info(
-                (
-                    f"Server.{self.state.unit_server.unit_id} updating properties - "
-                    f"OLD PROPERTIES = {set(server_properties) - set(config_properties)}, "
-                    f"NEW PROPERTIES = {set(config_properties) - set(server_properties)}"
-                )
-            )
-            self.set_dashboard_properties()
-
+        self.set_dashboard_properties()
         return True

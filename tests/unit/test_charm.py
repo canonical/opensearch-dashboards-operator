@@ -2,10 +2,11 @@
 # Copyright 2022 Canonical Ltd.
 # See LICENSE file for licensing details.
 
+import json
 import logging
 import time
 from pathlib import Path
-from unittest.mock import PropertyMock, patch
+from unittest.mock import MagicMock, PropertyMock, mock_open, patch
 
 import pytest
 import responses
@@ -15,7 +16,7 @@ from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus, WaitingSta
 from ops.testing import Harness
 
 from charm import OpensearchDasboardsCharm, OpensearchDashboardsDependencyModel
-from helpers import clear_status
+from helpers import clear_status, update_grafana_dashboards_title
 from literals import CHARM_KEY, CONTAINER, OPENSEARCH_REL_NAME, PEER, SUBSTRATE
 from src.literals import (
     MSG_INCOMPATIBLE_UPGRADE,
@@ -55,6 +56,27 @@ def harness():
         }
     )
     return harness
+
+
+@pytest.fixture
+def mocked_dashboards():
+    mock_charm = MagicMock()
+    mock_charm.model.unit = MagicMock()
+    type(mock_charm).charm_dir = PropertyMock(return_value=Path("/fake/charm/dir"))
+
+    yield mock_charm
+
+
+@pytest.fixture(autouse=True)
+def patch_get_charm_revision():
+    with patch("helpers.get_charm_revision", return_value=167) as mock_func:
+        yield mock_func
+
+
+@pytest.fixture(autouse=True)
+def patch_test_relation_changed_starts_units():
+    with patch("charm.update_grafana_dashboards_title") as mock_func:
+        yield mock_func
 
 
 def set_healthy_opensearch_connection(harness):
@@ -710,6 +732,37 @@ def test_wrong_opensearch_version(harness):
 
         assert isinstance(harness.model.unit.status, BlockedStatus)
         assert harness.model.unit.status.message == MSG_INCOMPATIBLE_UPGRADE
+
+
+@patch(
+    "builtins.open",
+    new_callable=mock_open,
+    read_data=json.dumps({"title": "Charmed OpenSearch Dashboards"}),
+)
+@patch("json.dump")
+def test_update_grafana_dashboards_title_no_prior_revision(
+    mock_json_dump, mock_open_func, mocked_dashboards
+):
+
+    update_grafana_dashboards_title(mocked_dashboards)
+
+    expected_updated_dashboard = {"title": "Charmed OpenSearch Dashboards - Rev 167"}
+    mock_json_dump.assert_called_once_with(expected_updated_dashboard, mock_open_func(), indent=4)
+
+
+@patch(
+    "builtins.open",
+    new_callable=mock_open,
+    read_data=json.dumps({"title": "Charmed OpenSearch - Rev 166"}),
+)
+@patch("json.dump")
+def test_update_grafana_dashboards_title_prior_revision(
+    mock_json_dump, mock_open_func, mocked_dashboards
+):
+    update_grafana_dashboards_title(mocked_dashboards)
+
+    expected_updated_dashboard = {"title": "Charmed OpenSearch - Rev 167"}
+    mock_json_dump.assert_called_once_with(expected_updated_dashboard, mock_open_func(), indent=4)
 
 
 # def test_port_updates_if_tls(harness):

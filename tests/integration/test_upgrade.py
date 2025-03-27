@@ -10,7 +10,13 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
-from .helpers import CONFIG_OPTS, access_all_dashboards, get_app_relation_data
+from .helpers import (
+    CONFIG_OPTS,
+    TLS_CERTIFICATES_APP_NAME,
+    TLS_STABLE_CHANNEL,
+    access_all_dashboards,
+    get_app_relation_data,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +36,6 @@ OPENSEARCH_CONFIG = {
         - [ 'sysctl', '-w', 'net.ipv4.tcp_retries2=5' ]
     """,
 }
-TLS_CERTIFICATES_APP_NAME = "self-signed-certificates"
 
 NUM_UNITS_APP = 3
 NUM_UNITS_DB = 3
@@ -52,7 +57,9 @@ async def test_build_and_deploy(ops_test: OpsTest):
     )
 
     config = {"ca-common-name": "CN_CA"}
-    await ops_test.model.deploy(TLS_CERTIFICATES_APP_NAME, channel="stable", config=config)
+    await ops_test.model.deploy(
+        TLS_CERTIFICATES_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config
+    )
 
     await ops_test.model.wait_for_idle(
         apps=[TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000

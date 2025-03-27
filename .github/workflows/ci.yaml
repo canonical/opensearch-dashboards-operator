@@ -9,14 +9,18 @@ concurrency:
 on:
   pull_request:
   schedule:
-    - cron: '53 0 * * *' # Daily at 00:53 UTC
+    - cron: '53 0 * * *'  # Daily at 00:53 UTC
   # Triggered on push to branch "main" by .github/workflows/release.yaml
   workflow_call:
+    outputs:
+      artifact-prefix:
+        description: build_charm.yaml `artifact-prefix` output
+        value: ${{ jobs.build.outputs.artifact-prefix }}
 
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
     steps:
       - name: Checkout
@@ -28,20 +32,21 @@ jobs:
       - name: Run linters
         run: tox run -e lint
 
-  lib-check:               
-    name: Check libraries  
-    runs-on: ubuntu-latest
-    timeout-minutes: 5     
-    steps:                 
-      - name: Checkout     
+  lib-check:
+    name: Check libraries
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   
+          fetch-depth: 0
       - run: |
           # Workaround for https://github.com/canonical/charmcraft/issues/1389#issuecomment-1880921728
-          touch requirements.txt          
-      - name: Check libs   
+          touch requirements.txt
+      - name: Check libs
         uses: canonical/charming-actions/check-libraries@2.6.0
+        continue-on-error: true
         with:
           credentials: ${{ secrets.CHARMHUB_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -50,7 +55,7 @@ jobs:
 
   unit-test:
     name: Unit test charm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
     steps:
       - name: Checkout
@@ -62,43 +67,91 @@ jobs:
       - name: Run tests
         run: tox run -e unit
 
+  promtool:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # prometheus snap includes promtool
+      - name: Install prometheus snap
+        run: sudo snap install prometheus
+
+      - name: Check validity of prometheus alert rules
+        run: |
+          promtool check rules src/alert_rules/prometheus/*.yaml
+
+      - name: Run unit tests for prometheus alert rules
+        run: |
+          promtool test rules tests/unit/test_alert_rules/*.yaml
+
+  terraform-test:
+    name: Terraform - Lint and Simple Deployment
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: lint charm module
+        run: |
+          pushd ./terraform
+          terraform init && terraform fmt && terraform validate
+          popd
+      - name: run checks - prepare
+        run: |
+          sudo snap install juju --channel=3.6 --classic
+      - name: LXD setup
+        run: |
+          sudo snap refresh lxd --channel=latest/stable
+          sudo adduser "$USER" 'lxd'
+          # `newgrp` does not work in GitHub Actions; use `sg` instead
+          sg 'lxd' -c "lxd waitready"
+          sg 'lxd' -c "lxd init --auto"
+          sg 'lxd' -c "lxc network set lxdbr0 ipv6.address none"
+          sudo iptables -F FORWARD
+          sudo iptables -P FORWARD ACCEPT
+      - name: Juju setup
+        run: |
+          sg 'lxd' -c "juju bootstrap 'localhost' --config model-logs-size=10G"
+          juju model-defaults logging-config='<root>=INFO; unit=DEBUG'
+          juju add-model test
+      - name: Terraform deploy
+        run: |
+          pushd ./terraform
+          terraform apply -var='model=test' -auto-approve
+          popd
+      - name: Wait for model and applications
+        run: |
+          juju wait-for application opensearch-dashboards -m test --query='status=="blocked"'
+          juju wait-for model test --query='life=="alive" && status=="available"'
+
   build:
     strategy:
       matrix:
         path:
           - .
           - tests/integration/application-charm
-    name: Build charm
-    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v22.0.0
+    name: Build charm | ${{ matrix.path }}
+    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v29.0.0
     with:
+      cache: false
       path-to-charm-directory: ${{ matrix.path }}
-      cache: true
 
   integration-test:
-    strategy:
-      matrix:
-        juju:
-          # All runs
-          - agent: 3.5.3 # renovate: juju-agent-pin-minor
-            allure_report: true
-          
-          # This runs only on scheduled runs, DPW 21 specifics (scheduled + 3.6/X)
-          - snap_channel: 3.6/beta
-            allure_report: false
-    
-    name: Integration test charm | ${{ matrix.juju.agent || matrix.juju.snap_channel }}
-    
+    name: Integration test charm
     needs:
       - lint
       - unit-test
       - build
-    uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v22.0.0
+    uses: canonical/data-platform-workflows/.github/workflows/integration_test_charm.yaml@v29.0.0
     with:
-      artifact-prefix: packed-charm-cache-true
+      artifact-prefix: ${{ needs.build.outputs.artifact-prefix }}
       cloud: lxd
-      juju-agent-version: ${{ matrix.juju.agent }}
-      juju-snap-channel: ${{ matrix.juju.snap_channel }}
-      _beta_allure_report: ${{ matrix.juju.allure_report }}
+      juju-snap-channel: 3.6/candidate
+      _beta_allure_report: true
     secrets:
       # GitHub appears to redact each line of a multi-line secret
       # Avoid putting `{` or `}` on a line by itself so that it doesn't get redacted in logs

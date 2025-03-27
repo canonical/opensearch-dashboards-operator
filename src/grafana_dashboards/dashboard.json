@@ -24,7 +24,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -94,7 +93,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.7",
+      "pluginVersion": "9.5.3",
       "targets": [
         {
           "datasource": {
@@ -102,7 +101,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_millis_uptime/1000/60/60/60",
+          "expr": "opensearch_dashboards_up_time{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"} / 1000 / 60 / 60 / 60",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -162,7 +161,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "9.4.7",
+      "pluginVersion": "9.5.3",
       "targets": [
         {
           "datasource": {
@@ -171,7 +170,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(kibana_heap_used_in_bytes/kibana_heap_max_in_bytes)*100",
+          "expr": "(opensearch_dashboards_heap_used{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"} / opensearch_dashboards_heap_size{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}) * 100",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -233,7 +232,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.7",
+      "pluginVersion": "9.5.3",
       "targets": [
         {
           "datasource": {
@@ -241,7 +240,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "(kibana_os_memory_used_in_bytes/kibana_os_memory_max_in_bytes)*100",
+          "expr": "(opensearch_dashboards_os_mem_used{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"} / opensearch_dashboards_os_mem_total{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}) * 100",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -260,7 +259,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 3,
+          "decimals": 2,
           "mappings": [],
           "max": 100,
           "min": 0,
@@ -302,7 +301,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "9.4.7",
+      "pluginVersion": "9.5.3",
       "targets": [
         {
           "datasource": {
@@ -310,13 +309,13 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "((kibana_resident_set_size_in_bytes/1024/1024)/(kibana_os_memory_max_in_bytes/1024/1024))*100",
+          "expr": "((opensearch_dashboards_re_set_size{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"} / 1024 / 1024) / (opensearch_dashboards_os_mem_total{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"} / 1024 / 1024)) * 100",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Resident Set Size",
+      "title": "RSS to Total Memory Ratio",
       "type": "stat"
     },
     {
@@ -369,7 +368,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "9.4.7",
+      "pluginVersion": "9.5.3",
       "targets": [
         {
           "datasource": {
@@ -377,7 +376,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_concurrent_connections",
+          "expr": "opensearch_dashboards_current_connections{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -394,54 +393,77 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "fixed",
+            "seriesBy": "last"
           },
           "custom": {
-            "fillOpacity": 78,
-            "lineWidth": 0,
-            "spanNulls": false
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 2,
+            "axisSoftMin": -1,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 4,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
-          "decimals": 2,
+          "decimals": 0,
           "mappings": [
             {
               "options": {
                 "0": {
-                  "color": "dark-red",
-                  "index": 3,
-                  "text": "Critical"
+                  "color": "green",
+                  "index": 0,
+                  "text": "Green"
                 },
                 "1": {
-                  "color": "dark-green",
-                  "index": 0,
-                  "text": "Available"
-                },
-                "0.25": {
-                  "color": "dark-orange",
-                  "index": 2,
-                  "text": "Unavailable"
-                },
-                "0.5": {
-                  "color": "dark-yellow",
+                  "color": "yellow",
                   "index": 1,
-                  "text": "Degraded"
+                  "text": "Yellow"
+                },
+                "2": {
+                  "color": "red",
+                  "index": 2,
+                  "text": "Red"
+                },
+                "-1": {
+                  "color": "purple",
+                  "index": 3,
+                  "text": "Unknown"
                 }
               },
               "type": "value"
             }
           ],
-          "max": 1,
-          "min": 0,
-          "noValue": "0",
+          "max": 2,
+          "min": -1,
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
-                "color": "dark-red",
+                "color": "green",
                 "value": null
-              },
-              {
-                "color": "dark-green",
-                "value": 80
               }
             ]
           }
@@ -449,64 +471,107 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "{__name__=\"kibana_status\", instance=\"172.17.0.1:9684\", job=\"local_kibana\"}"
+              "id": "byFrameRefID",
+              "options": "A"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Overall Status"
+                "value": "Overall"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Saved Objects"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"kibana_core_es_status\", instance=\"172.17.0.1:9684\", job=\"local_kibana\"}"
+              "options": "Saved Objects"
             },
             "properties": [
               {
-                "id": "displayName",
-                "value": "Elasticsearch Status"
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"kibana_core_savedobjects_status\", instance=\"172.17.0.1:9684\", job=\"local_kibana\"}"
+              "options": "Overall"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#d615d4",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "SavedObjects Status"
+                "value": "OpenSearch"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "OpenSearch"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 4,
-        "w": 8,
+        "h": 6,
+        "w": 7,
         "x": 16,
         "y": 1
       },
-      "id": 10,
+      "id": 28,
       "options": {
-        "alignValue": "left",
         "legend": {
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
-        "mergeValues": true,
-        "rowHeight": 0.91,
-        "showValue": "auto",
         "tooltip": {
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "9.5.3",
       "targets": [
         {
           "datasource": {
@@ -514,7 +579,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_status",
+          "expr": "opensearch_dashboards_status{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -524,8 +589,8 @@
             "type": "prometheus",
             "uid": "${prometheusds}"
           },
-          "editorMode": "code",
-          "expr": "kibana_core_es_status",
+          "editorMode": "builder",
+          "expr": "opensearch_dashboards_statuses{id=~\"core:savedObjects.*\"}",
           "hide": false,
           "legendFormat": "__auto",
           "range": true,
@@ -536,8 +601,8 @@
             "type": "prometheus",
             "uid": "${prometheusds}"
           },
-          "editorMode": "code",
-          "expr": "kibana_core_savedobjects_status",
+          "editorMode": "builder",
+          "expr": "opensearch_dashboards_statuses{id=~\"core:opensearch.*\"}",
           "hide": false,
           "legendFormat": "__auto",
           "range": true,
@@ -545,7 +610,7 @@
         }
       ],
       "title": "Overall Status",
-      "type": "state-timeline"
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -553,7 +618,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 7
       },
       "id": 17,
       "panels": [],
@@ -626,7 +691,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 6
+        "y": 8
       },
       "id": 2,
       "options": {
@@ -653,7 +718,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_heap_max_in_bytes/1024/1024",
+          "expr": "opensearch_dashboards_heap_size{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"} / 1024 / 1024",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -666,7 +731,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_heap_used_in_bytes/1024/1024",
+          "expr": "opensearch_dashboards_heap_used{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"} / 1024 / 1024",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -674,7 +739,7 @@
           "refId": "B"
         }
       ],
-      "title": "Kibana Heap Usage",
+      "title": "OpenSearch Dashboards Heap Usage",
       "transformations": [],
       "type": "timeseries"
     },
@@ -744,7 +809,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 6
+        "y": 8
       },
       "id": 23,
       "options": {
@@ -771,7 +836,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_os_memory_max_in_bytes/1024/1024",
+          "expr": "opensearch_dashboards_os_mem_total{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"} / 1024 / 1024",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -784,7 +849,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_os_memory_used_in_bytes/1024/1024",
+          "expr": "opensearch_dashboards_os_mem_used{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"} / 1024 / 1024",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -860,7 +925,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"kibana_os_load_1m\", instance=\"172.17.0.1:9684\", job=\"local_kibana\"}"
+              "options": "{__name__=\"opensearch_dashboards_load_1m\", instance=\"172.17.0.1:9684\", job=\"local_kibana\"}"
             },
             "properties": [
               {
@@ -872,7 +937,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"kibana_os_load_5m\", instance=\"172.17.0.1:9684\", job=\"local_kibana\"}"
+              "options": "{__name__=\"opensearch_dashboards_load_5m\", instance=\"172.17.0.1:9684\", job=\"local_kibana\"}"
             },
             "properties": [
               {
@@ -884,7 +949,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"kibana_os_load_15m\", instance=\"172.17.0.1:9684\", job=\"local_kibana\"}"
+              "options": "{__name__=\"opensearch_dashboards_load_15m\", instance=\"172.17.0.1:9684\", job=\"local_kibana\"}"
             },
             "properties": [
               {
@@ -899,7 +964,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 6
+        "y": 8
       },
       "id": 15,
       "options": {
@@ -926,7 +991,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_os_load_1m",
+          "expr": "opensearch_dashboards_load_1m{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -939,7 +1004,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_os_load_5m",
+          "expr": "opensearch_dashboards_load_5m{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -952,7 +1017,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_os_load_15m",
+          "expr": "opensearch_dashboards_load_15m{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "hide": false,
           "legendFormat": "__auto",
           "range": true,
@@ -969,7 +1034,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 14
       },
       "id": 22,
       "panels": [],
@@ -1039,7 +1104,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 13
+        "y": 15
       },
       "id": 20,
       "options": {
@@ -1066,7 +1131,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_concurrent_connections",
+          "expr": "opensearch_dashboards_current_connections{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -1142,7 +1207,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 13
+        "y": 15
       },
       "id": 25,
       "options": {
@@ -1169,7 +1234,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_requests_total",
+          "expr": "opensearch_dashboards_req_total{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -1182,7 +1247,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_requests_disconnects",
+          "expr": "opensearch_dashboards_req_disconnects{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "hide": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1256,7 +1321,7 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 13
+        "y": 15
       },
       "id": 26,
       "options": {
@@ -1283,7 +1348,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_response_average",
+          "expr": "opensearch_dashboards_resp_time_avg{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -1296,7 +1361,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_response_max",
+          "expr": "opensearch_dashboards_resp_time_max{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "hide": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1370,7 +1435,7 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 13
+        "y": 15
       },
       "id": 27,
       "options": {
@@ -1397,7 +1462,7 @@
             "uid": "${prometheusds}"
           },
           "editorMode": "code",
-          "expr": "kibana_event_loop_delay",
+          "expr": "opensearch_dashboards_event_loop_delay{juju_application=~\"$juju_application\",juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_unit=~\"$juju_unit\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -1415,10 +1480,171 @@
   "schemaVersion": 38,
   "style": "dark",
   "tags": [
-    "kibana"
+    "OpenSearch Dashboards"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "label": "Loki datasource",
+        "multi": true,
+        "name": "lokids",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "label": "Prometheus datasource",
+        "multi": true,
+        "name": "prometheusds",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "uid": "${prometheusds}"
+        },
+        "definition": "label_values(up{juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_application=~\"$juju_application\"},juju_unit)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Juju unit",
+        "multi": true,
+        "name": "juju_unit",
+        "options": [],
+        "query": {
+          "query": "label_values(up{juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\",juju_application=~\"$juju_application\"},juju_unit)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "uid": "${prometheusds}"
+        },
+        "definition": "label_values(up{juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\"},juju_application)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Juju application",
+        "multi": true,
+        "name": "juju_application",
+        "options": [],
+        "query": {
+          "query": "label_values(up{juju_model=~\"$juju_model\",juju_model_uuid=~\"$juju_model_uuid\"},juju_application)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "uid": "${prometheusds}"
+        },
+        "definition": "label_values(up{juju_model=~\"$juju_model\"},juju_model_uuid)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Juju model uuid",
+        "multi": true,
+        "name": "juju_model_uuid",
+        "options": [],
+        "query": {
+          "query": "label_values(up{juju_model=~\"$juju_model\"},juju_model_uuid)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "uid": "${prometheusds}"
+        },
+        "definition": "label_values(up,juju_model)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Juju model",
+        "multi": true,
+        "name": "juju_model",
+        "options": [],
+        "query": {
+          "query": "label_values(up,juju_model)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
     "from": "now-12h",
@@ -1427,7 +1653,7 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Charmed Opensearch Dashboards",
-  "uid": "w7fRRIPVz",
-  "version": 14,
+  "uid": "df1e16cfa7d31daf0fd9df185d6fdf5730d3a5b4",
+  "version": 1,
   "weekStart": ""
 }

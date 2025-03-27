@@ -47,6 +47,7 @@ OPENSEARCH_CONFIG = {
 }
 
 TLS_CERTIFICATES_APP_NAME = "self-signed-certificates"
+TLS_STABLE_CHANNEL = "latest/stable"
 COS_AGENT_APP_NAME = "grafana-agent"
 COS_AGENT_RELATION_NAME = "cos-agent"
 DB_CLIENT_APP_NAME = "application"
@@ -169,7 +170,7 @@ def restart_unit(model_full_name: str, unit: str) -> None:
 
 
 def access_prometheus_exporter(host: str) -> bool:
-    """Check if a given unit has 'kibana-exporter' service available and publishing."""
+    """Check if a given unit has 'dashboard-exporter' service available and publishing."""
     try:
         # Normal IP address
         socket.inet_aton(host)
@@ -182,11 +183,11 @@ def access_prometheus_exporter(host: str) -> bool:
         response = requests.get(url)
     except requests.exceptions.RequestException:
         return False
-    return response.status_code == 200 and "kibana_status" in response.text
+    return response.status_code == 200 and "opensearch_dashboards_status" in response.text
 
 
 async def access_all_prometheus_exporters(ops_test: OpsTest) -> bool:
-    """Check if a given unit has 'kibana-exporter' service available and publishing."""
+    """Check if a given unit has 'dashboard-exporter' service available and publishing."""
     result = True
     for unit in ops_test.model.applications[APP_NAME].units:
         unit_ip = await get_address(ops_test, unit.name)

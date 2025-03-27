@@ -4,9 +4,11 @@
 
 """Charmed Machine Operator for Apache Opensearch Dashboards."""
 
+import json
 import logging
 
 from charms.tls_certificates_interface.v3.tls_certificates import CharmBase
+from data_platform_helpers.version_check import get_charm_revision
 from ops.model import ActiveStatus, Application, StatusBase, Unit
 
 logger = logging.getLogger(__name__)
@@ -39,3 +41,27 @@ def clear_global_status(charm: CharmBase, status: str | None):
     clear_status(charm.unit, status)
     if charm.unit.is_leader():
         clear_status(charm.app, status)
+
+
+def update_grafana_dashboards_title(charm: CharmBase) -> None:
+    """Update the title of the Grafana dashboard file to include the charm revision."""
+    revision = get_charm_revision(charm.model.unit)
+    dashboard_path = charm.charm_dir / "src/grafana_dashboards/dashboard.json"
+
+    with open(dashboard_path, "r") as file:
+        dashboard = json.load(file)
+
+    old_title = dashboard.get("title", "Charmed OpenSearch Dashboards")
+    title_prefix = old_title.split(" - Rev")[0]
+    new_title = f"{old_title} - Rev {revision}"
+    dashboard["title"] = f"{title_prefix} - Rev {revision}"
+
+    logger.info(
+        "Changing the title of dashboard %s from %s to %s",
+        dashboard_path.name,
+        old_title,
+        new_title,
+    )
+
+    with open(dashboard_path, "w") as file:
+        json.dump(dashboard, file, indent=4)
