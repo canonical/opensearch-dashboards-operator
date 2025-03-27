@@ -248,6 +248,7 @@ class OAuth:
 
     def __init__(self, relation: Relation | None):
         self.relation = relation
+        self._client_secret = ""
 
     @property
     def relation_data(self) -> MutableMapping[str, str]:
@@ -274,11 +275,6 @@ class OAuth:
 
     @client_secret.setter
     def client_secret(self, value):
-        # Validate that the secret_id exists in the databag
-        if not self.relation_data.get("client_secret_id"):
-            self._client_secret = ""
-            return
-
         self._client_secret = value
 
     @property

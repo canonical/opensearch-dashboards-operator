@@ -27,7 +27,7 @@ class OAuthHandler(Object):
 
         client_config = ClientConfig(
             redirect_uri=f"{self.charm.state.url}/auth/openid/login",
-            scope="openid email profile",
+            scope="openid profile email phone offline address",
             grant_types=["authorization_code"],
             token_endpoint_auth_method="client_secret_post",
         )
@@ -44,9 +44,7 @@ class OAuthHandler(Object):
         if not self.charm.unit.is_leader() or not self.charm.state.servers:
             return
 
-        if not (provider_info := self.oauth.get_provider_info()):
-            return
-
-        self.charm.state.oauth.client_secret = provider_info.client_secret
+        if provider_info := self.oauth.get_provider_info():
+            self.charm.state.oauth.client_secret = provider_info.client_secret
 
         self.charm.reconcile(event)

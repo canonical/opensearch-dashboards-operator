@@ -15,6 +15,7 @@ from ops.main import main
 from ops.model import BlockedStatus, MaintenanceStatus, WaitingStatus
 
 from core.cluster import ClusterState
+from events.oauth import OAuthHandler
 from events.requirer import RequirerEvents
 from events.tls import TLSEvents
 from events.upgrade import ODUpgradeEvents, OpensearchDashboardsDependencyModel
@@ -48,7 +49,6 @@ from managers.config import ConfigManager
 from managers.health import HealthManager
 from managers.tls import TLSManager
 from managers.upgrade import UpgradeManager
-from src.events.oauth import OAuthHandler
 from workload import ODWorkload
 
 logger = logging.getLogger(__name__)
