@@ -65,6 +65,12 @@ variable "endpoint_bindings" {
   default     = {}
 }
 
+variable "expose" {
+  description = "Expose the application"
+  type        = bool
+  default     = false
+}
+
 # additional variables
 variable "tls" {
   description = "Whether TLS should be enabled"
