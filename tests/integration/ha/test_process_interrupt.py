@@ -11,7 +11,13 @@ import yaml
 from pytest_operator.plugin import OpsTest
 from tenacity import Retrying, stop_after_attempt, wait_fixed
 
-from ..helpers import CONFIG_OPTS, access_all_dashboards, get_leader_name, get_relations
+from ..helpers import (
+    CONFIG_OPTS,
+    TLS_STABLE_CHANNEL,
+    access_all_dashboards,
+    get_leader_name,
+    get_relations,
+)
 from .helpers import (
     is_down,
     patch_restart_delay,
@@ -80,7 +86,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
     )
 
     config = {"ca-common-name": "CN_CA"}
-    await ops_test.model.deploy(TLS_CERT_APP_NAME, channel="stable", config=config)
+    await ops_test.model.deploy(TLS_CERT_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config)
 
     await ops_test.model.wait_for_idle(
         apps=[TLS_CERT_APP_NAME], wait_for_active=True, timeout=1000
