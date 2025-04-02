@@ -15,6 +15,11 @@ resource "juju_application" "opensearch-dashboards" {
   units       = var.units
   constraints = var.constraints
 
+  dynamic "expose" {
+    for_each = var.expose ? [1] : []
+    content {}
+  }
+
   # TODO: uncomment once final fixes have been added for:
   # Error: juju/terraform-provider-juju#443, juju/terraform-provider-juju#182
   # placement = join(",", var.machines)
