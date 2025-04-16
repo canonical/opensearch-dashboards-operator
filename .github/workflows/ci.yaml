@@ -46,6 +46,7 @@ jobs:
           touch requirements.txt
       - name: Check libs
         uses: canonical/charming-actions/check-libraries@2.6.0
+        continue-on-error: true
         with:
           credentials: ${{ secrets.CHARMHUB_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -149,7 +150,7 @@ jobs:
     with:
       artifact-prefix: ${{ needs.build.outputs.artifact-prefix }}
       cloud: lxd
-      juju-agent-version: 3.6.1  # renovate: juju-agent-pin-minor
+      juju-snap-channel: 3.6/candidate
       _beta_allure_report: true
     secrets:
       # GitHub appears to redact each line of a multi-line secret

@@ -22,6 +22,7 @@ The module offers the following configurable inputs:
 | `units`       | number      | Number of units to be deployed                  | False      |
 | `constraints` | string      | Machine constraints for the charm               | False      |
 | `tls`         | bool        | Whether TLS should be enabled                   | False      |
+| `expose`      | bool        | If set to true, opens to anyone's access        | False      |
 
 
 ### Outputs

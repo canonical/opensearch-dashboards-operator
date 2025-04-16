@@ -47,6 +47,7 @@ OPENSEARCH_CONFIG = {
 }
 
 TLS_CERTIFICATES_APP_NAME = "self-signed-certificates"
+TLS_STABLE_CHANNEL = "latest/stable"
 COS_AGENT_APP_NAME = "grafana-agent"
 COS_AGENT_RELATION_NAME = "cos-agent"
 DB_CLIENT_APP_NAME = "application"

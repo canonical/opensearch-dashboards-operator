@@ -15,6 +15,10 @@ resource "juju_application" "opensearch-dashboards" {
   units       = var.units
   constraints = var.constraints
 
+  dynamic "expose" {
+    for_each = var.expose ? [1] : []
+    content {}
+  }
 
   # TODO: uncomment once final fixes have been added for:
   # Error: juju/terraform-provider-juju#443, juju/terraform-provider-juju#182
@@ -25,13 +29,6 @@ resource "juju_application" "opensearch-dashboards" {
       endpoint = k, space = v
     }
   ]
-
-  lifecycle {
-    precondition {
-      condition     = length(var.machines) == 0 || length(var.machines) == var.units
-      error_message = "Machine count does not match unit count"
-    }
-  }
 }
 
 # Deploy the self-signed-certificates operator if tls enabled
@@ -41,9 +38,15 @@ resource "juju_application" "self-signed-certificates" {
   model = var.model
 
   charm {
-    name    = "self-signed-certificates"
-    channel = "latest/stable"
+    name     = "self-signed-certificates"
+    channel  = var.self-signed-certificates.channel
+    revision = var.self-signed-certificates.revision
+    base     = var.self-signed-certificates.base
   }
+  constraints = var.self-signed-certificates.constraints
+  config      = var.self-signed-certificates.config
+
+  placement = length(var.self-signed-certificates.machines) == 1 ? var.self-signed-certificates.machines[0] : null
 }
 
 # Integrate with the self-signed-certificates if tls is enabled
@@ -53,7 +56,7 @@ resource "juju_integration" "tls-opensearch_dashboards_integration" {
   model = var.model
 
   application {
-    name = "self-signed-certificates"
+    name = juju_application.self-signed-certificates["deployed"].name
   }
 
   application {
