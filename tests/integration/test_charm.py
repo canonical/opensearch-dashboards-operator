@@ -16,7 +16,6 @@ from pytest_operator.plugin import OpsTest
 from .helpers import (
     CONFIG_OPTS,
     DASHBOARD_QUERY_PARAMS,
-    SERIES,
     TLS_CERTIFICATES_APP_NAME,
     TLS_STABLE_CHANNEL,
     access_all_dashboards,
@@ -61,7 +60,7 @@ NUM_UNITS_DB = 3
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
 @pytest.mark.usefixtures("application_charm_libs")
-async def test_build_and_deploy(ops_test: OpsTest, charm: str, application_charm: str):
+async def test_build_and_deploy(ops_test: OpsTest, charm: str, application_charm: str, series: str):
     """Deploying all charms required for the tests, and wait for their complete setup to be done."""
 
     await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
@@ -69,7 +68,7 @@ async def test_build_and_deploy(ops_test: OpsTest, charm: str, application_charm
 
     config = {"ca-common-name": "CN_CA"}
     await asyncio.gather(
-        ops_test.model.deploy(COS_AGENT_APP_NAME, series=SERIES),
+        ops_test.model.deploy(COS_AGENT_APP_NAME, series=series),
         ops_test.model.deploy(
             OPENSEARCH_APP_NAME,
             channel="2/edge",
