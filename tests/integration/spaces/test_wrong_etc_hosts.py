@@ -26,8 +26,6 @@ logger = logging.getLogger(__name__)
 DEFAULT_NUM_UNITS = 3
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
 async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces, charm: str, series: str) -> None:
@@ -106,8 +104,6 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces, charm: str, serie
     assert len(ops_test.model.applications[APP_NAME].units) == DEFAULT_NUM_UNITS
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_access_http(ops_test: OpsTest):
     """Test HTTP access to each dashboard unit."""
@@ -118,8 +114,6 @@ async def test_dashboard_access_http(ops_test: OpsTest):
 ##############################################################################
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_tls_on(ops_test: OpsTest) -> None:
     """Not a real test, but only switching on TLS"""
@@ -134,8 +128,6 @@ async def test_tls_on(ops_test: OpsTest) -> None:
 ##############################################################################
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_access_https(ops_test: OpsTest):
     """Test HTTP access to each dashboard unit."""

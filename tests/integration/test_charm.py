@@ -55,12 +55,12 @@ NUM_UNITS_APP = 3
 NUM_UNITS_DB = 3
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
 @pytest.mark.usefixtures("application_charm_libs")
-async def test_build_and_deploy(ops_test: OpsTest, charm: str, application_charm: str, series: str):
+async def test_build_and_deploy(
+    ops_test: OpsTest, charm: str, application_charm: str, series: str
+):
     """Deploying all charms required for the tests, and wait for their complete setup to be done."""
 
     await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
@@ -111,8 +111,6 @@ async def test_build_and_deploy(ops_test: OpsTest, charm: str, application_charm
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_access(ops_test: OpsTest):
     """Test HTTP access to each dashboard unit."""
@@ -122,8 +120,6 @@ async def test_dashboard_access(ops_test: OpsTest):
     assert await access_all_prometheus_exporters(ops_test)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_access_https(ops_test: OpsTest):
     """Test HTTPS access to each dashboard unit."""
@@ -166,8 +162,6 @@ async def test_dashboard_access_https(ops_test: OpsTest):
     assert host_cert != new_host_cert
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_client_data_access_https(ops_test: OpsTest):
     """Test HTTPS access to each dashboard unit."""
@@ -226,8 +220,6 @@ async def test_dashboard_client_data_access_https(ops_test: OpsTest):
     assert all([hit["_source"] in data_dicts for res in result for hit in res["hits"]["hits"]])
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_cos_relations(ops_test: OpsTest):
     await ops_test.model.integrate(COS_AGENT_APP_NAME, APP_NAME)
@@ -257,8 +249,6 @@ async def test_cos_relations(ops_test: OpsTest):
             assert unit_cos_config["metrics_scrape_jobs"][0][key] == value
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.log_level_change
 async def test_log_level_change(ops_test: OpsTest):
@@ -301,7 +291,6 @@ async def test_log_level_change(ops_test: OpsTest):
     )
 
 
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_status_changes(ops_test: OpsTest):
     """Test HTTPS access to each dashboard unit."""
@@ -351,7 +340,6 @@ async def test_dashboard_status_changes(ops_test: OpsTest):
     )
 
 
-@pytest.mark.group(1)
 @pytest.mark.skip(reason="https://warthogs.atlassian.net/browse/DPE-5073")
 async def test_restore_opensearch_restores_osd(ops_test: OpsTest):
     """This test shouldn't be separate but a native continuation of the previous one.

@@ -41,8 +41,6 @@ NUM_UNITS_APP = 3
 NUM_UNITS_DB = 3
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.charm
 @pytest.mark.skip_if_deployed
@@ -89,8 +87,6 @@ async def test_build_and_deploy(ops_test: OpsTest, charm: str):
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_in_place_upgrade_http(ops_test: OpsTest):
     leader_unit = None
@@ -123,8 +119,6 @@ async def test_in_place_upgrade_http(ops_test: OpsTest):
     assert await access_all_dashboards(ops_test)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_switch_tls_on(ops_test: OpsTest):
     """Test HTTPS access to each dashboard unit."""
@@ -135,8 +129,6 @@ async def test_switch_tls_on(ops_test: OpsTest):
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_in_place_upgrade_https(ops_test: OpsTest):
     leader_unit = None
