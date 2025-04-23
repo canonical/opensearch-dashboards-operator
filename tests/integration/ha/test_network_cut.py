@@ -56,16 +56,18 @@ LONG_WAIT = 30
 @pytest.mark.group(1)
 @pytest.mark.skip_if_deployed
 @pytest.mark.abort_on_fail
-async def test_build_and_deploy(ops_test: OpsTest):
+async def test_build_and_deploy(ops_test: OpsTest, charm: str):
     """Tests that the charm deploys safely"""
-    charm = await ops_test.build_charm(".")
     await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
 
     # Opensearch
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
     # NOTE: can't access 2/stable from the tests, only 'edge' available
     await ops_test.model.deploy(
-        OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB, config=CONFIG_OPTS
+        OPENSEARCH_APP_NAME,
+        channel="2/edge",
+        num_units=NUM_UNITS_DB,
+        config=CONFIG_OPTS,
     )
 
     config = {"ca-common-name": "CN_CA"}

@@ -73,9 +73,8 @@ async def restart_delay(ops_test: OpsTest):
 @pytest.mark.group(1)
 @pytest.mark.skip_if_deployed
 @pytest.mark.abort_on_fail
-async def test_build_and_deploy(ops_test: OpsTest):
+async def test_build_and_deploy(ops_test: OpsTest, charm: str):
     """Tests that the charm deploys safely"""
-    charm = await ops_test.build_charm(".")
     await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
 
     # Opensearch

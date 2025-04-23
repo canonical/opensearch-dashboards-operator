@@ -46,14 +46,16 @@ NUM_UNITS_DB = 3
 @pytest.mark.abort_on_fail
 @pytest.mark.charm
 @pytest.mark.skip_if_deployed
-async def test_build_and_deploy(ops_test: OpsTest):
+async def test_build_and_deploy(ops_test: OpsTest, charm: str):
     """Deploying all charms required for the tests, and wait for their complete setup to be done."""
 
-    pytest.charm = await ops_test.build_charm(".")
-    await ops_test.model.deploy(pytest.charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
+    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
     await ops_test.model.deploy(
-        OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB, config=CONFIG_OPTS
+        OPENSEARCH_APP_NAME,
+        channel="2/edge",
+        num_units=NUM_UNITS_DB,
+        config=CONFIG_OPTS,
     )
 
     config = {"ca-common-name": "CN_CA"}
@@ -68,7 +70,9 @@ async def test_build_and_deploy(ops_test: OpsTest):
     # Relate it to OpenSearch to set up TLS.
     await ops_test.model.relate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
     await ops_test.model.wait_for_idle(
-        apps=[OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
+        apps=[OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME],
+        status="active",
+        timeout=1000,
     )
 
     async with ops_test.fast_forward():
@@ -100,7 +104,9 @@ async def test_in_place_upgrade_http(ops_test: OpsTest):
 
     # ensuring that the upgrade stack is correct
     relation_data = get_app_relation_data(
-        model_full_name=ops_test.model_full_name, unit=f"{APP_NAME}/0", endpoint="upgrade"
+        model_full_name=ops_test.model_full_name,
+        unit=f"{APP_NAME}/0",
+        endpoint="upgrade",
     )
 
     assert "upgrade-stack" in relation_data
@@ -144,7 +150,9 @@ async def test_in_place_upgrade_https(ops_test: OpsTest):
 
     # ensuring that the upgrade stack is correct
     relation_data = get_app_relation_data(
-        model_full_name=ops_test.model_full_name, unit=f"{APP_NAME}/0", endpoint="upgrade"
+        model_full_name=ops_test.model_full_name,
+        unit=f"{APP_NAME}/0",
+        endpoint="upgrade",
     )
 
     assert "upgrade-stack" in relation_data

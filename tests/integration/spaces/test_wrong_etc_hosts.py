@@ -31,7 +31,7 @@ DEFAULT_NUM_UNITS = 3
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
-async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
+async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces, charm: str) -> None:
     """Build and deploy OpenSearch Dashboards.
 
     For this test, we will create a machine in multiple spaces and inject
@@ -40,7 +40,6 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
 
     More information: gh:canonical/opensearch-dashboards-operator#121
     """
-    osd_charm = await ops_test.build_charm(".")
 
     for _ in range(DEFAULT_NUM_UNITS):
         subprocess.check_output(
@@ -74,7 +73,7 @@ async def test_build_and_deploy(ops_test: OpsTest, lxd_spaces) -> None:
         )
 
     await ops_test.model.deploy(
-        osd_charm,
+        charm,
         num_units=DEFAULT_NUM_UNITS,
         series=SERIES,
         constraints="spaces=alpha,client,cluster,backup",
