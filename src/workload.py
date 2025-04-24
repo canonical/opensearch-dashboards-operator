@@ -108,10 +108,9 @@ class ODWorkload(WorkloadBase):
         retry=retry_if_not_result(lambda result: True if result else False),
     )
     def alive(self) -> bool:
+        """The main application is alive."""
         try:
-            return bool(self.dashboards.services[self.SNAP_APP_SERVICE]["active"]) and bool(
-                self.dashboards.services[self.SNAP_EXPORTER_SERVICE]["active"]
-            )
+            return bool(self.dashboards.services[self.SNAP_APP_SERVICE]["active"])
         except KeyError:
             return False
 

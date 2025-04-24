@@ -248,17 +248,6 @@ def all_dashboards_unavailable(ops_test: OpsTest, https: bool = False) -> bool:
 def access_dashboard(
     host: str, password: str, username: str = "kibanaserver", ssl: bool = False
 ) -> bool:
-    #
-    # NOTE: This one currently is failing for SSL, with:
-    # *** requests.exceptions.SSLError: HTTPSConnectionPool(host='10.67.147.132', port=5601):
-    # Max retries exceeded with url: /auth/login (Caused by
-    # SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed:
-    # IP address mismatch, certificate is not valid for '10.67.147.132'. (_ssl.c:1007)")))
-    #
-    # ...while CURL is passing happily with the same cert...
-    # Thus, temporarily the least the function below this one is used for HTTPS
-    #
-
     try:
         # Normal IP address
         socket.inet_aton(host)
@@ -326,7 +315,8 @@ async def access_all_dashboards(
         if result:
             logger.info(f"Host {unit.name}, {host} passed access check")
         else:
-            dump_all(ops_test, unit)
+            # dump_all(ops_test, unit)
+            pass
     return result
 
 
@@ -634,7 +624,7 @@ async def get_application_relation_data(
         return relation_data[0]["local-unit"].get("data", {}).get(key)
 
 
-async def get_leader_name(ops_test: OpsTest, app_name: str = APP_NAME):
+async def get_leader_name(ops_test: OpsTest, app_name: str = APP_NAME) -> str:
     """Get the leader unit name."""
     for unit in ops_test.model.applications[app_name].units:
         if await unit.is_leader_from_status():

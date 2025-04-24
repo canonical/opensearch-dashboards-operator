@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 
 METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
-PROCESS = "/snap/opensearch-dashboards/8/opt/opensearch-dashboards/start.sh"
+PROCESS = "/snap/opensearch-dashboards/current/usr/share/opensearch-dashboards/node/bin/node"
+DB_PROCESS = "org.opensearch.bootstrap.OpenSearch"
 SERVICE_DEFAULT_PATH = "/etc/systemd/system/snap.charmed-zookeeper.daemon.service"
 PEER = "cluster"
 
@@ -244,11 +245,8 @@ async def send_control_signal(
             e.g `SIGKILL`, `SIGSTOP`, `SIGCONT` etc
         app_name: the Juju application
     """
-    if len(ops_test.model.applications[app_name].units) < 3:
-        await ops_test.model.applications[app_name].add_unit(count=1)
-        await ops_test.model.wait_for_idle(apps=[app_name], status="active", timeout=1000)
-
-    kill_cmd = f"exec --unit {unit_name} -- pkill --signal {signal} -f {PROCESS}"
+    process = PROCESS if app_name == APP_NAME else DB_PROCESS
+    kill_cmd = f"exec --unit {unit_name} -- pkill --signal {signal} -f {process}"
     return_code, stdout, stderr = await ops_test.juju(*kill_cmd.split())
 
     if return_code != 0:
@@ -281,12 +279,13 @@ async def get_secret_by_label(ops_test, label: str, owner: Optional[str] = None)
     return secret_data[secret_id]["content"]["Data"]
 
 
-async def is_down(ops_test: OpsTest, unit: str) -> bool:
+async def is_down(ops_test: OpsTest, unit: str, app_name: str = APP_NAME) -> bool:
     """Check if a unit zookeeper process is down."""
+    process = "node" if app_name == APP_NAME else "java"
     try:
         for attempt in Retrying(stop=stop_after_attempt(10), wait=wait_fixed(5)):
             with attempt:
-                search_db_process = f"exec --unit {unit} pgrep -x java"
+                search_db_process = f"exec --unit {unit} pgrep -x {process}"
                 _, processes, _ = await ops_test.juju(*search_db_process.split())
                 # splitting processes by "\n" results in one or more empty lines, hence we
                 # need to process these lines accordingly.
