@@ -57,7 +57,6 @@ NUM_UNITS_DB = 3
 
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
-@pytest.mark.usefixtures("application_charm_libs")
 async def test_build_and_deploy(
     ops_test: OpsTest, charm: str, application_charm: str, series: str
 ):
