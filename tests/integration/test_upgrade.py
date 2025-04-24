@@ -89,7 +89,7 @@ async def test_build_and_deploy(ops_test: OpsTest, charm: str, series: str):
 
 
 @pytest.mark.abort_on_fail
-async def test_in_place_upgrade_http(ops_test: OpsTest):
+async def test_in_place_upgrade_http(ops_test: OpsTest, charm: str):
     leader_unit = None
     for unit in ops_test.model.applications[APP_NAME].units:
         if await unit.is_leader_from_status():
@@ -112,7 +112,7 @@ async def test_in_place_upgrade_http(ops_test: OpsTest):
         [int(unit.machine.id) for unit in ops_test.model.applications[APP_NAME].units]
     )
 
-    await ops_test.model.applications[APP_NAME].refresh(path=pytest.charm)
+    await ops_test.model.applications[APP_NAME].refresh(path=charm)
     await ops_test.model.wait_for_idle(
         apps=[APP_NAME], status="active", timeout=1000, idle_period=120
     )
@@ -131,7 +131,7 @@ async def test_switch_tls_on(ops_test: OpsTest):
 
 
 @pytest.mark.abort_on_fail
-async def test_in_place_upgrade_https(ops_test: OpsTest):
+async def test_in_place_upgrade_https(ops_test: OpsTest, charm: str):
     leader_unit = None
     for unit in ops_test.model.applications[APP_NAME].units:
         if await unit.is_leader_from_status():
@@ -153,7 +153,7 @@ async def test_in_place_upgrade_https(ops_test: OpsTest):
         [int(unit.machine.id) for unit in ops_test.model.applications[APP_NAME].units]
     )
 
-    await ops_test.model.applications[APP_NAME].refresh(path=pytest.charm)
+    await ops_test.model.applications[APP_NAME].refresh(path=charm)
     await ops_test.model.wait_for_idle(
         apps=[APP_NAME], status="active", timeout=1000, idle_period=120
     )
