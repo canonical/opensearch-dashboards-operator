@@ -2,7 +2,6 @@
 # Copyright 2022 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-import asyncio
 import json
 import logging
 import re
@@ -62,23 +61,23 @@ async def test_build_and_deploy(
 ):
     """Deploying all charms required for the tests, and wait for their complete setup to be done."""
 
-    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
+    await ops_test.model.deploy(
+        charm, application_name=APP_NAME, num_units=NUM_UNITS_APP, series=series
+    )
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
 
     config = {"ca-common-name": "CN_CA"}
-    await asyncio.gather(
-        ops_test.model.deploy(COS_AGENT_APP_NAME, series=series),
-        ops_test.model.deploy(
-            OPENSEARCH_APP_NAME,
-            channel="2/edge",
-            num_units=NUM_UNITS_DB,
-            config=CONFIG_OPTS,
-        ),
-        ops_test.model.deploy(
-            TLS_CERTIFICATES_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config
-        ),
-        ops_test.model.deploy(application_charm, application_name=DB_CLIENT_APP_NAME),
+    await ops_test.model.deploy(COS_AGENT_APP_NAME, series=series)
+    await ops_test.model.deploy(
+        OPENSEARCH_APP_NAME,
+        channel="2/edge",
+        num_units=NUM_UNITS_DB,
+        config=CONFIG_OPTS,
     )
+    await ops_test.model.deploy(
+        TLS_CERTIFICATES_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config
+    )
+    await ops_test.model.deploy(application_charm, application_name=DB_CLIENT_APP_NAME)
 
     await ops_test.model.wait_for_idle(
         apps=[TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
