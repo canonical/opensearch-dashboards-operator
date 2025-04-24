@@ -54,9 +54,11 @@ LONG_WAIT = 30
 
 @pytest.mark.skip_if_deployed
 @pytest.mark.abort_on_fail
-async def test_build_and_deploy(ops_test: OpsTest, charm: str):
+async def test_build_and_deploy(ops_test: OpsTest, charm: str, series: str):
     """Tests that the charm deploys safely"""
-    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
+    await ops_test.model.deploy(
+        charm, application_name=APP_NAME, num_units=NUM_UNITS_APP, series=series
+    )
 
     # Opensearch
     await ops_test.model.set_config(OPENSEARCH_CONFIG)

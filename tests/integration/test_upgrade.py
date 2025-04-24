@@ -42,12 +42,13 @@ NUM_UNITS_DB = 3
 
 
 @pytest.mark.abort_on_fail
-@pytest.mark.charm
 @pytest.mark.skip_if_deployed
-async def test_build_and_deploy(ops_test: OpsTest, charm: str):
+async def test_build_and_deploy(ops_test: OpsTest, charm: str, series: str):
     """Deploying all charms required for the tests, and wait for their complete setup to be done."""
 
-    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
+    await ops_test.model.deploy(
+        charm, application_name=APP_NAME, num_units=NUM_UNITS_APP, series=series
+    )
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
     await ops_test.model.deploy(
         OPENSEARCH_APP_NAME,

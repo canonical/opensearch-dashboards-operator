@@ -248,7 +248,6 @@ async def test_cos_relations(ops_test: OpsTest):
 
 
 @pytest.mark.abort_on_fail
-@pytest.mark.log_level_change
 async def test_log_level_change(ops_test: OpsTest):
     for unit in ops_test.model.applications[APP_NAME].units:
         assert count_lines_with(
@@ -348,14 +347,13 @@ async def test_restore_opensearch_restores_osd(ops_test: OpsTest):
     logger.info("Destroying and restoring the Opensearch cluster")
     await destroy_cluster(ops_test, app=OPENSEARCH_APP_NAME)
 
-    (
-        await ops_test.model.deploy(
-            OPENSEARCH_APP_NAME,
-            channel="2/edge",
-            num_units=NUM_UNITS_DB,
-            config=CONFIG_OPTS,
-        ),
+    await ops_test.model.deploy(
+        OPENSEARCH_APP_NAME,
+        channel="2/edge",
+        num_units=NUM_UNITS_DB,
+        config=CONFIG_OPTS,
     )
+
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
     async with ops_test.fast_forward("30s"):
         await ops_test.model.wait_for_idle(apps=[OPENSEARCH_APP_NAME], status="blocked")

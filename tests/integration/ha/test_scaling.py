@@ -40,10 +40,9 @@ APP_AND_TLS = [APP_NAME, TLS_CERTIFICATES_APP_NAME]
 
 @pytest.mark.skip_if_deployed
 @pytest.mark.abort_on_fail
-@pytest.mark.charm
-async def test_build_and_deploy(ops_test: OpsTest, charm: str):
+async def test_build_and_deploy(ops_test: OpsTest, charm: str, series: str):
     """Deploying all charms required for the tests, and wait for their complete setup to be done."""
-    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=1)
+    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=1, series=series)
 
     # Opensearch
     await ops_test.model.set_config(OPENSEARCH_CONFIG)

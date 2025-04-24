@@ -44,6 +44,6 @@ def charm(ubuntu_base):
 
 
 @pytest.fixture
-async def application_charm() -> str:
+def application_charm() -> str:
     """Path to the application charm to use for testing."""
     return "./tests/integration/application-charm/application_ubuntu@22.04-amd64.charm"
