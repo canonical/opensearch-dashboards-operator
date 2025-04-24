@@ -26,6 +26,7 @@ class OAuthHandler(Object):
         self.charm: "OpensearchDasboardsCharm" = charm
 
         client_config = ClientConfig(
+            audience=["opensearch"],
             redirect_uri=f"{self.charm.state.url}/auth/openid/login",
             scope="openid profile email phone offline address",
             grant_types=["authorization_code"],

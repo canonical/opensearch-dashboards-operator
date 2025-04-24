@@ -135,6 +135,7 @@ class ConfigManager:
                 "opensearch_security.openid.client_secret": self.state.oauth.client_secret,
                 "opensearch_security.openid.verify_hostnames": False,
                 "opensearch_security.openid.root_ca": opensearch_ca,
+                "opensearch_security.openid.base_redirect_url": self.state.url,
             }
 
         # Log-level
