@@ -2,7 +2,6 @@
 # Copyright 2022 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-import asyncio
 import json
 import logging
 import re
@@ -16,7 +15,6 @@ from pytest_operator.plugin import OpsTest
 from .helpers import (
     CONFIG_OPTS,
     DASHBOARD_QUERY_PARAMS,
-    SERIES,
     TLS_CERTIFICATES_APP_NAME,
     TLS_STABLE_CHANNEL,
     access_all_dashboards,
@@ -56,31 +54,30 @@ NUM_UNITS_APP = 3
 NUM_UNITS_DB = 3
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
-@pytest.mark.usefixtures("application_charm_libs")
-async def test_build_and_deploy(ops_test: OpsTest):
+async def test_build_and_deploy(
+    ops_test: OpsTest, charm: str, application_charm: str, series: str
+):
     """Deploying all charms required for the tests, and wait for their complete setup to be done."""
 
-    charm = await ops_test.build_charm(".")
-    application_charm_build = await ops_test.build_charm("tests/integration/application-charm")
-
-    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
+    await ops_test.model.deploy(
+        charm, application_name=APP_NAME, num_units=NUM_UNITS_APP, series=series
+    )
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
 
     config = {"ca-common-name": "CN_CA"}
-    await asyncio.gather(
-        ops_test.model.deploy(COS_AGENT_APP_NAME, series=SERIES),
-        ops_test.model.deploy(
-            OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB, config=CONFIG_OPTS
-        ),
-        ops_test.model.deploy(
-            TLS_CERTIFICATES_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config
-        ),
-        ops_test.model.deploy(application_charm_build, application_name=DB_CLIENT_APP_NAME),
+    await ops_test.model.deploy(COS_AGENT_APP_NAME, series=series)
+    await ops_test.model.deploy(
+        OPENSEARCH_APP_NAME,
+        channel="2/edge",
+        num_units=NUM_UNITS_DB,
+        config=CONFIG_OPTS,
     )
+    await ops_test.model.deploy(
+        TLS_CERTIFICATES_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config
+    )
+    await ops_test.model.deploy(application_charm, application_name=DB_CLIENT_APP_NAME)
 
     await ops_test.model.wait_for_idle(
         apps=[TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
@@ -89,7 +86,9 @@ async def test_build_and_deploy(ops_test: OpsTest):
     # integrate it to OpenSearch to set up TLS.
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
     await ops_test.model.wait_for_idle(
-        apps=[OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
+        apps=[OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME],
+        status="active",
+        timeout=1000,
     )
 
     async with ops_test.fast_forward():
@@ -110,8 +109,6 @@ async def test_build_and_deploy(ops_test: OpsTest):
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_access(ops_test: OpsTest):
     """Test HTTP access to each dashboard unit."""
@@ -121,8 +118,6 @@ async def test_dashboard_access(ops_test: OpsTest):
     assert await access_all_prometheus_exporters(ops_test)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_access_https(ops_test: OpsTest):
     """Test HTTPS access to each dashboard unit."""
@@ -165,8 +160,6 @@ async def test_dashboard_access_https(ops_test: OpsTest):
     assert host_cert != new_host_cert
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_client_data_access_https(ops_test: OpsTest):
     """Test HTTPS access to each dashboard unit."""
@@ -225,8 +218,6 @@ async def test_dashboard_client_data_access_https(ops_test: OpsTest):
     assert all([hit["_source"] in data_dicts for res in result for hit in res["hits"]["hits"]])
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_cos_relations(ops_test: OpsTest):
     await ops_test.model.integrate(COS_AGENT_APP_NAME, APP_NAME)
@@ -256,12 +247,8 @@ async def test_cos_relations(ops_test: OpsTest):
             assert unit_cos_config["metrics_scrape_jobs"][0][key] == value
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
-@pytest.mark.log_level_change
 async def test_log_level_change(ops_test: OpsTest):
-
     for unit in ops_test.model.applications[APP_NAME].units:
         assert count_lines_with(
             ops_test.model_full_name,
@@ -301,7 +288,6 @@ async def test_log_level_change(ops_test: OpsTest):
     )
 
 
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_dashboard_status_changes(ops_test: OpsTest):
     """Test HTTPS access to each dashboard unit."""
@@ -345,11 +331,12 @@ async def test_dashboard_status_changes(ops_test: OpsTest):
         await ops_test.model.wait_for_idle(apps=[APP_NAME], status="blocked")
 
     assert await check_full_status(
-        ops_test, status="blocked", status_msg="Opensearch service is (partially or fully) down"
+        ops_test,
+        status="blocked",
+        status_msg="Opensearch service is (partially or fully) down",
     )
 
 
-@pytest.mark.group(1)
 @pytest.mark.skip(reason="https://warthogs.atlassian.net/browse/DPE-5073")
 async def test_restore_opensearch_restores_osd(ops_test: OpsTest):
     """This test shouldn't be separate but a native continuation of the previous one.
@@ -361,8 +348,12 @@ async def test_restore_opensearch_restores_osd(ops_test: OpsTest):
     await destroy_cluster(ops_test, app=OPENSEARCH_APP_NAME)
 
     await ops_test.model.deploy(
-        OPENSEARCH_APP_NAME, channel="2/edge", num_units=NUM_UNITS_DB, config=CONFIG_OPTS
-    ),
+        OPENSEARCH_APP_NAME,
+        channel="2/edge",
+        num_units=NUM_UNITS_DB,
+        config=CONFIG_OPTS,
+    )
+
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
     async with ops_test.fast_forward("30s"):
         await ops_test.model.wait_for_idle(apps=[OPENSEARCH_APP_NAME], status="blocked")

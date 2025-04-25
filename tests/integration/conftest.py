@@ -1,10 +1,8 @@
 import logging
 import os
-import shutil
 import subprocess
 
 import pytest
-from pytest_operator.plugin import OpsTest
 
 logger = logging.getLogger(__name__)
 
@@ -19,12 +17,33 @@ def opensearch_sysctl_settings():
     subprocess.run(["sudo", "sysctl", "-w", "net.ipv4.tcp_retries2=5"])
 
 
-@pytest.fixture(scope="module")
-def application_charm_libs(ops_test: OpsTest):
-    """Build the application charm."""
-    source_path = "lib/charms/data_platform_libs/v0/data_interfaces.py"
-    test_charm_path = "tests/integration/application-charm"
-    dest_dir = f"{test_charm_path}/lib/charms/data_platform_libs/v0/"
-    os.makedirs(dest_dir, exist_ok=True)
-    shutil.copyfile(source_path, f"{dest_dir}/data_interfaces.py")
-    logger.info(f"Copied {source_path} to {dest_dir}")
+@pytest.fixture
+def ubuntu_base():
+    """charm base version to use for testing."""
+    return os.environ["CHARM_UBUNTU_BASE"]
+
+
+@pytest.fixture
+def series(ubuntu_base):
+    """Workaround: python-libjuju does not support deploy base="ubuntu@22.04"; use series"""
+    if ubuntu_base == "22.04":
+        return "jammy"
+    elif ubuntu_base == "24.04":
+        return "noble"
+    else:
+        raise NotImplementedError
+
+
+@pytest.fixture
+def charm(ubuntu_base):
+    """Path to the charm file to use for testing."""
+    # Return str instead of pathlib.Path since python-libjuju's model.deploy(), juju deploy, and
+    # juju bundle files expect local charms to begin with `./` or `/` to distinguish them from
+    # Charmhub charms.
+    return f"./opensearch-dashboards_ubuntu@{ubuntu_base}-amd64.charm"
+
+
+@pytest.fixture
+def application_charm() -> str:
+    """Path to the application charm to use for testing."""
+    return "./tests/integration/application-charm/application_ubuntu@22.04-amd64.charm"

@@ -69,14 +69,13 @@ async def restart_delay(ops_test: OpsTest):
         await remove_restart_delay(ops_test=ops_test, unit_name=unit.name)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.skip_if_deployed
 @pytest.mark.abort_on_fail
-async def test_build_and_deploy(ops_test: OpsTest):
+async def test_build_and_deploy(ops_test: OpsTest, charm: str, series: str):
     """Tests that the charm deploys safely"""
-    charm = await ops_test.build_charm(".")
-    await ops_test.model.deploy(charm, application_name=APP_NAME, num_units=NUM_UNITS_APP)
+    await ops_test.model.deploy(
+        charm, application_name=APP_NAME, num_units=NUM_UNITS_APP, series=series
+    )
 
     # Opensearch
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
@@ -158,8 +157,6 @@ async def _recover_from_signal(
 ##############################################################################
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.parametrize("signal", ["SIGKILL", "SIGTERM"])
 async def test_signal_opensearch_process_leader(ops_test: OpsTest, signal):
@@ -168,8 +165,6 @@ async def test_signal_opensearch_process_leader(ops_test: OpsTest, signal):
     await _recover_from_signal(ops_test, signal, [db_leader_name], app_name=OPENSEARCH_APP_NAME)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.skip(reason="Opensearch is not possible to contact after recovery")
 @pytest.mark.abort_on_fail
 async def test_sigstop_opensearch_process_leader(ops_test: OpsTest):
@@ -178,8 +173,6 @@ async def test_sigstop_opensearch_process_leader(ops_test: OpsTest):
     await _recover_from_signal(ops_test, "SIGSTOP", [db_leader_name], app_name=OPENSEARCH_APP_NAME)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.parametrize("signal", ["SIGKILL", "SIGTERM", "SIGSTOP"])
 async def test_signal_dashboard_process_leader(ops_test: OpsTest, signal):
@@ -188,8 +181,6 @@ async def test_signal_dashboard_process_leader(ops_test: OpsTest, signal):
     await _recover_from_signal(ops_test, signal, [leader_name])
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.parametrize("signal", ["SIGKILL", "SIGTERM"])
 async def test_signal_opensearch_process_cluster(ops_test: OpsTest, signal):
@@ -198,8 +189,6 @@ async def test_signal_opensearch_process_cluster(ops_test: OpsTest, signal):
     await _recover_from_signal(ops_test, signal, db_units, app_name=OPENSEARCH_APP_NAME)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.skip(reason="Opensearch is not possible to contact after recovery")
 @pytest.mark.abort_on_fail
 async def test_sigstop_opensearch_process_cluster(ops_test: OpsTest):
@@ -208,8 +197,6 @@ async def test_sigstop_opensearch_process_cluster(ops_test: OpsTest):
     await _recover_from_signal(ops_test, "SIGSTOP", db_units, app_name=OPENSEARCH_APP_NAME)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.parametrize("signal", ["SIGKILL", "SIGTERM", "SIGSTOP"])
 async def test_signal_dashboard_process_cluster(ops_test: OpsTest, signal):
@@ -221,8 +208,6 @@ async def test_signal_dashboard_process_cluster(ops_test: OpsTest, signal):
 ##############################################################################
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_set_tls(ops_test: OpsTest):
     """Not a real test but a separate stage to start TLS testing"""
@@ -239,8 +224,6 @@ async def test_set_tls(ops_test: OpsTest):
 ##############################################################################
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.parametrize("signal", ["SIGKILL", "SIGTERM"])
 async def test_signal_opensearch_process_leader_https(ops_test: OpsTest, signal):
@@ -251,8 +234,6 @@ async def test_signal_opensearch_process_leader_https(ops_test: OpsTest, signal)
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.skip(reason="Opensearch is not possible to contact after recovery")
 @pytest.mark.abort_on_fail
 async def test_sigstop_opensearch_process_leader_https(ops_test: OpsTest):
@@ -263,8 +244,6 @@ async def test_sigstop_opensearch_process_leader_https(ops_test: OpsTest):
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.parametrize("signal", ["SIGKILL", "SIGTERM", "SIGSTOP"])
 async def test_signal_dashboard_process_leader_https(ops_test: OpsTest, signal):
@@ -273,8 +252,6 @@ async def test_signal_dashboard_process_leader_https(ops_test: OpsTest, signal):
     await _recover_from_signal(ops_test, signal, [leader_name], https=True)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.parametrize("signal", ["SIGKILL", "SIGTERM"])
 async def test_signal_opensearch_process_cluster_https(ops_test: OpsTest, signal):
@@ -285,8 +262,6 @@ async def test_signal_opensearch_process_cluster_https(ops_test: OpsTest, signal
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.skip(reason="Opensearch is not possible to contact after recovery")
 @pytest.mark.abort_on_fail
 async def test_sigstop_opensearch_process_cluster_https(ops_test: OpsTest):
@@ -295,8 +270,6 @@ async def test_sigstop_opensearch_process_cluster_https(ops_test: OpsTest):
     await _recover_from_signal(ops_test, "SIGSTOP", db_units, https=True)
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "xlarge"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.parametrize("signal", ["SIGKILL", "SIGTERM", "SIGSTOP"])
 async def test_signal_dashboard_process_cluster_https(ops_test: OpsTest, signal):

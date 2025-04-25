@@ -31,7 +31,6 @@ from core.workload import ODPaths
 METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
 OPENSEARCH_APP_NAME = "opensearch"
-SERIES = "jammy"
 CONFIG_OPTS = {"profile": "testing"}
 
 OPENSEARCH_APP_NAME = "opensearch"
