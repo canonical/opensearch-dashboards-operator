@@ -150,11 +150,12 @@ class ClusterState(Object):
             local_app=self.cluster.app,
         )
 
-    @cached_property
+    @property
     def oauth(self) -> OAuth:
         """The oauth relation state."""
         return OAuth(
             relation=self.oauth_relation,
+            client_secret=self.unit_server.oauth_client_secret,
         )
 
     @property

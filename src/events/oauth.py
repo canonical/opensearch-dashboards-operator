@@ -42,10 +42,19 @@ class OAuthHandler(Object):
 
     def _on_oauth_relation_changed(self, event: EventBase) -> None:
         """Handler for `_on_oauth_relation_changed` event."""
-        if not self.charm.unit.is_leader() or not self.charm.state.servers:
+        if not self.charm.state.servers:
             return
 
-        if provider_info := self.oauth.get_provider_info():
-            self.charm.state.oauth.client_secret = provider_info.client_secret
+        provider_info = self.oauth.get_provider_info()
+
+        self.charm.state.unit_server.update(
+            {
+                "oauth-client-secret": (
+                    provider_info.client_secret
+                    if provider_info and provider_info.client_secret
+                    else ""
+                ),
+            }
+        )
 
         self.charm.reconcile(event)

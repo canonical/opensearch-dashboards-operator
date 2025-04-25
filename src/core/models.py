@@ -242,13 +242,18 @@ class ODServer(StateBase):
             "sans_dns": [dns for dns in {self.hostname, self.fqdn} if dns],
         }
 
+    @property
+    def oauth_client_secret(self) -> str:
+        """Client secret of the Oauth relation."""
+        return self.relation_data.get("oauth-client-secret", "")
+
 
 class OAuth:
     """State collection metadata for the oauth relation."""
 
-    def __init__(self, relation: Relation | None):
+    def __init__(self, relation: Relation | None, client_secret: str):
         self.relation = relation
-        self._client_secret = ""
+        self._client_secret = client_secret
 
     @property
     def relation_data(self) -> MutableMapping[str, str]:
@@ -272,10 +277,6 @@ class OAuth:
     def client_secret(self) -> str:
         """Client secret created by Hydra."""
         return self._client_secret
-
-    @client_secret.setter
-    def client_secret(self, value):
-        self._client_secret = value
 
     @property
     def jwks_endpoint(self) -> str:
