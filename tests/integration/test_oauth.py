@@ -218,44 +218,16 @@ async def test_setup_relations(ops_test: OpsTest, ops_test_microk8s: OpsTest):
 @pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
 @pytest.mark.group(1)
 @pytest.mark.abort_on_fail
-async def test_setup_oauth(
-    ops_test: OpsTest,
-    ops_test_microk8s: OpsTest,
-    ext_idp_service: ExternalIdpService,
-    kratos_external_idp_integrator_app_name: str,
-):
-    await ops_test_microk8s.model.applications[kratos_external_idp_integrator_app_name].set_config(
-        {
-            "issuer_url": ext_idp_service.issuer_url,
-            "provider_id": "Dex",
-        }
-    )
-
-    get_redirect_uri_action = (
-        await ops_test_microk8s.model.applications[kratos_external_idp_integrator_app_name]
-        .units[0]
-        .run_action("get-redirect-uri")
-    )
-
-    action_output = await get_redirect_uri_action.wait()
-    assert "redirect-uri" in action_output.results
-
-    ext_idp_service.update_redirect_uri(action_output.results["redirect-uri"])
-
-    global opensearch_dashboards_ip
-    opensearch_dashboards_ip = await get_address(
-        ops_test, ops_test.model.applications[APP_NAME].units[0].name
-    )
-
-
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
-@pytest.mark.abort_on_fail
 async def test_oauth(
+    ops_test: OpsTest,
     ops_test_microk8s: OpsTest,
     page: Page,
     ext_idp_service: ExternalIdpService,
 ):
+    opensearch_dashboards_ip = await get_address(
+        ops_test, ops_test.model.applications[APP_NAME].units[0].name
+    )
+
     await access_application_login_page(
         page=page,
         url=f"https://{opensearch_dashboards_ip}:5601",
