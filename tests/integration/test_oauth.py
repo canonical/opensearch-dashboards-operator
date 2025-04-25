@@ -11,8 +11,7 @@ from typing import Any, AsyncGenerator
 # import oauth_tools
 import pytest
 import yaml
-from integration.helpers import CONFIG_OPTS, SERIES, get_address
-from juju.model import Model
+from integration.helpers import CONFIG_OPTS, get_address
 from oauth_tools import (
     ExternalIdpService,
     access_application_login_page,
@@ -142,31 +141,26 @@ async def ops_test_microk8s(
     await ops_res._cleanup_models()
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
-async def test_deploy(ops_test: OpsTest, ops_test_microk8s: OpsTest):
+async def test_deploy(ops_test: OpsTest, ops_test_microk8s: OpsTest, charm: str, series: str):
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
 
     await ops_test.model.deploy(
         OPENSEARCH_APP_NAME,
         channel="2/edge",
         num_units=2,
-        series=SERIES,
+        series=series,
         config=CONFIG_OPTS,
     )
-
-    charm = await ops_test.build_charm(".")
 
     await ops_test.model.deploy(
         charm,
         application_name=APP_NAME,
+        series=series,
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
 async def test_deploy_identity_bundle(
@@ -183,8 +177,6 @@ async def test_deploy_identity_bundle(
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
 async def test_setup_relations(ops_test: OpsTest, ops_test_microk8s: OpsTest):
@@ -215,8 +207,6 @@ async def test_setup_relations(ops_test: OpsTest, ops_test_microk8s: OpsTest):
     )
 
 
-@pytest.mark.runner(["self-hosted", "linux", "X64", "jammy", "large"])
-@pytest.mark.group(1)
 @pytest.mark.abort_on_fail
 async def test_oauth(
     ops_test: OpsTest,
