@@ -25,14 +25,7 @@ class OAuthHandler(Object):
         super().__init__(charm, "oauth")
         self.charm: "OpensearchDasboardsCharm" = charm
 
-        client_config = ClientConfig(
-            audience=["opensearch"],
-            redirect_uri=f"{self.charm.state.url}/auth/openid/login",
-            scope="openid profile email phone offline address",
-            grant_types=["authorization_code"],
-            token_endpoint_auth_method="client_secret_post",
-        )
-        self.oauth = OAuthRequirer(self.charm, client_config, relation_name=OAUTH_REL_NAME)
+        self.oauth = OAuthRequirer(self.charm, self._client_config(), relation_name=OAUTH_REL_NAME)
         self.framework.observe(
             self.charm.on[OAUTH_REL_NAME].relation_changed, self._on_oauth_relation_changed
         )
@@ -43,6 +36,7 @@ class OAuthHandler(Object):
     def _on_oauth_relation_changed(self, event: EventBase) -> None:
         """Handler for `_on_oauth_relation_changed` event."""
         if not self.charm.state.servers:
+            event.defer()
             return
 
         provider_info = self.oauth.get_provider_info()
@@ -58,3 +52,17 @@ class OAuthHandler(Object):
         )
 
         self.charm.reconcile(event)
+
+    def _client_config(self) -> ClientConfig:
+        """Generates actual client config for the OAuth."""
+        return ClientConfig(
+            audience=["opensearch"],
+            redirect_uri=f"{self.charm.state.url}/auth/openid/login",
+            scope="openid profile email phone offline address",
+            grant_types=["authorization_code"],
+            token_endpoint_auth_method="client_secret_post",
+        )
+
+    def update_client_config(self):
+        """Updates redirect_uri of the OAuth client config if needed."""
+        self.oauth.update_client_config(self._client_config())

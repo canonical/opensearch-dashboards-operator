@@ -204,6 +204,10 @@ class OpensearchDasboardsCharm(CharmBase):
         else:
             outdated_status.append(MSG_TLS_CONFIG)
 
+        # Handle possible changes to the TLS
+        # TODO: HTTP - HTTPS switching should be fixed to fully utilize this
+        self.oauth.update_client_config()
+
         # Regular health-check
         # Checks that may modify the 'app' state as well
         app_healthy, app_msg = self.health_manager.app_healthy()
