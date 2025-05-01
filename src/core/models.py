@@ -135,6 +135,11 @@ class ODCluster(StateBase):
         """Flag to check if TLS is enabled for the cluster."""
         return bool(self._tls)
 
+    @property
+    def oauth_client_secret(self) -> str:
+        """Client secret of the Oauth relation."""
+        return self.relation_data.get("oauth-client-secret", "")
+
 
 class ODServer(StateBase):
     """State collection metadata for a charm unit."""
@@ -241,11 +246,6 @@ class ODServer(StateBase):
             "sans_ip": [self.private_ip, self.public_ip],
             "sans_dns": [dns for dns in {self.hostname, self.fqdn} if dns],
         }
-
-    @property
-    def oauth_client_secret(self) -> str:
-        """Client secret of the Oauth relation."""
-        return self.relation_data.get("oauth-client-secret", "")
 
 
 class OAuth:

@@ -41,7 +41,7 @@ class OAuthHandler(Object):
 
         provider_info = self.oauth.get_provider_info()
 
-        self.charm.state.unit_server.update(
+        self.charm.state.cluster.update(
             {
                 "oauth-client-secret": (
                     provider_info.client_secret

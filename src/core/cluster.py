@@ -4,7 +4,6 @@
 
 """Collection of global cluster state."""
 import logging
-from functools import cached_property
 from ipaddress import IPv4Address, IPv6Address
 
 from charms.data_platform_libs.v0.data_interfaces import (
@@ -155,7 +154,7 @@ class ClusterState(Object):
         """The oauth relation state."""
         return OAuth(
             relation=self.oauth_relation,
-            client_secret=self.unit_server.oauth_client_secret,
+            client_secret=self.cluster.oauth_client_secret,
         )
 
     @property
