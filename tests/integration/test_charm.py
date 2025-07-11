@@ -47,6 +47,7 @@ OPENSEARCH_CONFIG = {
     """,
 }
 COS_AGENT_APP_NAME = "grafana-agent"
+COS_CHANNEL = "1/stable"
 COS_AGENT_RELATION_NAME = "cos-agent"
 DB_CLIENT_APP_NAME = "application"
 
@@ -67,7 +68,7 @@ async def test_build_and_deploy(
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
 
     config = {"ca-common-name": "CN_CA"}
-    await ops_test.model.deploy(COS_AGENT_APP_NAME, series=series)
+    await ops_test.model.deploy(COS_AGENT_APP_NAME, channel=COS_CHANNEL, series=series)
     await ops_test.model.deploy(
         OPENSEARCH_APP_NAME,
         channel="2/edge",
