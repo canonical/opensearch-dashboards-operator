@@ -4,7 +4,7 @@
 
 """Collection of global literals for the charm."""
 
-OPENSEARCH_DASHBOARDS_SNAP_REVISION = "43"
+OPENSEARCH_DASHBOARDS_SNAP_REVISION = "44"
 
 SUBSTRATE = "vm"
 CHARM_KEY = "opensearch-dashboards"
