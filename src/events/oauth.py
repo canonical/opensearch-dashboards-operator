@@ -13,7 +13,7 @@ from ops import EventBase, Object
 from literals import OAUTH_REL_NAME
 
 if TYPE_CHECKING:
-    from charm import OpensearchDasboardsCharm
+    from charm import OpensearchDashboardsCharm
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class OAuthHandler(Object):
 
     def __init__(self, charm) -> None:
         super().__init__(charm, "oauth")
-        self.charm: "OpensearchDasboardsCharm" = charm
+        self.charm: "OpensearchDashboardsCharm" = charm
 
         self.oauth = OAuthRequirer(self.charm, self._client_config(), relation_name=OAUTH_REL_NAME)
         self.framework.observe(

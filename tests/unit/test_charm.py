@@ -15,7 +15,7 @@ from ops.framework import EventBase
 from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus, WaitingStatus
 from ops.testing import Harness
 
-from charm import OpensearchDasboardsCharm, OpensearchDashboardsDependencyModel
+from charm import OpensearchDashboardsCharm, OpensearchDashboardsDependencyModel
 from helpers import clear_status, update_grafana_dashboards_title
 from literals import CHARM_KEY, CONTAINER, OPENSEARCH_REL_NAME, PEER, SUBSTRATE
 from src.literals import (
@@ -35,7 +35,7 @@ OPENSEARCH_APP_NAME = "opensearch"
 
 @pytest.fixture
 def harness():
-    harness = Harness(OpensearchDasboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
+    harness = Harness(OpensearchDashboardsCharm, meta=METADATA, config=CONFIG, actions=ACTIONS)
 
     if SUBSTRATE == "k8s":
         harness.set_can_connect(CONTAINER, True)
@@ -48,10 +48,10 @@ def harness():
     harness.charm.upgrade_events.dependency_model = OpensearchDashboardsDependencyModel(
         **{
             "osd_upstream": {
-                "dependencies": {"opensearch": "2.12"},
+                "dependencies": {"opensearch": "2.19.2"},
                 "name": "opensearch-dashboards",
                 "upgrade_supported": ">=2",
-                "version": "2.12",
+                "version": "2.19.2",
             },
         }
     )
@@ -146,7 +146,7 @@ def test_relation_changed_emitted_for_leader_elected(harness):
         peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
         harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
 
-    with patch("charm.OpensearchDasboardsCharm.reconcile") as patched:
+    with patch("charm.OpensearchDashboardsCharm.reconcile") as patched:
         harness.set_leader(True)
         patched.assert_called_once()
 
@@ -156,7 +156,7 @@ def test_relation_changed_emitted_for_config_changed(harness):
         peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
         harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
 
-    with patch("charm.OpensearchDasboardsCharm.reconcile") as patched:
+    with patch("charm.OpensearchDashboardsCharm.reconcile") as patched:
         harness.charm.on.config_changed.emit()
         patched.assert_called_once()
 
@@ -166,7 +166,7 @@ def test_relation_changed_emitted_for_relation_changed(harness):
         peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
         harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
 
-    with patch("charm.OpensearchDasboardsCharm.reconcile") as patched:
+    with patch("charm.OpensearchDashboardsCharm.reconcile") as patched:
         harness.charm.on.dashboard_peers_relation_changed.emit(harness.charm.state.peer_relation)
         patched.assert_called_once()
 
@@ -176,7 +176,7 @@ def test_relation_changed_emitted_for_relation_joined(harness):
         peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
         harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
 
-    with patch("charm.OpensearchDasboardsCharm.reconcile") as patched:
+    with patch("charm.OpensearchDashboardsCharm.reconcile") as patched:
         harness.charm.on.dashboard_peers_relation_joined.emit(harness.charm.state.peer_relation)
         patched.assert_called_once()
 
@@ -186,7 +186,7 @@ def test_relation_changed_emitted_for_relation_departed(harness):
         peer_rel_id = harness.add_relation(PEER, CHARM_KEY)
         harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
 
-    with patch("charm.OpensearchDasboardsCharm.reconcile") as patched:
+    with patch("charm.OpensearchDashboardsCharm.reconcile") as patched:
         harness.charm.on.dashboard_peers_relation_departed.emit(harness.charm.state.peer_relation)
         patched.assert_called_once()
 
@@ -198,7 +198,7 @@ def test_relation_changed_starts_units(harness):
         harness.set_planned_units(1)
 
     with (
-        patch("charm.OpensearchDasboardsCharm.init_server") as patched,
+        patch("charm.OpensearchDashboardsCharm.init_server") as patched,
         patch("managers.config.ConfigManager.config_changed"),
         patch("core.cluster.ClusterState.all_units_related", return_value=True),
     ):
@@ -212,9 +212,7 @@ def test_relation_changed_emitted_for_opensearch_relation_changed(harness):
         harness.add_relation_unit(opensearch_rel_id, "opensearch/0")
 
     with patch("events.requirer.RequirerEvents._on_client_relation_changed") as patched:
-        harness.charm.on.opensearch_client_relation_changed.emit(
-            harness.charm.state.opensearch_relation
-        )
+        harness.update_relation_data(opensearch_rel_id, "opensearch", {"data": "{}"})
         patched.assert_called_once()
 
 
@@ -226,7 +224,7 @@ def test_relation_changed_does_not_start_units_again(harness):
     harness.update_relation_data(peer_rel_id, f"{CHARM_KEY}/0", {"state": "started"})
 
     with (
-        patch("charm.OpensearchDasboardsCharm.init_server") as patched,
+        patch("charm.OpensearchDashboardsCharm.init_server") as patched,
         patch("managers.config.ConfigManager.config_changed"),
     ):
         harness.charm.on.config_changed.emit()

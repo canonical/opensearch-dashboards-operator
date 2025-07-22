@@ -13,7 +13,7 @@ from ops.framework import Object
 from literals import OPENSEARCH_REL_NAME
 
 if TYPE_CHECKING:
-    from charm import OpensearchDasboardsCharm
+    from charm import OpensearchDashboardsCharm
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class RequirerEvents(Object):
 
     def __init__(self, charm):
         super().__init__(charm, "provider")
-        self.charm: "OpensearchDasboardsCharm" = charm
+        self.charm: "OpensearchDashboardsCharm" = charm
 
         self.requirer_events = OpenSearchRequiresEventHandlers(
             self.charm, self.charm.state.client_requires_data

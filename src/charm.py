@@ -56,7 +56,7 @@ from workload import ODWorkload
 logger = logging.getLogger(__name__)
 
 
-class OpensearchDasboardsCharm(CharmBase):
+class OpensearchDashboardsCharm(CharmBase):
     """Charmed Operator for Opensearch Dashboards."""
 
     def __init__(self, *args):
@@ -338,4 +338,4 @@ class OpensearchDasboardsCharm(CharmBase):
 
 
 if __name__ == "__main__":
-    main(OpensearchDasboardsCharm)
+    main(OpensearchDashboardsCharm)
