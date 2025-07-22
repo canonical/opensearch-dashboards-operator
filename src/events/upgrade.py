@@ -61,7 +61,11 @@ class ODUpgradeEvents(DataUpgrade):
     @override
     def build_upgrade_stack(self) -> list[int]:
         upgrade_stack = []
-        units = [self.charm.unit] + list(self.charm.state.peer_relation.units)
+
+        units = [self.charm.unit]
+        if self.charm.state.peer_relation:
+            units.extend(list(self.charm.state.peer_relation.units))
+
         for unit in units:
             upgrade_stack.append(int(unit.name.split("/")[-1]))
 
