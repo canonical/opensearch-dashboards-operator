@@ -8,14 +8,6 @@ on:
       - 2/edge
 
 jobs:
-  tag:
-    name: Create charm refresh compatibility version git tag
-    uses: canonical/data-platform-workflows/.github/workflows/tag_charm_edge.yaml@v32.1.0
-    with:
-      track: '2'
-    permissions:
-      contents: write  # Needed to create git tag
-
   ci-tests:
     name: Tests
     uses: ./.github/workflows/ci.yaml
@@ -26,7 +18,6 @@ jobs:
   release:
     name: Release charm
     needs:
-      - tag
       - ci-tests
     uses: canonical/data-platform-workflows/.github/workflows/release_charm_edge.yaml@v32.1.0
     with:
