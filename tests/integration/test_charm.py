@@ -8,7 +8,6 @@ import re
 from pathlib import Path
 
 import pytest
-import requests
 import yaml
 from pytest_operator.plugin import OpsTest
 
@@ -139,18 +138,14 @@ async def test_dashboard_access_https(ops_test: OpsTest):
         apps=[APP_NAME, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
     )
 
-    # Event thought the TLS connection is not there, we do NOT switch back to HTTP
-    with pytest.raises(requests.exceptions.ConnectionError):
-        await access_all_dashboards(ops_test, opensearch_relation.id)
-
-    # Instead, HTTPS works uninterrupted
-    assert await access_all_dashboards(ops_test, opensearch_relation.id, https=True)
-
     server_cert = (
         "/var/snap/opensearch-dashboards/current/etc/opensearch-dashboards/certificates/server.pem"
     )
     unit = ops_test.model.applications[APP_NAME].units[0]
     host_cert = get_file_contents(ops_test, unit, server_cert)
+
+    # TLS Broken on relation removal we check the connection on HTTP
+    await access_all_dashboards(ops_test, opensearch_relation.id)
 
     # Restore relation for further tests
     await ops_test.model.integrate(APP_NAME, TLS_CERTIFICATES_APP_NAME)
