@@ -1,0 +1,461 @@
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:289 Cutting all units from network...
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:297 Cutting unit opensearch-dashboards/0 from network...
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:297 Cutting unit opensearch-dashboards/1 from network...
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:306 Waiting until units ['opensearch-dashboards/0', 'opensearch-dashboards/1'] are not reachable
+[1m[31mERROR   [0m integration.ha.helpers:helpers.py:49 timed out
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:313 Waiting until unit ['opensearch-dashboards/0', 'opensearch-dashboards/1'] are 'lost'
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:323 Checking lack of Dashboard access...
+[32mINFO    [0m integration.helpers:helpers.py:232 Couldn't retrieve host certificate for unit <Unit entity_id="opensearch-dashboards/0">
+[32mINFO    [0m integration.helpers:helpers.py:232 Couldn't retrieve host certificate for unit <Unit entity_id="opensearch-dashboards/1">
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:326 Restoring network...
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:333 Waiting until units ['opensearch-dashboards/0', 'opensearch-dashboards/1'] are reachable again
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/0 [idle] active: 
+  opensearch-dashboards/1 [idle] active: 
+  self-signed-certificates/0 [idle] active: 
+  opensearch/0 [idle] active: 
+  opensearch/1 [idle] active: 
+[32mINFO    [0m integration.ha.test_network_cut:test_network_cut.py:349 Checking Dashboard access...
+[32mINFO    [0m integration.helpers:helpers.py:315 Host opensearch-dashboards/0, 10.79.8.179 passed access check
+[32mINFO    [0m integration.helpers:helpers.py:315 Host opensearch-dashboards/1, 10.79.8.123 passed access check
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller     Cloud/Region         Version  SLA          Timestamp
+testing  concierge-lxd  localhost/localhost  3.6.9    unsupported  03:22:24Z
+
+App                       Version  Status  Scale  Charm                     Channel        Rev  Exposed  Message
+opensearch                         active      2  opensearch                2/edge         274  no       
+opensearch-dashboards              active      2  opensearch-dashboards                      0  no       
+self-signed-certificates           active      1  self-signed-certificates  latest/stable  264  no       
+
+Unit                         Workload  Agent  Machine  Public address  Ports     Message
+opensearch-dashboards/0      active    idle   0        10.79.8.179     5601/tcp  
+opensearch-dashboards/1*     active    idle   1        10.79.8.123     5601/tcp  
+opensearch/0                 active    idle   2        10.79.8.85      9200/tcp  
+opensearch/1*                active    idle   3        10.79.8.229     9200/tcp  
+self-signed-certificates/0*  active    idle   4        10.79.8.23                
+
+Machine  State    Address      Inst id        Base          AZ             Message
+0        started  10.79.8.179  juju-a29c90-0  ubuntu@24.04  github-runner  Running
+1        started  10.79.8.123  juju-a29c90-1  ubuntu@24.04  github-runner  Running
+2        started  10.79.8.85   juju-a29c90-2  ubuntu@24.04  github-runner  Running
+3        started  10.79.8.229  juju-a29c90-3  ubuntu@24.04  github-runner  Running
+4        started  10.79.8.23   juju-a29c90-4  ubuntu@22.04  github-runner  Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+machine-0: 02:02:14 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 02:02:14 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-0: 02:02:14 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-3: 02:02:21 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-3: 02:02:21 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-1: 02:02:21 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-2: 02:02:24 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:02:24 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-0: 02:02:24 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-1: 02:02:31 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:02:31 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-1: 02:02:31 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+machine-4: 02:03:02 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-4: 02:03:02 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-self-signed-certificates-0: 02:03:02 ERROR juju.worker.meterstatus error running "meter-status-changed": charm missing from disk
+unit-opensearch-dashboards-1: 02:05:20 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:22 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: Request GET to http://10.79.8.120:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: http://10.79.8.120:5601/api/status
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:05:23 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: Request GET to http://10.79.8.222:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: http://10.79.8.222:5601/api/status
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:23 ERROR unit.opensearch-dashboards/1.juju-log opensearch-client:7: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:05:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: Request GET to http://10.79.8.222:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.222', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x79ef22c583e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:05:29 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: Request GET to http://10.79.8.222:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.222', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x79ef22c58b30>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 02:05:37 ERROR unit.opensearch-dashboards/1.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:05:37 ERROR unit.opensearch-dashboards/1.juju-log restart:2: Request GET to http://10.79.8.120:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.120', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7d6d1b8a7110>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 02:05:42 ERROR unit.opensearch-dashboards/1.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-0: 02:06:21 ERROR juju.worker.dependency "valid-credential-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.222:37352->10.79.8.14:17070: read: connection timed out
+machine-0: 02:06:21 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.222:37352->10.79.8.14:17070: read: connection timed out
+machine-0: 02:06:24 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:06:28 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:06:32 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:06:38 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:06:44 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:06:51 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:07:00 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:07:12 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:07:26 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:07:42 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:08:01 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:08:25 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+unit-opensearch-dashboards-0: 02:08:54 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:08:54 ERROR unit.opensearch-dashboards/0.juju-log Request GET to http://10.79.8.49:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.49', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x71fa01bd2ae0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:08:54 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:08:54 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:08:54 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:08:54 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:08:54 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:08:54 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:08:57 ERROR unit.opensearch-dashboards/0.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:08:57 ERROR unit.opensearch-dashboards/0.juju-log restart:2: Request GET to http://10.79.8.49:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.49', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f4063fd6c30>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:09:02 ERROR unit.opensearch-dashboards/0.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:13:04 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:13:04 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:13:04 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:13:04 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:13:04 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:13:04 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:13:04 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:15:13 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:15:13 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:15:13 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:15:13 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:15:13 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:15:13 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:15:13 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-1: 02:16:46 ERROR juju.worker.dependency "valid-credential-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.120:60400->10.79.8.14:17070: read: no route to host
+machine-1: 02:16:46 ERROR juju.worker.dependency "migration-inactive-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.120:60400->10.79.8.14:17070: read: no route to host
+machine-1: 02:16:46 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.120:60400->10.79.8.14:17070: read: no route to host
+machine-1: 02:17:52 ERROR juju.worker.dependency "migration-inactive-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.120:40884->10.79.8.14:17070: read: connection timed out
+machine-1: 02:17:52 ERROR juju.worker.dependency "migration-minion" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.120:40884->10.79.8.14:17070: read: connection timed out
+machine-1: 02:17:52 ERROR juju.worker.dependency "valid-credential-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.120:40884->10.79.8.14:17070: read: connection timed out
+machine-1: 02:17:52 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.120:40884->10.79.8.14:17070: read: connection timed out
+machine-0: 02:17:54 ERROR juju.worker.dependency "migration-minion" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.49:57304->10.79.8.14:17070: read: connection timed out
+machine-0: 02:17:54 ERROR juju.worker.dependency "api-address-updater" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.49:57304->10.79.8.14:17070: read: connection timed out
+machine-0: 02:17:54 ERROR juju.worker.dependency "reboot-executor" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.49:57304->10.79.8.14:17070: read: connection timed out
+machine-0: 02:17:54 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.49:57304->10.79.8.14:17070: read: connection timed out
+machine-1: 02:17:55 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:17:58 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:17:59 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:18:01 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:18:04 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:18:06 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:18:09 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:18:11 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:18:16 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:18:17 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:18:23 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:18:25 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:18:33 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:18:34 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:18:44 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:18:45 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:18:56 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:18:59 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:19:12 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:19:15 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:19:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:19:35 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:19:51 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:19:59 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:20:17 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:20:28 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:20:52 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:21:01 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:21:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:21:42 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:22:20 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:22:29 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:23:16 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:23:27 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:24:23 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:24:35 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:25:38 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:25:59 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:27:21 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:27:36 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 02:29:17 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:29:22 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+unit-opensearch-0: 02:29:31 ERROR juju.worker.dependency "log-sender" manifold worker returned unexpected error: sending log message: websocket: close 1005 (no status): websocket: close sent
+unit-self-signed-certificates-0: 02:30:23 ERROR juju.worker.dependency "log-sender" manifold worker returned unexpected error: sending log message: websocket: close 1005 (no status): websocket: close sent
+unit-opensearch-dashboards-1: 02:31:09 ERROR unit.opensearch-dashboards/1.juju-log Request GET to http://10.79.8.242:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.242', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fdedd6aab40>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 02:31:10 ERROR unit.opensearch-dashboards/1.juju-log Request GET to http://10.79.8.242:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.242', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fdedd6abfe0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-1: 02:31:17 ERROR juju.worker.dependency "log-sender" manifold worker returned unexpected error: sending log message: websocket: close 1005 (no status): websocket: close sent
+unit-opensearch-dashboards-0: 02:31:35 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:35 ERROR unit.opensearch-dashboards/0.juju-log Request GET to http://10.79.8.236:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.236', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x77f4f90a5a90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:31:35 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:35 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:35 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:35 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:35 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:35 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:36 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:36 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:1: Request GET to http://10.79.8.236:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.236', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78da768a5d90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:31:36 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:36 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:36 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:36 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:36 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:36 ERROR unit.opensearch-dashboards/0.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:38 ERROR unit.opensearch-dashboards/0.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:31:38 ERROR unit.opensearch-dashboards/0.juju-log restart:2: Request GET to http://10.79.8.236:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.236', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x71bc950f4d70>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:31:43 ERROR unit.opensearch-dashboards/0.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-0: 02:32:50 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.236:36694->10.79.8.14:17070: read: no route to host
+machine-0: 02:32:53 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 02:32:59 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 02:33:05 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 02:33:11 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 02:33:17 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-1: 02:33:22 ERROR juju.worker.dependency "migration-inactive-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.242:59612->10.79.8.14:17070: read: connection timed out
+machine-1: 02:33:22 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.242:59612->10.79.8.14:17070: read: connection timed out
+machine-0: 02:33:26 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-1: 02:33:28 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:33:35 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:33:37 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:33:42 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:33:50 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:33:51 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:34:00 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:34:06 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:34:11 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:34:21 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 02:34:23 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:34:36 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:34:46 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:34:53 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:35:09 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:35:12 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:35:33 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:35:41 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:35:57 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:36:18 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:36:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:37:03 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:37:03 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:37:41 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:37:48 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:38:32 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:38:47 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:39:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:39:54 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:40:41 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:41:16 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:41:58 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 02:43:04 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 02:43:29 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+unit-opensearch-dashboards-0: 02:45:28 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.79.8.236:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.236', port=5601): Max retries exceeded with url: /api/status (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1000)')))
+unit-opensearch-dashboards-0: 02:45:28 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.79.8.236:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.236', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7abf4b65f4a0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 02:45:29 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:45:29 ERROR unit.opensearch-dashboards/1.juju-log Request GET to https://10.79.8.242:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.242', port=5601): Max retries exceeded with url: /api/status (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1000)')))
+unit-opensearch-dashboards-1: 02:45:29 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:45:29 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:45:29 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:45:29 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:45:29 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:45:29 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:45:38 ERROR unit.opensearch-dashboards/1.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 02:45:38 ERROR unit.opensearch-dashboards/1.juju-log restart:2: Request GET to https://10.79.8.242:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.242', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7cf71bc84fb0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 02:45:43 ERROR unit.opensearch-dashboards/1.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-0: 02:46:57 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.236:56582->10.79.8.14:17070: read: connection timed out
+machine-0: 02:47:00 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:47:04 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:47:09 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:47:14 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:47:20 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:47:27 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:47:37 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:47:49 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:48:02 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:48:16 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 02:48:37 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+unit-opensearch-dashboards-0: 02:49:00 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:00 ERROR unit.opensearch-dashboards/0.juju-log Request GET to http://10.79.8.180:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.180', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x70790ce37e90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:49:00 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:00 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:00 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:00 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:00 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:00 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:01 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:01 ERROR unit.opensearch-dashboards/0.juju-log Request GET to http://10.79.8.180:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.180', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74399a986270>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:49:01 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:01 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:01 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:01 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.79.8.180:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.180', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x701d2806c170>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:49:03 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.79.8.180:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.180', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x701d272a81d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:49:08 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:54:19 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:54:19 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:54:19 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:54:19 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:54:19 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:54:19 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:54:19 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:58:26 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:58:27 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:58:27 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:58:27 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:58:27 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:58:27 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 02:58:27 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 03:00:13 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 03:00:13 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 03:00:14 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 03:00:14 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 03:00:14 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 03:00:14 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-0: 03:00:14 ERROR unit.opensearch-dashboards/0.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-1: 03:01:36 ERROR juju.worker.dependency "instance-mutater" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.242:33506->10.79.8.14:17070: read: connection timed out
+machine-1: 03:01:36 ERROR juju.worker.dependency "migration-minion" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.242:33506->10.79.8.14:17070: read: connection timed out
+machine-1: 03:01:36 ERROR juju.worker.dependency "upgrade-series" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.242:33506->10.79.8.14:17070: read: connection timed out
+machine-1: 03:01:36 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.242:33506->10.79.8.14:17070: read: connection timed out
+machine-1: 03:01:42 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:01:48 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:01:53 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-1: 03:02:01 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-1: 03:02:09 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:02:19 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 03:03:12 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.180:32958->10.79.8.14:17070: read: connection timed out
+machine-0: 03:03:15 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:03:19 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:03:23 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:03:28 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:03:31 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.242:59586->10.79.8.14:17070: read: connection timed out
+machine-1: 03:03:34 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:03:35 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:03:38 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:03:43 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:03:43 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:03:48 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:03:52 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:03:54 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:04:02 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:04:04 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:04:12 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:04:18 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:04:23 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:04:35 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:04:35 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:04:49 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:04:53 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:05:08 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:05:17 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:05:31 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:05:44 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:06:00 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:06:19 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:06:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:06:57 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:07:06 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:07:47 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:07:52 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:08:38 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:08:46 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-0: 03:09:44 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+machine-1: 03:09:49 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: network is unreachable
+unit-opensearch-dashboards-0: 03:10:57 ERROR unit.opensearch-dashboards/0.juju-log Request GET to http://10.79.8.179:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.179', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x72e357da99d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 03:10:58 ERROR unit.opensearch-dashboards/0.juju-log Request GET to http://10.79.8.179:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.179', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x72e357d6c080>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 03:11:05 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.79.8.179:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.179', port=5601): Max retries exceeded with url: /api/status (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1000)')))
+unit-opensearch-dashboards-0: 03:11:06 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.79.8.179:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.179', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7be4f4fd7f80>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 03:11:16 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:16 ERROR unit.opensearch-dashboards/1.juju-log Request GET to http://10.79.8.123:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.123', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x72e932bcacc0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 03:11:16 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:16 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:16 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:16 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:16 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:16 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:17 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:17 ERROR unit.opensearch-dashboards/1.juju-log Request GET to http://10.79.8.123:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.79.8.123', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7a2a48ca6960>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 03:11:17 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:17 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:17 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:17 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:20 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:20 ERROR unit.opensearch-dashboards/1.juju-log Request GET to https://10.79.8.123:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.123', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a9b166aed20>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 03:11:20 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:20 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:20 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:20 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:20 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:20 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:22 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:22 ERROR unit.opensearch-dashboards/1.juju-log Request GET to https://10.79.8.123:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.79.8.123', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a9b166ac1a0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 03:11:27 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:28 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:28 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:28 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:28 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:28 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:28 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 03:11:28 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-1: 03:12:07 ERROR juju.worker.dependency "log-sender" manifold worker returned unexpected error: sending log message: websocket: close 1005 (no status): websocket: close sent
+machine-0: 03:16:09 ERROR juju.worker.dependency "migration-inactive-flag" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.179:55320->10.79.8.14:17070: read: connection timed out
+machine-0: 03:16:09 ERROR juju.worker.dependency "migration-minion" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.179:55320->10.79.8.14:17070: read: connection timed out
+machine-0: 03:16:09 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.179:55320->10.79.8.14:17070: read: connection timed out
+machine-0: 03:16:15 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 03:16:22 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:16:28 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: codec.ReadHeader error: error receiving message: read tcp 10.79.8.123:53512->10.79.8.14:17070: read: connection timed out
+machine-0: 03:16:29 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:16:34 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 03:16:37 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:16:40 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-1: 03:16:46 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 03:16:46 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:16:52 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 03:16:56 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:16:59 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 03:17:08 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:17:09 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 03:17:19 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-1: 03:17:22 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:17:34 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 03:17:35 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-1: 03:17:51 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 03:17:54 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:18:08 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 03:18:17 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:18:31 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 03:18:43 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:18:58 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 03:19:12 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:19:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 03:19:48 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:20:07 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: connect: no route to host
+machine-0: 03:20:30 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-1: 03:20:50 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-1" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+machine-0: 03:21:21 ERROR juju.worker.dependency "api-caller" manifold worker returned unexpected error: [fb28f5] "machine-0" cannot open api: unable to connect to API: dial tcp 10.79.8.14:17070: i/o timeout
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
