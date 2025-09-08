@@ -19,6 +19,7 @@ from events.oauth import OAuthHandler
 from events.requirer import RequirerEvents
 from events.tls import TLSEvents
 from events.upgrade import ODUpgradeEvents, OpensearchDashboardsDependencyModel
+from exceptions import OSDInstallError
 from helpers import (
     clear_global_status,
     clear_status,
@@ -134,6 +135,9 @@ class OpensearchDashboardsCharm(CharmBase):
         install = self.workload.install()
         if not install:
             self.unit.status = BlockedStatus("unable to install Opensearch Dashboards")
+            raise OSDInstallError(
+                "failed to install the Opensearch Dashboards snap. check logs for more details"
+            )
 
         # don't complete install until passwords set
         if not self.state.peer_relation:

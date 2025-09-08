@@ -16,12 +16,17 @@ from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus, WaitingSta
 from ops.testing import Harness
 
 from charm import OpensearchDashboardsCharm, OpensearchDashboardsDependencyModel
+from exceptions import OSDInstallError
 from helpers import clear_status, update_grafana_dashboards_title
-from literals import CHARM_KEY, CONTAINER, OPENSEARCH_REL_NAME, PEER, SUBSTRATE
-from src.literals import (
+from literals import (
+    CHARM_KEY,
+    CONTAINER,
     MSG_INCOMPATIBLE_UPGRADE,
     MSG_STATUS_ERROR,
     MSG_STATUS_UNHEALTHY,
+    OPENSEARCH_REL_NAME,
+    PEER,
+    SUBSTRATE,
 )
 
 logger = logging.getLogger(__name__)
@@ -123,7 +128,10 @@ def test_install_blocks_snap_install_failure(harness):
         harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
         harness.set_leader(True)
 
-    with patch("workload.ODWorkload.install", return_value=False):
+    with (
+        patch("workload.ODWorkload.install", return_value=False),
+        pytest.raises(OSDInstallError),
+    ):
         harness.charm.on.install.emit()
 
         assert isinstance(harness.model.unit.status, BlockedStatus)
@@ -135,7 +143,7 @@ def test_install_sets_ip_hostname_fqdn(harness):
         harness.add_relation_unit(peer_rel_id, f"{CHARM_KEY}/0")
         harness.set_leader(True)
 
-    with patch("workload.ODWorkload.install", return_value=False):
+    with patch("workload.ODWorkload.install", return_value=True):
         harness.charm.on.install.emit()
 
         assert harness.charm.state.bind_address

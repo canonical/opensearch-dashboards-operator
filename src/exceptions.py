@@ -11,3 +11,7 @@ class OSDError(Exception):
 
 class OSDAPIError(OSDError):
     """Exception relating to OSD API access."""
+
+
+class OSDInstallError(OSDError):
+    """Exception relating to OSD installation issues."""
