@@ -11,7 +11,7 @@ import string
 import subprocess
 
 from charms.operator_libs_linux.v2 import snap
-from tenacity import retry
+from tenacity import retry, retry_if_result
 from tenacity.retry import retry_any, retry_if_exception, retry_if_not_result
 from tenacity.stop import stop_after_attempt
 from tenacity.wait import wait_fixed
@@ -119,7 +119,12 @@ class ODWorkload(WorkloadBase):
         return self.alive()
 
     # --- Charm Specific ---
-
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_fixed(5),
+        reraise=True,
+        retry=retry_if_result(lambda result: result is False),
+    )
     def install(self) -> bool:
         """Loads the snap from LP, returning a StatusBase for the Charm to set.
 
