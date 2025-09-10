@@ -132,8 +132,7 @@ class OpensearchDashboardsCharm(CharmBase):
         """Handler for the `on_install` event."""
         self.unit.status = MaintenanceStatus(MSG_INSTALLING)
 
-        install = self.workload.install()
-        if not install:
+        if not self.workload.install():
             self.unit.status = BlockedStatus("unable to install Opensearch Dashboards")
             raise OSDInstallError(
                 "failed to install the Opensearch Dashboards snap. check logs for more details"
