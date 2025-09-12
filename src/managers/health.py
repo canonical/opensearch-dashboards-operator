@@ -9,6 +9,8 @@ import os
 
 import requests
 from requests.exceptions import ConnectionError, HTTPError
+from tenacity import Retrying, stop_after_attempt, wait_fixed, RetryCallState
+import urllib3
 
 from core.cluster import SUBSTRATES, ClusterState
 from core.workload import WorkloadBase
@@ -78,41 +80,59 @@ class HealthManager:
         ):
             return False, MSG_STATUS_DB_MISSING
 
+        def log_retry(retry_state: RetryCallState) -> None:
+            """Log retry attempts."""
+            logger.debug(
+                f"Retrying... Attempt {retry_state.attempt_number}"
+                f"\tException: {retry_state.outcome.exception()}"
+            )
+
         for endpoint in self.state.opensearch_server.endpoints:
+            retryer = Retrying(
+                stop=stop_after_attempt(3),
+                wait=wait_fixed(1),
+                reraise=True,
+                before_sleep=log_retry,
+            )
+
             full_url = f"https://{endpoint}/{HEALTH_OPENSEARCH_STATUS_URL}"
 
             request_kwargs = {
                 "url": full_url,
                 "method": "GET",
                 "verify": self.workload.paths.opensearch_ca,
-                "headers": None,
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
                 "timeout": REQUEST_TIMEOUT,
             }
 
-            try:
-                with requests.Session() as s:
+            with requests.Session() as s:
+                try:
                     s.auth = (  # type: ignore [reportAttributeAccessIssue]
                         self.state.opensearch_server.username,
                         self.state.opensearch_server.password,
                     )
-                    resp = s.request(**request_kwargs)
-                    resp.raise_for_status()
-            except requests.exceptions.RequestException:
-                continue
+                    for attempt in retryer:
+                        with attempt:
+                            resp = s.request(**request_kwargs)
+                            resp.raise_for_status()
+                except (requests.RequestException, urllib3.exceptions.HTTPError):
+                    logger.error(f"Failed to connect to {full_url}")
+                    continue
 
             if resp.status_code == 200:
                 try:
                     status = resp.json()
                 except requests.exceptions.JSONDecodeError:
+                    logger.error(f"Failed to decode JSON from {full_url}")
                     continue
                 if status.get("status") == "green":
                     return True, ""
 
         return False, MSG_STATUS_DB_DOWN
 
-    def app_healthy(self) -> tuple[bool, str]:
-        """Unit-level global healthcheck."""
-        return self.opensearch_ok()
 
     def unit_healthy(self) -> tuple[bool, str]:
         """Unit-level global healthcheck."""

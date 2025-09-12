@@ -210,9 +210,9 @@ class OpensearchDashboardsCharm(CharmBase):
 
         # Regular health-check
         # Checks that may modify the 'app' state as well
-        app_healthy, app_msg = self.health_manager.app_healthy()
-        if not app_healthy:
-            set_global_status(self, BlockedStatus(app_msg))
+        opensearch_healthy, opensearch_msg = self.health_manager.opensearch_ok()
+        if not opensearch_healthy:
+            set_global_status(self, BlockedStatus(opensearch_msg))
             return
         else:
             outdated_status += MSG_APP_STATUS
