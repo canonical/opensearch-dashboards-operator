@@ -133,7 +133,6 @@ class HealthManager:
 
         return False, MSG_STATUS_DB_DOWN
 
-
     def unit_healthy(self) -> tuple[bool, str]:
         """Unit-level global healthcheck."""
         if not self.workload.alive:
