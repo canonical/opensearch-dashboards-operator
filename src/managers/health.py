@@ -20,6 +20,7 @@ from literals import (
     MSG_STATUS_APP_REMOVED,
     MSG_STATUS_DB_DOWN,
     MSG_STATUS_DB_MISSING,
+    MSG_STATUS_DB_UNHEALTHY,
     MSG_STATUS_ERROR,
     MSG_STATUS_HANGING,
     MSG_STATUS_UNAVAIL,
@@ -128,6 +129,8 @@ class HealthManager:
                 except requests.exceptions.JSONDecodeError:
                     logger.error(f"Failed to decode JSON from {full_url}")
                     continue
+                if status.get("status") == "yellow":
+                    return False, MSG_STATUS_DB_UNHEALTHY
                 if status.get("status") == "green":
                     return True, ""
 

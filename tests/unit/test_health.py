@@ -20,7 +20,7 @@ from literals import (
     OPENSEARCH_REL_NAME,
     SUBSTRATE,
 )
-from src.literals import MSG_STATUS_DB_DOWN, MSG_STATUS_HANGING
+from src.literals import MSG_STATUS_DB_DOWN, MSG_STATUS_HANGING, MSG_STATUS_DB_UNHEALTHY
 from tests.unit.test_charm import MSG_STATUS_UNHEALTHY
 
 logger = logging.getLogger(__name__)
@@ -192,7 +192,11 @@ def test_health_opensearch_not_ok(harness, status):
     )
 
     with patch("os.path.exists", return_value=True), patch("os.path.getsize", return_value=1):
-        assert (False, MSG_STATUS_DB_DOWN) == harness.charm.health_manager.opensearch_ok()
+        # We should make a distinction between unhealthy and down
+        if status == "red":
+            assert (False, MSG_STATUS_DB_DOWN) == harness.charm.health_manager.opensearch_ok()
+        else:
+            assert (False, MSG_STATUS_DB_UNHEALTHY) == harness.charm.health_manager.opensearch_ok()
 
 
 @responses.activate
