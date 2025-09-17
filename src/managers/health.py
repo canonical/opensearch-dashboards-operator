@@ -89,13 +89,6 @@ class HealthManager:
             )
 
         for endpoint in self.state.opensearch_server.endpoints:
-            retryer = Retrying(
-                stop=stop_after_attempt(3),
-                wait=wait_fixed(1),
-                reraise=True,
-                before_sleep=log_retry,
-            )
-
             full_url = f"https://{endpoint}/{HEALTH_OPENSEARCH_STATUS_URL}"
 
             request_kwargs = {
@@ -115,7 +108,12 @@ class HealthManager:
                         self.state.opensearch_server.username,
                         self.state.opensearch_server.password,
                     )
-                    for attempt in retryer:
+                    for attempt in Retrying(
+                        stop=stop_after_attempt(3),
+                        wait=wait_fixed(1),
+                        reraise=True,
+                        before_sleep=log_retry,
+                    ):
                         with attempt:
                             resp = s.request(**request_kwargs)
                             resp.raise_for_status()
@@ -129,11 +127,12 @@ class HealthManager:
                 except requests.exceptions.JSONDecodeError:
                     logger.error(f"Failed to decode JSON from {full_url}")
                     continue
-                if status.get("status") == "yellow":
-                    return False, MSG_STATUS_DB_UNHEALTHY
-                if status.get("status") == "green":
-                    return True, ""
 
+                if status.get("status") == "red":
+                    return False, MSG_STATUS_DB_UNHEALTHY
+
+                if status.get("status") in {"green", "yellow"}:
+                    return True, ""
         return False, MSG_STATUS_DB_DOWN
 
     def unit_healthy(self) -> tuple[bool, str]:
