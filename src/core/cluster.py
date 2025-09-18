@@ -15,11 +15,19 @@ from charms.data_platform_libs.v0.data_interfaces import (
 from ops.framework import Framework, Object
 from ops.model import Relation, Unit
 
-from core.models import SUBSTRATES, OAuth, ODCluster, ODServer, OpensearchServer
+from core.models import (
+    SUBSTRATES,
+    JwtConfigurationRequires,
+    OAuth,
+    ODCluster,
+    ODServer,
+    OpensearchServer,
+)
 from literals import (
     CERTS_REL_NAME,
     DASHBOARD_INDEX,
     DASHBOARD_ROLE,
+    JWT_REL_NAME,
     OAUTH_REL_NAME,
     OPENSEARCH_REL_NAME,
     PEER,
@@ -51,6 +59,7 @@ class ClusterState(Object):
             index=DASHBOARD_INDEX,
             extra_user_roles=DASHBOARD_ROLE,
         )
+        self.jwt_requires = JwtConfigurationRequires(self.model, relation_name=JWT_REL_NAME)
 
     # --- RAW RELATION ---
 
@@ -73,6 +82,11 @@ class ClusterState(Object):
     def oauth_relation(self) -> Relation | None:
         """The cluster Oauth relation."""
         return self.model.get_relation(OAUTH_REL_NAME)
+
+    @property
+    def jwt_relation(self) -> Relation | None:
+        """Return the jwt relation if present."""
+        return self.jwt_requires.relations[0] if len(self.jwt_requires.relations) else None
 
     # --- CORE COMPONENTS---
 

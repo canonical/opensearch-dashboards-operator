@@ -15,6 +15,7 @@ from ops.main import main
 from ops.model import BlockedStatus, MaintenanceStatus, WaitingStatus
 
 from core.cluster import ClusterState
+from events.jwt_auth import JwtEvents
 from events.oauth import OAuthHandler
 from events.requirer import RequirerEvents
 from events.tls import TLSEvents
@@ -72,6 +73,7 @@ class OpensearchDashboardsCharm(CharmBase):
         dependency_model = OpensearchDashboardsDependencyModel(**DEPENDENCIES)
         self.upgrade_events = ODUpgradeEvents(self, dependency_model=dependency_model)
         self.oauth = OAuthHandler(self)
+        self.jwt_events = JwtEvents(self)
 
         # --- MANAGERS ---
 

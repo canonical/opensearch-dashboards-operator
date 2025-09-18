@@ -138,6 +138,20 @@ class ConfigManager:
                 "opensearch_security.openid.base_redirect_url": self.state.url,
             }
 
+        if self.state.jwt_relation:
+            if self.state.oauth_relation:
+                properties["opensearch_security.auth.type"] = ["basicauth", "openid", "jwt"]
+            else:
+                properties["opensearch_security.auth.type"] = ["basicauth", "jwt"]
+
+            properties["opensearch_security.auth.multiple_auth_enabled"] = True
+
+            jwt_relation_data = self.state.jwt_requires.fetch_relation_data(
+                [self.state.jwt_relation.id]
+            )
+            if url_param := jwt_relation_data[self.state.jwt_relation.id].get("jwt-url-parameter"):
+                properties["opensearch_security.jwt.url_param"] = url_param
+
         # Log-level
         properties[self.log_level] = True
 

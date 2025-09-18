@@ -8,7 +8,7 @@ import socket
 from typing import Literal, MutableMapping
 
 import requests
-from charms.data_platform_libs.v0.data_interfaces import Data, DataDict
+from charms.data_platform_libs.v0.data_interfaces import Data, DataDict, RequirerData
 from ops import Secret
 from ops.model import Application, Relation, Unit
 from typing_extensions import override
@@ -303,3 +303,14 @@ class OAuth:
             return False
         except requests.exceptions.RequestException:
             return True
+
+
+class JwtConfigurationRequires(RequirerData):
+    """Data Interface to JWT relation on requirer side."""
+
+    def __init__(self, model, relation_name: str):
+        super().__init__(
+            model,
+            relation_name,
+            additional_secret_fields=["signing-key"],
+        )
