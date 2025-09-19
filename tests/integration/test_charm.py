@@ -318,16 +318,18 @@ async def test_dashboard_status_changes(ops_test: OpsTest):
     opensearch_relation = get_relations(ops_test, OPENSEARCH_RELATION_NAME)[0]
     assert await access_all_dashboards(ops_test, opensearch_relation.id, https=True)
 
-    logger.info("Adding a new index with shards allocated to a non existent node to make the cluster health red")
+    logger.info(
+        "Adding a new index with shards allocated to a non existent node to make the cluster health red"
+    )
     client_relation = get_relations(ops_test, OPENSEARCH_RELATION_NAME, DB_CLIENT_APP_NAME)[0]
 
     payload = {
-            "settings": {
-                "index.routing.allocation.require._name": "non_existent_node",
-                "index.number_of_shards": 5,
-                "index.number_of_replicas": 0,
-            }
+        "settings": {
+            "index.routing.allocation.require._name": "non_existent_node",
+            "index.number_of_shards": 5,
+            "index.number_of_replicas": 0,
         }
+    }
 
     payload = json.dumps(payload)
 
