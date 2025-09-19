@@ -107,9 +107,15 @@ async def test_dashboard_access(ops_test: OpsTest):
     assert jwt_result.status_code == 200, "Request failed"
     logger.info("Access with JWT successful")
 
-    logger.info(f"Remove relation with {JWT_APP_NAME}")
+    logger.info(f"Remove relation of {JWT_APP_NAME} with {APP_NAME}")
     remove_relation_cmd = (
         f"remove-relation {JWT_APP_NAME}:{JWT_REL_NAME} {APP_NAME}:{JWT_REL_NAME}"
+    )
+    await ops_test.juju(*remove_relation_cmd.split(), check=True)
+
+    logger.info(f"Remove relation of {JWT_APP_NAME} with {OPENSEARCH_APP_NAME}")
+    remove_relation_cmd = (
+        f"remove-relation {JWT_APP_NAME}:{JWT_REL_NAME} {OPENSEARCH_APP_NAME}:{JWT_REL_NAME}"
     )
     await ops_test.juju(*remove_relation_cmd.split(), check=True)
     await ops_test.model.wait_for_idle(
