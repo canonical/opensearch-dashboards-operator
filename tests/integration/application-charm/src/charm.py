@@ -35,7 +35,7 @@ class ApplicationCharm(CharmBase):
         self.framework.observe(self.on.update_status, self._on_update_status)
 
         # `albums` index is used in integration test
-        self.opensearch = OpenSearchRequires(self, "opensearch-client", "albums", "")
+        self.opensearch = OpenSearchRequires(self, "opensearch-client", "albums", "admin")
 
         self.framework.observe(self.opensearch.on.index_created, self._on_authentication_updated)
         self.framework.observe(
