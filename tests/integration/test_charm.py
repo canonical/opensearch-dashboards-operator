@@ -8,7 +8,6 @@ import re
 from pathlib import Path
 
 import pytest
-import requests
 import yaml
 from pytest_operator.plugin import OpsTest
 
@@ -141,18 +140,14 @@ async def test_dashboard_access_https(ops_test: OpsTest):
         apps=[APP_NAME, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
     )
 
-    # Event thought the TLS connection is not there, we do NOT switch back to HTTP
-    with pytest.raises(requests.exceptions.ConnectionError):
-        await access_all_dashboards(ops_test, opensearch_relation.id)
-
-    # Instead, HTTPS works uninterrupted
-    assert await access_all_dashboards(ops_test, opensearch_relation.id, https=True)
-
     server_cert = (
         "/var/snap/opensearch-dashboards/current/etc/opensearch-dashboards/certificates/server.pem"
     )
     unit = ops_test.model.applications[APP_NAME].units[0]
     host_cert = get_file_contents(ops_test, unit, server_cert)
+
+    # TLS Broken on relation removal we check the connection on HTTP
+    await access_all_dashboards(ops_test, opensearch_relation.id)
 
     # Restore relation for further tests
     await ops_test.model.integrate(APP_NAME, TLS_CERTIFICATES_APP_NAME)
@@ -323,12 +318,27 @@ async def test_dashboard_status_changes(ops_test: OpsTest):
     opensearch_relation = get_relations(ops_test, OPENSEARCH_RELATION_NAME)[0]
     assert await access_all_dashboards(ops_test, opensearch_relation.id, https=True)
 
-    logger.info("Removing an opensearch unit so Opensearch gets in a 'red' state")
-    await ops_test.model.applications[APP_NAME].destroy_unit(
-        ops_test.model.applications[OPENSEARCH_APP_NAME].units[1].name
-    )
-    await ops_test.model.applications[APP_NAME].destroy_unit(
-        ops_test.model.applications[OPENSEARCH_APP_NAME].units[0].name
+    logger.info("Adding a new index with shards allocated to a non existent node to make the cluster health red")
+    client_relation = get_relations(ops_test, OPENSEARCH_RELATION_NAME, DB_CLIENT_APP_NAME)[0]
+
+    payload = {
+            "settings": {
+                "index.routing.allocation.require._name": "non_existent_node",
+                "index.number_of_shards": 5,
+                "index.number_of_replicas": 0,
+            }
+        }
+
+    payload = json.dumps(payload)
+
+    unit_name = ops_test.model.applications[DB_CLIENT_APP_NAME].units[0].name
+    await client_run_db_request(
+        ops_test,
+        unit_name,
+        client_relation,
+        "PUT",
+        "/bad_index",
+        re.escape(payload),
     )
     async with ops_test.fast_forward("30s"):
         await ops_test.model.wait_for_idle(apps=[APP_NAME], status="blocked")

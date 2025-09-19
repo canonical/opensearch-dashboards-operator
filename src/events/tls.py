@@ -144,8 +144,7 @@ class TLSEvents(Object):
     def _on_certs_relation_broken(self, _) -> None:
         """Handler for `certificates_relation_broken` event."""
         # In case we have valid certificates, we keep them for smooth service function
-        if self.charm.state.unit_server.tls and not self.charm.tls_manager.certificate_valid():
-            self._remove_certificates()
+        self._remove_certificates()
 
     def _set_tls_private_key(self, event: ActionEvent) -> None:
         """Handler for `set-tls-privat-key` event when user manually specifies private-keys for a unit."""
