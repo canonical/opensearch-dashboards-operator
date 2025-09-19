@@ -98,7 +98,7 @@ async def test_dashboard_access(ops_test: OpsTest):
     """Test access to dashboard unit with JWT and basic auth."""
     unit = ops_test.model.applications[APP_NAME].units[0]
     host = get_bind_address(ops_test.model.name, unit.name)
-    url = f"http://{host}:5601/api/status?jwt={generated_jwt['token']}"
+    url = f"http://{host}:5601/api/status"
 
     logger.info("Test access with JWT")
     jwt_result = requests.get(
