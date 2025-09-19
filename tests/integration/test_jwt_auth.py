@@ -101,7 +101,9 @@ async def test_dashboard_access(ops_test: OpsTest):
     url = f"http://{host}:5601/api/status?jwt={generated_jwt['token']}"
 
     logger.info("Test access with JWT")
-    jwt_result = requests.get(url, verify=False)
+    jwt_result = requests.get(
+        url, headers={"Authorization": f"Bearer {generated_jwt['token']}"}, verify=False
+    )
     assert jwt_result.status_code == 200, "Request failed"
     logger.info("Access with JWT successful")
 
@@ -117,6 +119,8 @@ async def test_dashboard_access(ops_test: OpsTest):
     )
 
     logger.info("Test access with JWT after disabling")
-    jwt_result = requests.get(url, verify=False)
+    jwt_result = requests.get(
+        url, headers={"Authorization": f"Bearer {generated_jwt['token']}"}, verify=False
+    )
     assert jwt_result.status_code == 401, "`Unauthorized` error expected"
     logger.info("Access with JWT failed as expected")
