@@ -15,9 +15,7 @@ from .helpers import (
     CONFIG_OPTS,
     TLS_CERTIFICATES_APP_NAME,
     TLS_STABLE_CHANNEL,
-    access_all_dashboards,
     get_bind_address,
-    get_relations,
 )
 from .helpers_jwt import generate_json_web_token
 
@@ -46,7 +44,12 @@ async def test_build_and_deploy(ops_test: OpsTest, charm: str, series: str):
     await ops_test.model.deploy(charm, application_name=APP_NAME, series=series)
     await ops_test.model.set_config(OPENSEARCH_CONFIG)
     config = {"ca-common-name": "CN_CA"}
-    await ops_test.model.deploy(OPENSEARCH_APP_NAME, channel="2/edge", config=CONFIG_OPTS)
+    await ops_test.model.deploy(
+        OPENSEARCH_APP_NAME,
+        channel="2/edge",
+        num_units=3,
+        config=CONFIG_OPTS,
+    )
     await ops_test.model.deploy(
         TLS_CERTIFICATES_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config
     )
@@ -95,7 +98,7 @@ async def test_dashboard_access(ops_test: OpsTest):
     """Test access to dashboard unit with JWT and basic auth."""
     unit = ops_test.model.applications[APP_NAME].units[0]
     host = get_bind_address(ops_test.model.name, unit.name)
-    url = f"http://{host}:5601?jwt={generated_jwt['token']}"
+    url = f"http://{host}:5601/api/status?jwt={generated_jwt['token']}"
 
     logger.info("Test access with JWT")
     jwt_result = requests.get(url, verify=False)
@@ -107,7 +110,11 @@ async def test_dashboard_access(ops_test: OpsTest):
         f"remove-relation {JWT_APP_NAME}:{JWT_REL_NAME} {APP_NAME}:{JWT_REL_NAME}"
     )
     await ops_test.juju(*remove_relation_cmd.split(), check=True)
-    await ops_test.model.wait_for_idle(apps=[APP_NAME, JWT_APP_NAME], status="active")
+    await ops_test.model.wait_for_idle(
+        apps=[APP_NAME, JWT_APP_NAME],
+        status="active",
+        idle_period=60,
+    )
 
     logger.info("Test access with JWT after disabling")
     jwt_result = requests.get(url, verify=False)
