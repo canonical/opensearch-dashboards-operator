@@ -119,7 +119,7 @@ async def test_dashboard_access(ops_test: OpsTest):
     )
     await ops_test.juju(*remove_relation_cmd.split(), check=True)
     await ops_test.model.wait_for_idle(
-        apps=[APP_NAME, JWT_APP_NAME],
+        apps=[APP_NAME, OPENSEARCH_APP_NAME],
         status="active",
         idle_period=60,
     )
