@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 import ops
 
-from literals import JWT_REL_NAME, MSG_SECRETS_ACCESS_ERROR
+from literals import JWT_REL_NAME
 
 if TYPE_CHECKING:
     from charm import OpensearchDashboardsCharm
