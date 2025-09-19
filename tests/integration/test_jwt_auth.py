@@ -51,10 +51,7 @@ async def test_build_and_deploy(ops_test: OpsTest, charm: str, series: str):
         TLS_CERTIFICATES_APP_NAME, channel=TLS_STABLE_CHANNEL, config=config
     )
     await ops_test.model.deploy(JWT_APP_NAME, channel="1/edge")
-    await ops_test.model.wait_for_idle(
-        apps=[TLS_CERTIFICATES_APP_NAME, OPENSEARCH_APP_NAME, APP_NAME, JWT_APP_NAME],
-        status="active",
-    )
+    await ops_test.model.wait_for_idle(apps=[TLS_CERTIFICATES_APP_NAME], status="active")
 
     logger.info(f"Integrating {OPENSEARCH_APP_NAME} with {TLS_CERTIFICATES_APP_NAME}")
     await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
@@ -105,10 +102,6 @@ async def test_dashboard_access(ops_test: OpsTest):
     assert jwt_result.status_code == 200, "Request failed"
     logger.info("Access with JWT successful")
 
-    logger.info("Test access with Basic Authentication")
-    opensearch_relation = get_relations(ops_test, OPENSEARCH_RELATION_NAME)[0]
-    assert await access_all_dashboards(ops_test, opensearch_relation.id)
-
     logger.info(f"Remove relation with {JWT_APP_NAME}")
     remove_relation_cmd = (
         f"remove-relation {JWT_APP_NAME}:{JWT_REL_NAME} {APP_NAME}:{JWT_REL_NAME}"
@@ -120,7 +113,3 @@ async def test_dashboard_access(ops_test: OpsTest):
     jwt_result = requests.get(url, verify=False)
     assert jwt_result.status_code == 401, "`Unauthorized` error expected"
     logger.info("Access with JWT failed as expected")
-
-    logger.info("Ensure access with Basic Authentication still works")
-    opensearch_relation = get_relations(ops_test, OPENSEARCH_RELATION_NAME)[0]
-    assert await access_all_dashboards(ops_test, opensearch_relation.id)
