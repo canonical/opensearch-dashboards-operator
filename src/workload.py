@@ -11,13 +11,14 @@ import string
 import subprocess
 
 from charms.operator_libs_linux.v2 import snap
-from tenacity import retry, retry_if_result
+from tenacity import retry, retry_if_exception_type
 from tenacity.retry import retry_any, retry_if_exception, retry_if_not_result
 from tenacity.stop import stop_after_attempt
 from tenacity.wait import wait_fixed
 from typing_extensions import override
 
 from core.workload import WorkloadBase
+from exceptions import OSDInstallError
 from literals import OPENSEARCH_DASHBOARDS_SNAP_REVISION
 
 logger = logging.getLogger(__name__)
@@ -123,14 +124,10 @@ class ODWorkload(WorkloadBase):
         stop=stop_after_attempt(3),
         wait=wait_fixed(5),
         reraise=True,
-        retry=retry_if_result(lambda result: result is False),
+        retry=retry_if_exception_type(OSDInstallError),
     )
-    def install(self) -> bool:
-        """Loads the snap from LP, returning a StatusBase for the Charm to set.
-
-        Returns:
-            True if successfully installed. False otherwise.
-        """
+    def install(self) -> None:
+        """Loads the snap from LP, returning a StatusBase for the Charm to set."""
         try:
             cache = snap.SnapCache()
             dashboards = cache[self.SNAP_NAME]
@@ -139,11 +136,11 @@ class ODWorkload(WorkloadBase):
 
             self.dashboards = dashboards
             self.dashboards.hold()
-
-            return True
         except snap.SnapError as e:
             logger.error(str(e))
-            return False
+            raise OSDInstallError(
+                "failed to install the Opensearch Dashboards snap. check logs for more details"
+            )
 
     def generate_password(self) -> str:
         """Creates randomized string for use as app passwords.

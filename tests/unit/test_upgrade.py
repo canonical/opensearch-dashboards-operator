@@ -14,6 +14,7 @@ from ops.testing import Harness
 
 from charm import OpensearchDashboardsCharm
 from events.upgrade import ODUpgradeEvents, OpensearchDashboardsDependencyModel
+from exceptions import OSDInstallError
 from literals import CHARM_KEY, DEPENDENCIES
 from src.literals import MSG_INCOMPATIBLE_UPGRADE
 from tests.unit.test_charm import OPENSEARCH_REL_NAME
@@ -134,7 +135,7 @@ def test_dashboards_dependency_model():
 def test_upgrade_granted_sets_failed_if_failed_snap(harness, mocker):
     mocker.patch.object(ODWorkload, "stop")
     mocker.patch.object(ODWorkload, "restart")
-    mocker.patch.object(ODWorkload, "install", return_value=False)
+    mocker.patch.object(ODWorkload, "install", side_effect=OSDInstallError("install failed"))
     mocker.patch.object(ODUpgradeEvents, "pre_upgrade_check")
     mocker.patch.object(ODUpgradeEvents, "set_unit_completed")
     mocker.patch.object(ODUpgradeEvents, "set_unit_failed")

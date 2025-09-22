@@ -129,12 +129,10 @@ def test_install_blocks_snap_install_failure(harness):
         harness.set_leader(True)
 
     with (
-        patch("workload.ODWorkload.install", return_value=False),
+        patch("workload.ODWorkload.install", side_effect=OSDInstallError("install failed")),
         pytest.raises(OSDInstallError),
     ):
         harness.charm.on.install.emit()
-
-        assert isinstance(harness.model.unit.status, BlockedStatus)
 
 
 def test_install_sets_ip_hostname_fqdn(harness):
