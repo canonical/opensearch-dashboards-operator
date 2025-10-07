@@ -8,9 +8,9 @@ import logging
 import os
 
 import requests
-from requests.exceptions import ConnectionError, HTTPError
-from tenacity import Retrying, stop_after_attempt, wait_fixed, RetryCallState
 import urllib3
+from requests.exceptions import ConnectionError, HTTPError
+from tenacity import RetryCallState, Retrying, stop_after_attempt, wait_fixed
 
 from core.cluster import SUBSTRATES, ClusterState
 from core.workload import WorkloadBase

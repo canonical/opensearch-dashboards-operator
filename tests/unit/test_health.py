@@ -20,7 +20,7 @@ from literals import (
     OPENSEARCH_REL_NAME,
     SUBSTRATE,
 )
-from src.literals import MSG_STATUS_DB_DOWN, MSG_STATUS_HANGING, MSG_STATUS_DB_UNHEALTHY
+from src.literals import MSG_STATUS_DB_DOWN, MSG_STATUS_DB_UNHEALTHY, MSG_STATUS_HANGING
 from tests.unit.test_charm import MSG_STATUS_UNHEALTHY
 
 logger = logging.getLogger(__name__)

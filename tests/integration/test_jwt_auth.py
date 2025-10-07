@@ -8,7 +8,6 @@ from pathlib import Path
 import pytest
 import requests
 import yaml
-
 from pytest_operator.plugin import OpsTest
 
 from .helpers import (
