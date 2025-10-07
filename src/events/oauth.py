@@ -8,9 +8,10 @@ import logging
 from typing import TYPE_CHECKING
 
 from charms.hydra.v0.oauth import ClientConfig, OAuthRequirer
-from ops import EventBase, Object
+from ops import BlockedStatus, EventBase, ModelError, Object
 
-from literals import OAUTH_REL_NAME
+from helpers import set_global_status
+from literals import MSG_STATUS_OAUTH_INFO_FAILED, OAUTH_REL_NAME
 
 if TYPE_CHECKING:
     from charm import OpensearchDashboardsCharm
@@ -38,9 +39,13 @@ class OAuthHandler(Object):
         if not self.charm.state.servers:
             event.defer()
             return
-
-        provider_info = self.oauth.get_provider_info()
-
+        try:
+            provider_info = self.oauth.get_provider_info()
+        except ModelError as e:
+            logger.warning("OAuth provider info not available: %s", e)
+            set_global_status(self.charm, BlockedStatus(MSG_STATUS_OAUTH_INFO_FAILED))
+            event.defer()
+            return
         self.charm.state.cluster.update(
             {
                 "oauth-client-secret": (

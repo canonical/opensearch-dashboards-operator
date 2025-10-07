@@ -63,6 +63,7 @@ MSG_STATUS_WORKLOAD_DOWN = "Workload is not alive"
 MSG_STATUS_UNKNOWN = "Workload status is not known"
 MSG_STATUS_APP_REMOVED = "remove-application was requested: leaving..."
 MSG_STATUS_HANGING = "Application does not respond, request hanging"
+MSG_STATUS_OAUTH_INFO_FAILED = "Failed to get OAuth provider info from relation"
 
 MSG_APP_STATUS = [
     MSG_STATUS_DB_DOWN,

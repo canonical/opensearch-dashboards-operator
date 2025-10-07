@@ -38,9 +38,11 @@ from literals import (
     MSG_STARTING_SERVER,
     MSG_STATUS_DB_MISSING,
     MSG_STATUS_HANGING,
+    MSG_STATUS_OAUTH_INFO_FAILED,
     MSG_TLS_CONFIG,
     MSG_UNIT_STATUS,
     MSG_WAITING_FOR_PEER,
+    OAUTH_REL_NAME,
     PEER,
     RESTART_TIMEOUT,
     SERVER_PORT,
@@ -227,6 +229,11 @@ class OpensearchDashboardsCharm(CharmBase):
             return
         else:
             outdated_status += MSG_UNIT_STATUS
+
+        # check oauth status and make sure we have received the oauth_client_secret
+        if self.model.get_relation(OAUTH_REL_NAME) and not self.state.cluster.oauth_client_secret:
+            set_global_status(self, BlockedStatus(MSG_STATUS_OAUTH_INFO_FAILED))
+            return
 
         # Clear all possible irrelevant statuses
         for status in outdated_status:
