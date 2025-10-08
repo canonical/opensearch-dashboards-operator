@@ -42,7 +42,7 @@ class OAuthHandler(Object):
         try:
             provider_info = self.oauth.get_provider_info()
         except ModelError as e:
-            logger.warning("OAuth provider info not available: %s", e)
+            logger.error("OAuth provider info not available: %s", e)
             set_global_status(self.charm, BlockedStatus(MSG_STATUS_OAUTH_INFO_FAILED))
             event.defer()
             return
