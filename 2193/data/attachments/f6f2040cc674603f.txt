@@ -1,0 +1,271 @@
+[32mINFO    [0m oauth_tools.oauth_helpers:oauth_helpers.py:181 Choose external provider
+[32mINFO    [0m oauth_tools.oauth_helpers:oauth_helpers.py:186 Completing the login flow on the external provider
+[32mINFO    [0m oauth_tools.external_idp:external_idp.py:214 Signing in to dex
+[32mINFO    [0m httpx:_client.py:1025 HTTP Request: GET https://10.151.33.141:16443/api/v1/namespaces/dex/services/dex "HTTP/1.1 200 OK"
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model         Controller     Cloud/Region    Version  SLA          Timestamp
+testing-uk8s  concierge-lxd  uk8s/localhost  3.6.11   unsupported  01:54:47Z
+
+App                                  Version  Status  Scale  Charm                                Channel        Rev  Address         Exposed  Message
+hydra                                v2.3.0   active      1  hydra                                latest/edge    339  10.152.183.47   no       
+identity-platform-login-ui-operator  0.21.2   active      1  identity-platform-login-ui-operator  latest/edge    146  10.152.183.246  no       
+kratos                               v1.3.1   active      1  kratos                               latest/edge    500  10.152.183.21   no       
+kratos-external-idp-integrator                active      1  kratos-external-idp-integrator       latest/edge    245  10.152.183.95   no       Provider is ready
+postgresql-k8s                       14.15    active      1  postgresql-k8s                       14/stable      495  10.152.183.157  no       
+self-signed-certificates                      active      1  self-signed-certificates             latest/stable  155  10.152.183.89   no       
+traefik-admin                        v2.11.0  active      1  traefik-k8s                          latest/stable  176  10.64.140.44    no       
+traefik-public                       v2.11.0  active      1  traefik-k8s                          latest/stable  176  10.64.140.45    no       
+
+Unit                                    Workload  Agent  Address     Ports  Message
+hydra/0*                                active    idle   10.1.53.8          
+identity-platform-login-ui-operator/0*  active    idle   10.1.53.7          
+kratos-external-idp-integrator/0*       active    idle   10.1.53.12         Provider is ready
+kratos/0*                               active    idle   10.1.53.18         
+postgresql-k8s/0*                       active    idle   10.1.53.10         Primary
+self-signed-certificates/0*             active    idle   10.1.53.14         
+traefik-admin/0*                        active    idle   10.1.53.13         
+traefik-public/0*                       active    idle   10.1.53.17         
+
+Offer         Application               Charm                     Rev  Connected  Endpoint      Interface         Role
+certificates  self-signed-certificates  self-signed-certificates  155  2/2        certificates  tls-certificates  provider
+oauth         hydra                     hydra                     339  2/2        oauth         oauth             provider
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+unit-postgresql-k8s-0: 01:46:34 ERROR unit.postgresql-k8s/0.juju-log Uncaught exception while in charm code:
+Traceback (most recent call last):
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 2252, in <module>
+    main(PostgresqlOperatorCharm, use_juju_for_storage=True)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/__init__.py", line 343, in __call__
+    return _main.main(charm_class=charm_class, use_juju_for_storage=use_juju_for_storage)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 543, in main
+    manager.run()
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 529, in run
+    self._emit()
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 518, in _emit
+    _emit_charm_event(self.charm, self.dispatcher.event_name, self._juju_context)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 134, in _emit_charm_event
+    event_to_emit.emit(*args, **kwargs)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/framework.py", line 347, in emit
+    framework._emit(event)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/framework.py", line 857, in _emit
+    self._reemit(event_path)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/framework.py", line 947, in _reemit
+    custom_handler(event)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 952, in _on_postgresql_pebble_ready
+    self.push_tls_files_to_workload(container)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 1785, in push_tls_files_to_workload
+    return self.update_config()
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 1883, in update_config
+    self.postgresql_client_relation.update_tls_flag(
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/relations/postgresql_provider.py", line 224, in update_tls_flag
+    self.database_provides.set_tls(relation.id, tls)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 1683, in set_tls
+    self.update_relation_data(relation_id, {"tls": tls})
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 496, in wrapper
+    return f(self, *args, **kwargs)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 1407, in update_relation_data
+    return self._update_relation_data(relation, data)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 1632, in _update_relation_data
+    raise PrematureDataAccessError(
+charms.data_platform_libs.v0.data_interfaces.PrematureDataAccessError: Premature access to relation data, update is forbidden before the connection is initialized.
+unit-postgresql-k8s-0: 01:46:34 ERROR juju.worker.uniter.operation hook "postgresql-pebble-ready" (via hook dispatching script: dispatch) failed: exit status 1
+unit-postgresql-k8s-0: 01:46:34 ERROR juju.worker.uniter pebble poll failed for container "postgresql": failed to send pebble-ready event: hook failed
+unit-postgresql-k8s-0: 01:46:36 ERROR unit.postgresql-k8s/0.juju-log Uncaught exception while in charm code:
+Traceback (most recent call last):
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 2252, in <module>
+    main(PostgresqlOperatorCharm, use_juju_for_storage=True)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/__init__.py", line 343, in __call__
+    return _main.main(charm_class=charm_class, use_juju_for_storage=use_juju_for_storage)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 543, in main
+    manager.run()
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 529, in run
+    self._emit()
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 518, in _emit
+    _emit_charm_event(self.charm, self.dispatcher.event_name, self._juju_context)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 134, in _emit_charm_event
+    event_to_emit.emit(*args, **kwargs)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/framework.py", line 347, in emit
+    framework._emit(event)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/framework.py", line 857, in _emit
+    self._reemit(event_path)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/framework.py", line 947, in _reemit
+    custom_handler(event)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 952, in _on_postgresql_pebble_ready
+    self.push_tls_files_to_workload(container)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 1785, in push_tls_files_to_workload
+    return self.update_config()
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 1883, in update_config
+    self.postgresql_client_relation.update_tls_flag(
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/relations/postgresql_provider.py", line 224, in update_tls_flag
+    self.database_provides.set_tls(relation.id, tls)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 1683, in set_tls
+    self.update_relation_data(relation_id, {"tls": tls})
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 496, in wrapper
+    return f(self, *args, **kwargs)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 1407, in update_relation_data
+    return self._update_relation_data(relation, data)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 1632, in _update_relation_data
+    raise PrematureDataAccessError(
+charms.data_platform_libs.v0.data_interfaces.PrematureDataAccessError: Premature access to relation data, update is forbidden before the connection is initialized.
+unit-postgresql-k8s-0: 01:46:37 ERROR juju.worker.uniter.operation hook "postgresql-pebble-ready" (via hook dispatching script: dispatch) failed: exit status 1
+unit-postgresql-k8s-0: 01:46:37 ERROR juju.worker.uniter pebble poll failed for container "postgresql": failed to send pebble-ready event: hook failed
+unit-postgresql-k8s-0: 01:46:41 ERROR unit.postgresql-k8s/0.juju-log Uncaught exception while in charm code:
+Traceback (most recent call last):
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 2252, in <module>
+    main(PostgresqlOperatorCharm, use_juju_for_storage=True)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/__init__.py", line 343, in __call__
+    return _main.main(charm_class=charm_class, use_juju_for_storage=use_juju_for_storage)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 543, in main
+    manager.run()
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 529, in run
+    self._emit()
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 518, in _emit
+    _emit_charm_event(self.charm, self.dispatcher.event_name, self._juju_context)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/_main.py", line 134, in _emit_charm_event
+    event_to_emit.emit(*args, **kwargs)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/framework.py", line 347, in emit
+    framework._emit(event)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/framework.py", line 857, in _emit
+    self._reemit(event_path)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/venv/lib/python3.10/site-packages/ops/framework.py", line 947, in _reemit
+    custom_handler(event)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 952, in _on_postgresql_pebble_ready
+    self.push_tls_files_to_workload(container)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 1785, in push_tls_files_to_workload
+    return self.update_config()
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/charm.py", line 1883, in update_config
+    self.postgresql_client_relation.update_tls_flag(
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/tempo_coordinator_k8s/v0/charm_tracing.py", line 1065, in wrapped_function
+    return callable(*args, **kwargs)  # type: ignore
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/src/relations/postgresql_provider.py", line 224, in update_tls_flag
+    self.database_provides.set_tls(relation.id, tls)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 1683, in set_tls
+    self.update_relation_data(relation_id, {"tls": tls})
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 496, in wrapper
+    return f(self, *args, **kwargs)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 1407, in update_relation_data
+    return self._update_relation_data(relation, data)
+  File "/var/lib/juju/agents/unit-postgresql-k8s-0/charm/lib/charms/data_platform_libs/v0/data_interfaces.py", line 1632, in _update_relation_data
+    raise PrematureDataAccessError(
+charms.data_platform_libs.v0.data_interfaces.PrematureDataAccessError: Premature access to relation data, update is forbidden before the connection is initialized.
+unit-postgresql-k8s-0: 01:46:41 ERROR juju.worker.uniter.operation hook "postgresql-pebble-ready" (via hook dispatching script: dispatch) failed: exit status 1
+unit-postgresql-k8s-0: 01:46:41 ERROR juju.worker.uniter pebble poll failed for container "postgresql": failed to send pebble-ready event: hook failed
+unit-traefik-admin-0: 01:46:43 ERROR unit.traefik-admin/0.juju-log ingress:12: failed processing the ingress relation <ops.model.Relation ingress:14>: 'provider is not ready: ingress for <ops.model.Relation ingress:14> wiped.'
+unit-traefik-admin-0: 01:46:43 ERROR unit.traefik-admin/0.juju-log ingress:12: failed processing the ingress relation <ops.model.Relation ingress:14>: 'provider is not ready: ingress for <ops.model.Relation ingress:14> wiped.'
+unit-traefik-admin-0: 01:46:43 ERROR unit.traefik-admin/0.juju-log ingress:12: The setup of some ingress relation failed, see previous logs
+unit-traefik-admin-0: 01:46:48 ERROR unit.traefik-admin/0.juju-log failed processing the ingress relation <ops.model.Relation ingress:14>: 'provider is not ready: ingress for <ops.model.Relation ingress:14> wiped.'
+unit-traefik-admin-0: 01:46:48 ERROR unit.traefik-admin/0.juju-log failed processing the ingress relation <ops.model.Relation ingress:14>: 'provider is not ready: ingress for <ops.model.Relation ingress:14> wiped.'
+unit-traefik-admin-0: 01:46:48 ERROR unit.traefik-admin/0.juju-log The setup of some ingress relation failed, see previous logs
+unit-kratos-0: 01:46:52 ERROR juju.worker.uniter pebble poll failed for container "kratos": failed to send pebble-ready event: terminated
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model testing-uk8s...
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller     Cloud/Region         Version  SLA          Timestamp
+testing  concierge-lxd  localhost/localhost  3.6.11   unsupported  01:54:48Z
+
+SAAS          Status  Store  URL
+certificates  active  local  admin/testing-uk8s.certificates
+oauth         active  local  admin/testing-uk8s.oauth
+
+App                    Version  Status  Scale  Charm                  Channel  Rev  Exposed  Message
+opensearch                      active      2  opensearch             2/edge   293  no       
+opensearch-dashboards           active      1  opensearch-dashboards             0  no       
+
+Unit                      Workload  Agent  Machine  Public address  Ports     Message
+opensearch-dashboards/0*  active    idle   2        10.109.123.224  5601/tcp  
+opensearch/0*             active    idle   0        10.109.123.156  9200/tcp  
+opensearch/1              active    idle   1        10.109.123.150  9200/tcp  
+
+Machine  State    Address         Inst id        Base          AZ             Message
+0        started  10.109.123.156  juju-6119b6-0  ubuntu@24.04  github-runner  Running
+1        started  10.109.123.150  juju-6119b6-1  ubuntu@24.04  github-runner  Running
+2        started  10.109.123.224  juju-6119b6-2  ubuntu@24.04  github-runner  Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+machine-0: 01:45:19 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 01:45:19 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 01:45:27 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 01:45:27 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 01:45:29 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 01:45:29 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-0: 01:51:59 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1000)')))
+unit-opensearch-dashboards-0: 01:52:00 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607ea50>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:05 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607c5c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:10 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607cb90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:15 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607d640>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:20 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607c200>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:25 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607d010>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:30 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607c1d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:35 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607eb40>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:40 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607dcd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:45 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607e3f0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:50 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607ebd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:52:55 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607dfa0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:00 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607f080>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:05 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607c4d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:10 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607c170>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:15 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607d550>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:20 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607c7a0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:25 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607cfb0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:30 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f294607cb90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:32 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:8: Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x700b015c7980>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:32 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:8: Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x700b015748c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:53:37 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:8: Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x700b01575040>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:54:07 ERROR unit.opensearch-dashboards/0.juju-log oauth:10: Can't delete secret for relation 3
+unit-opensearch-dashboards-0: 01:54:09 ERROR unit.opensearch-dashboards/0.juju-log oauth:10: Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x772ac1c84a70>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 01:54:14 ERROR unit.opensearch-dashboards/0.juju-log oauth:10: Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: https://10.109.123.224:5601/api/status
+unit-opensearch-dashboards-0: 01:54:20 ERROR unit.opensearch-dashboards/0.juju-log oauth:10: Request GET to https://10.109.123.224:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.109.123.224', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x700da6782120>: Failed to establish a new connection: [Errno 111] Connection refused'))
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
