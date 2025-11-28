@@ -1,15 +1,16 @@
 (tutorial-4-interactive-access)=
-#  4. Interactive Access
+#  4. Access Opensearch Dashboards
 
-# Access Opensearch Dashboards
-
-Assuming that you have a virtual environment available (as described in Step 1.[Set up a virtual environment](/tutorial/1-set-up-the-environment), open a browser and type there the following URL:
+Assuming that you have a virtual environment available
+(as described in Step 1.[Set up a virtual environment](/tutorial/1-set-up-the-environment)),
+open a browser and type there the following URL:
 
 ```text
 http://<dashboards_juju_public_address>:5601
 ```
 
-The address of the unit is available in the juju status output of the opensearch-dashboards unit. For example, in the output from Step 2. [Deploy](/tutorial/2-deploy), this would be `10.163.9.173`.
+The address of the unit is available in the `juju status` output of the opensearch-dashboards unit.
+For example, in the output from Step 2. [Deploy](/tutorial/2-deploy), this would be `10.163.9.173`.
 
 You should see something like this:
 
@@ -24,26 +25,35 @@ At deployment time the Opensearch index (in the example: `index_name`) has to be
 User creation takes affect when integrated against the  `opensearch` charm.
 
 ```bash
-$ juju deploy data-integrator --config index-name=<intex_name>
-$ juju integrate data-integrator opensearch
+juju deploy data-integrator --config index-name=<intex_name>
+juju integrate data-integrator opensearch
 ```
 
-**Note:** this user will have normal privileges - meaning this user will only have access to the index it owns. 
+```{note}
+This user will have normal privileges -- meaning this user will only have access
+to the index it owns. 
+```
 
-In case a broader access to the cluster's indices is needed, it is possible to create an admin / privileged user as follows:
+In case a broader access to the cluster's indices is needed,
+it is possible to create an admin / privileged user as follows:
 
 ```bash
 juju deploy data-integrator admin --config index-name=admin-index --config extra-user-roles="admin"
 ```
-> :warning: **Note:** Please only create admin users when extremely needed, and handle with special care as authenticating with an admin user grants full access to all indices in the cluster.
 
+```{caution}
+Please only create admin users when extremely needed, and handle with special care
+as authenticating with an admin user grants full access to all indices in the cluster.
+```
 
 Retrieve user credentials running
 
 ```bash
 juju run data-integrator/0 get-credentials
 ```
+
 at the bottom of the output you should see something like:
+
 ```bash
   password: 8kubD7nbWYZFHPVEzIVmTyqV42I7wHb4
   <CA certificate here>
@@ -52,7 +62,9 @@ at the bottom of the output you should see something like:
 
 ## Create the "index pattern"
 
-Log in to the Dashboard using these credentials. Clicking the top left icon the main menu will pull down. Select **Management** / **Dashboards Management** here
+Log in to the Dashboard using these credentials.
+Clicking the top left icon the main menu will pull down.
+Select **Management** / **Dashboards Management** here
 
 ![Opensearch Dashboards - Initial view |690x327](upload://3rWRYZPHDmLbuQfOo8sfBBGriMW.png)
 
@@ -74,7 +86,7 @@ As a verification, the user's index metadata will display.
 
 For test purposes, a simple method could do. Like generating data from the command-line, via the Opensearch API:
 
-```
+```text
 for ID in `seq 1 100`
 do 
     curl -sk -u opensearch-client_15:8kubD7nbWYZFHPVEzIVmTyqV42I7wHb4 \
@@ -90,9 +102,8 @@ This is how raw data gets displayed in the Dashboard
 
 ## Data Visualization
 
-Opensearch Dashboards offers a variety of diagrams and data displays. 
+Opensearch Dashboards offers a variety of diagrams and data displays.
 
 Choose **Dashboards** in the main left-side menu, and you will be presented to the selection:
 
 ![Opensearch Dashboards - Visualization](upload://ivcwgbpYgolK5wZQkovYW4tlBs.png)
-

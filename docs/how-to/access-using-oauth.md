@@ -1,22 +1,25 @@
 (how-to-access-using-oauth)=
-# Access Using OAuth
-
 # How to access OpenSearch Dashboards using OAuth
 
-This guide shows how to configure OpenSearch Dashboards to support single sign-on (SSO) using the [Canonical Identity Platform](https://charmhub.io/topics/canonical-identity-platform). The platform is a Charm bundle that includes an identity provider (Hydra), an identity broker (Kratos), an ingress (Traefik), and a login-ui application. By the end, you will be able to sign in to OpenSearch Dashboards with an admin user created in Kratos.
+This guide shows how to configure OpenSearch Dashboards to support single sign-on (SSO)
+using the [Canonical Identity Platform](https://charmhub.io/topics/canonical-identity-platform).
+The platform is a Charm bundle that includes an identity provider (Hydra),
+an identity broker (Kratos), an ingress (Traefik), and a login-ui application.
+By the end, you will be able to sign in to OpenSearch Dashboards with an admin user created in Kratos.
 
-## Prerequisites:
+## Prerequisites
 
 * A deployed charmed OpenSearch cluster on LXD.  
-* A deployed charmed OpenSearch Dashboards on LXD and integrated with OpenSearch. See: [How to Connect to OpenSearch](https://charmhub.io/opensearch-dashboards/docs/h-db-connect).   
-* A deployed Canonical Identity Platform on Kubernetes.   
-* Working Integration between OpenSearch and Canonical Identity Platform through certificates and Hydra OAuth interface. See: [How to access OpenSearch using OAuth](https://charmhub.io/opensearch/docs/h-oauth).
+* A deployed charmed OpenSearch Dashboards on LXD and integrated with OpenSearch.
+See: [How to Connect to OpenSearch](https://charmhub.io/opensearch-dashboards/docs/h-db-connect).
+* A deployed Canonical Identity Platform on Kubernetes.
+* Working Integration between OpenSearch and Canonical Identity Platform through certificates
+and Hydra OAuth interface.
+See: [How to access OpenSearch using OAuth](https://charmhub.io/opensearch/docs/h-oauth).
 
-**Important Note**
-
-- If using MicroK8s, run LXD and MicroK8s under the same Juju controller. Using separate controllers may cause failures during integration. If you must use two controllers, configure a new one for MicroK8s as follows:
-
- 
+```{note}
+If using MicroK8s, run LXD and MicroK8s under the same Juju controller. Using separate controllers may cause failures during integration. If you must use two controllers, configure a new one for MicroK8s as follows:
+```
 
 ```shell
 # Export microk8s config
@@ -34,28 +37,36 @@ cat ~/.kube/config | juju add-k8s microk8s-cluster --cluster-name=microk8s-clust
 juju bootstrap microk8s-cluster k8s-controller
 ```
 
-# Deploy Opensearch Dashboards
+## Deploy Opensearch Dashboards
 
-On the LXD model where OpenSearch is deployed, deploy OpenSearch Dashboards, and integrate it with OpenSearch charm.
+On the LXD model where OpenSearch is deployed, deploy OpenSearch Dashboards,
+and integrate it with OpenSearch charm.
 
 ```shell
 juju deploy opensearch-dashboards --channel=2/edge
 juju integrate opensearch opensearch-dashboards
 ```
 
-Now, we will wait for the OpenSearch and OpenSearch Dashboards to become active and ready. 
+Now, we will wait for the OpenSearch and OpenSearch Dashboards to become active and ready.
 
 ```shell
 juju status --watch 2s 
 ```
 
-# Integrate Opensearch Dashboards with Canonical Identity Platform
+## Integrate Opensearch Dashboards with Canonical Identity Platform
 
 Switch to the MicroK8s model and verify the identity platform bundle is ready:
 
 ```shell
 juju switch oauth
 juju status
+```
+
+<details>
+
+<summary> Output example</summary>
+
+```text
 Model        Controller  Cloud/Region        Version  SLA          Timestamp
 oauth  microk8s    microk8s/localhost  3.6.10   unsupported  15:38:54Z
 
@@ -78,12 +89,15 @@ postgresql-k8s/0*                       active    idle   10.1.156.89         Pri
 self-signed-certificates/0*             active    idle   10.1.156.83
 traefik-admin/0*                        active    idle   10.1.156.90
 traefik-public/0*                       active    idle   10.1.156.86
-
 ```
 
-All the components of the bundle must be active except `kratos-external-idp-integrator`. It will be in blocked status.
+</details>
 
-Switch back to LXD and integrate OpenSearch Dashboards with the interface offered by self-signed-certificates from oauth model, and with the oauth interface provided by hydra.
+All the components of the bundle must be active except `kratos-external-idp-integrator`.
+It will be in blocked status.
+
+Switch back to LXD and integrate OpenSearch Dashboards with the interface offered
+by self-signed-certificates from oauth model, and with the oauth interface provided by hydra.
 
 ```shell
 juju switch lxd
@@ -91,9 +105,11 @@ juju integrate opensearch-dashboards:certificates self-signed-certificates:certi
 juju integrate opensearch-dashboards:oauth hydra:oauth
 ```
 
-# Create an admin account 
+# Create an admin account
 
-We will now create an admin account using Kratos. This command will require an email and username, and will give the password reset link as well as the reset code. 
+We will now create an admin account using Kratos.
+This command will require an email and username, and will give the password reset
+link as well as the reset code.
 
 ```shell
 juju run kratos/0 create-admin-account email=myuser@example.com username=myuser
@@ -114,21 +130,28 @@ password-reset-code: "868748"
 password-reset-link: https://10.241.7.39/welcome-k8s-identity-platform-login-ui-operator/ui/reset_email?flow=a5966798-646b-46e7-ae6f-a466e30323a9
 ```
 
-The output provides a password reset link and recovery code. Open the link, enter the recovery code, and set a password. 
+The output provides a password reset link and recovery code.
+Open the link, enter the recovery code, and set a password.
 
-Make sure to enter the recovery code given in the output of the previous command. Once that is done you will be redirected to the password reset page, where you specify the user’s password. 
+Make sure to enter the recovery code given in the output of the previous command.
+Once that is done you will be redirected to the password reset page,
+where you specify the user’s password.
 
 Once the password is set, you will then be prompted to configure 2FA (mandatory).
 
 # Access Opensearch Dashboards Using Single Sign In
 
-To access OpenSearch Dashboards, use the IP address on the **opensearch-dashboards/0** unit to form the link [**https://{ip-address}:5601**](https://{ip-address}:5601)**.** 
+To access OpenSearch Dashboards, use the IP address on the `opensearch-dashboards/0`
+unit to form the link [https://{ip-address}:5601](https://{ip-address}:5601).
 
-Once the account is ready, open OpenSearch Dashboards. A **Log in with single sign-on** button will appear.
+Once the account is ready, open OpenSearch Dashboards.
+A **Log in with single sign-on** button will appear.
 
 ![image1|690x342](upload://fYP2qtj1YraixKP5FtV4XTDRc2N.jpeg)
 
-Click the button to open the identity platform login UI. You will get redirected to the identity platform UI login screen where you will be prompted to enter the email and password.
+Click the button to open the identity platform login UI.
+You will get redirected to the identity platform UI login screen where you will be
+prompted to enter the email and password.
 
 ![image3|690x369](upload://fVwxgsMZMtW5yVYdgERa2UmFfy3.jpeg)
 
@@ -142,6 +165,5 @@ After a successful login, you will be redirected to the OpenSearch Dashboards ho
 
 # Next Steps
 
-- Review the *roles mapping* section in [*How to access OpenSearch using OAuth*](https://charmhub.io/opensearch/docs/h-oauth) to assign permissions.  
-- Follow the guide [How to manage external identity providers](https://charmhub.io/topics/canonical-identity-platform/how-to/integrate-external-identity-provider) to enable logins with providers like GitHub.
-
+* Review the *roles mapping* section in [*How to access OpenSearch using OAuth*](https://charmhub.io/opensearch/docs/h-oauth) to assign permissions.  
+* Follow the guide [How to manage external identity providers](https://charmhub.io/topics/canonical-identity-platform/how-to/integrate-external-identity-provider) to enable logins with providers like GitHub.

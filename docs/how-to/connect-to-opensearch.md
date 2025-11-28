@@ -1,32 +1,33 @@
 (how-to-connect-to-opensearch)=
 # Connect to OpenSearch
 
-# Connect to OpenSearch
-
 This guide explains how to connect OpenSearch Dashboards with OpenSearch via Juju integrations.
 
 ## Prerequisites
+
 A Juju model containing:
+
 * An active `opensearch` application
 * A TLS certificate provider charm (e.g. `self-signed-certificates`)
- integrated with `opensearch` 
+ integrated with `opensearch`
 
-To learn how to set up and deploy an OpenSearch application, see steps 1, 2, and 3 of the [OpenSearch Tutorial](https://charmhub.io/opensearch/docs/t-set-up).
+To learn how to set up and deploy an OpenSearch application, see steps 1, 2, and 3 of the
+[OpenSearch Tutorial](https://charmhub.io/opensearch/docs/t-set-up).
 
---- 
 ## Deploy and integrate
+
 On top of a live, healthy OpenSearch database, we can deploy the Dashboards visualization interface:
 
-```none
+```shell
 juju deploy opensearch-dashboards --channel=2/edge
 ```
 
 …and integrate it with the database:
 
-```none
+```shell
 juju integrate opensearch opensearch-dashboards
 ```
+
 ```{note}
 Make sure you've set up the correct [kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#kernel-parameters) for your OpenSearch deployment.
 ```
-

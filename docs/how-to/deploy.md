@@ -1,6 +1,4 @@
 (how-to-deploy)=
-# Deploy
-
 # Deploy the Opensearch Dashboards charm
 
 Please follow the [Tutorial](/tutorial/introduction) for detailed instructions on how to deploy the charm on LXD.

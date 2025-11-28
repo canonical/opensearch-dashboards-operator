@@ -1,26 +1,19 @@
 (how-to-monitoring-cos-enable-cos)=
-# Enable COS
-
 # How to enable monitoring (COS)
 
-```{note}All commands are written for juju >= v.3.1.7 ```
+```{note}
+All commands are written for juju >= v.3.1.7
+```
 
 ## Prerequisites
 
 * A deployed [Charmed OpenSearch operator with a Charmed Opensearch Dashboards operator](/tutorial/2-deploy)
 * A deployed [`cos-lite` bundle in a Kubernetes environment](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s)
 
-## Summary
-
-* [Offer interfaces via the COS controller](#offer-interfaces-via-the-cos-controller)
-* [Consume offers via the OpenSearch model](#consume-offers-via-the-opensearch-model)
-* [Deploy and integrate Grafana](#deploy-and-integrate-grafana)
-* [Connect to the Grafana web interface](#connect-to-the-grafana-web-interface)
----
-
 ## Offer interfaces via the COS controller
 
-First, we will switch to the COS K8s environment and offer COS interfaces to be cross-model integrated with the Charmed OpenSearch model.
+First, we will switch to the COS K8s environment and offer COS interfaces to be cross-model
+integrated with the Charmed OpenSearch model.
 
 To switch to the Kubernetes controller for the COS model, run
 
@@ -40,7 +33,8 @@ juju offer prometheus:receive-remote-write
 
 Next, we will switch to the Charmed OpenSearch Dashboards model, find offers, and consume them.
 
-We are currently on the Kubernetes controller for the COS model. To switch to the OpenSearch Dashboards model, run
+We are currently on the Kubernetes controller for the COS model.
+To switch to the OpenSearch Dashboards model, run
 
 ```shell
 juju switch <db_controller>:<opensearch_dashboards_model_name>
@@ -61,6 +55,7 @@ First, deploy [grafana-agent](https://charmhub.io/grafana-agent):
 ```shell
 juju deploy grafana-agent
 ```
+
 Then integrate `grafana-agent` with consumed COS offers:
 
 ```shell
@@ -69,21 +64,24 @@ juju integrate grafana-agent loki
 juju integrate grafana-agent prometheus
 ```
 
-Finally integrate (previously known as "[relate](https://juju.is/docs/juju/integration)") it with Charmed OpenSearch Dashboards:
+Finally integrate (previously known as [relate](https://juju.is/docs/juju/integration))
+it with Charmed OpenSearch Dashboards:
 
 ```shell
 juju integrate grafana-agent-k8s opensearch-dashboards
 ```
 
-After the integration is complete, Grafana will show the new dashboard `Charmed OpenSearch Dashboards` and will allow access to Charmed OpenSearch Dashboards logs on Loki.
+After the integration is complete, Grafana will show the new dashboard
+`Charmed OpenSearch Dashboards` and will allow access to Charmed OpenSearch Dashboards logs on Loki.
 
 ## Connect to the Grafana web interface
 
-To connect to the Grafana web interface, follow the [Browse dashboards](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s?_ga=2.201254254.1948444620.1704703837-757109492.1701777558#browse-dashboards) section of the MicroK8s "Getting started" guide.
+To connect to the Grafana web interface, follow the
+[Browse dashboards](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s?_ga=2.201254254.1948444620.1704703837-757109492.1701777558#browse-dashboards)
+section of the MicroK8s "Getting started" guide.
 
 You can obtain the admin password as follows:
 
 ```shell
 juju run grafana/leader get-admin-password --model <k8s_cos_controller>:<cos_model_name>
 ```
-

@@ -1,20 +1,17 @@
 (tutorial-5-clean-up-the-environment)=
 # 5. Clean up the environment
 
-# Clean up
-
 In case you may want to remove the Juju model, you should run:
 
-```
+```shell
 juju remove-model tutorial --force --timeout 1s
 ```
 
-If it’s the whole multipass instance that you would like to delete, you should execute this command:
+If it’s the whole Multipass instance that you would like to delete, you should execute this command:
 
-```
+```shell
 multipass delete --purge my-vm
 ```
 
 * [Give us your feedback](https://chat.charmhub.io/charmhub/channels/data-platform).
 * [Contribute to the code base](https://github.com/canonical/opensearch-dashboards-operator)
-

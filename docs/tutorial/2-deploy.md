@@ -1,17 +1,21 @@
 (tutorial-2-deploy)=
-# 2. Deploy
+# 2. Get OpenSearch Dashboards up and running
 
-#  Get OpenSearch Dashboards up and running
+The objective of Opensearch Dashboard is to display the contents of an Opensearch database.
+This is why a  functional Opensearch database is a pre-requisite for the Dashboards application
+to install successfully.
 
-The objective of Opensearch Dashboard is to display the contents of an Opensearch database. This is why a  functional Opensearch database is a pre-requisite for the Dashboards application to install successfully.
+So, before going further, let’s set up Charmed Opensearch.
+Note that Opensearch has a mandatory requirement of TLS support, so we need to deploy it
+alongside the `self-signed-certificates` charm and integrate (also known as “relate”) them.
 
-So, before going further,  let’s set up Charmed Opensearch. Note that Opensearch has a mandatory requirement of TLS support, so we need to deploy it alongside the `self-signed-certificates` charm and integrate (also known as “relate”) them.
-
-Make sure that the environment is ready and the Juju model is correctly configured following instructions in OpenSearch Documentation [Set kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#kernel-parameters).
+Make sure that the environment is ready and the Juju model is correctly configured following
+instructions in OpenSearch Documentation
+[Set kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#kernel-parameters).
 
 Subsequentially we can deploy Opensearch with TLS:
 
-```
+```shell
 juju deploy opensearch --channel=2/edge -n 2
 juju deploy self-signed-certificates
 juju integrate self-signed-certificates opensearch
@@ -19,16 +23,16 @@ juju integrate self-signed-certificates opensearch
 
 We can simply add the Opensearch Dashboards charm to this setup by deploying and relating it to Opensearch
 
-```
+```shell
 juju deploy opensearch-dashboards --channel=2/edge
 juju integrate opensearch opensearch-dashboards
 ```
 
 And there we go!
-Now if you check the status of your services with `juju status`. 
+Now if you check the status of your services with `juju status`.
 Your output should be similar to the example below:
 
-```
+```text
 Model      Controller  Cloud/Region         Version  SLA          Timestamp
 tutorial   overlord    localhost/localhost  3.5.3    unsupported  16:50:56+02:00
 
@@ -50,14 +54,14 @@ Machine  State    Address        Inst id        Base          AZ  Message
 3        started  10.34.169.173  juju-df6483-3  ubuntu@22.04      Running
 ```
 
-**Note**: in case you would like to verify the integrations as well, you can add the flag `--relations`.
-```
-$ juju status --relations
+To verify the integrations, add the flag `--relations`.
+
+```shell
+juju status --relations
 ```
 
 Alternatively, if you want to monitor your system (with a view updating every second):
 
+```shell
+juju status --watch 1s
 ```
-$ juju status --watch 1s
-```
-
