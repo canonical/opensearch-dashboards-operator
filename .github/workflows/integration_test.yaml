@@ -129,11 +129,14 @@ jobs:
 
           if [ -n "$DOCKERHUB_MIRROR" ]; then
           echo "Configuring dockerhub mirror"
-          MIRROR_CONFIG=/var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml
+          REGISTRY_DIR="/var/snap/microk8s/current/args/certs.d/docker.io"
+          MIRROR_CONFIG="$REGISTRY_DIR/hosts.toml"
 
-          sudo mkdir -p ${MIRROR_CONFIG}
+          sudo mkdir -p "$REGISTRY_DIR"
+
           sudo chown "$USER" ${MIRROR_CONFIG}
           cat << EOF > ${MIRROR_CONFIG}/hosts.toml
+          server = "$DOCKERHUB_MIRROR"
           [host."$DOCKERHUB_MIRROR"]
           capabilities = ["pull", "resolve"]
           EOF
