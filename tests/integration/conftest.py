@@ -92,18 +92,17 @@ capabilities = ["pull", "resolve"]
             if not os.path.exists(directory):
                 # Create the directory
                 subprocess.run(["sudo", "mkdir", "-p", directory], check=True)
-            else:
-                # Write the content
-                print(f"Writing configuration to {file_path}...")
-                subprocess.run(
-                    ["sudo", "tee", file_path],
-                    input=docker_io_host_content,
-                    text=True,
-                    check=True,
-                    stdout=subprocess.DEVNULL,  # Suppress tee output to console
-                )
-                subprocess.run(["sudo", "microk8s", "stop"], check=True)
-                subprocess.run(["sudo", "microk8s", "start"], check=True)
+            # Write the content
+            print(f"Writing configuration to {file_path}...")
+            subprocess.run(
+                ["sudo", "tee", file_path],
+                input=docker_io_host_content,
+                text=True,
+                check=True,
+                stdout=subprocess.DEVNULL,  # Suppress tee output to console
+            )
+            subprocess.run(["sudo", "microk8s", "stop"], check=True)
+            subprocess.run(["sudo", "microk8s", "start"], check=True)
 
         subprocess.run(["sudo", "microk8s", "enable", "dns"], check=True)
         subprocess.run(["sudo", "microk8s", "enable", "hostpath-storage"], check=True)
