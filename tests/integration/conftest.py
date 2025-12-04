@@ -87,10 +87,11 @@ async def microk8s_cloud(ops_test: OpsTest) -> AsyncGenerator[None, Any]:
 [host."{dockerhub_mirror}"]
 capabilities = ["pull", "resolve"]
 """
-            file_path = "/var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml"
+            file_path = "/opt/containerd/k8s-containerd/etc/containerd/hosts.d/docker.io"
             directory = os.path.dirname(file_path)
             if not os.path.exists(directory):
-                logger.error("The 'hosts.toml' for docker io server configuration don't exist")
+                # Create the directory
+                subprocess.run(["sudo", "mkdir", "-p", directory], check=True)
             else:
                 # Write the content
                 print(f"Writing configuration to {file_path}...")
