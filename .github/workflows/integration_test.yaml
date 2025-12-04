@@ -122,6 +122,22 @@ jobs:
         uses: canonical/action-tmate@main
         with:
           detached: true
+      - name: Install microk8s
+        run: |
+          sudo snap install microk8s --classic 
+          sudo snap install kubectl  --classic
+          if [ -n "$DOCKERHUB_MIRROR" ]; then
+            echo "Configuring dockerhub mirror"
+            MIRROR_CONFIG=/opt/containerd/k8s-containerd/etc/containerd/hosts.d/docker.io
+
+            sudo mkdir -p ${MIRROR_CONFIG}
+            sudo chown $USER ${MIRROR_CONFIG}
+            cat << EOF > ${MIRROR_CONFIG}/hosts.toml
+            [host."$DOCKERHUB_MIRROR"]
+            capabilities = ["pull", "resolve"]
+            EOF
+          fi
+
       - name: Run spread job
         timeout-minutes: 180
         id: spread
