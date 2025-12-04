@@ -53,10 +53,10 @@ def harness():
     harness.charm.upgrade_events.dependency_model = OpensearchDashboardsDependencyModel(
         **{
             "osd_upstream": {
-                "dependencies": {"opensearch": "2.19.2"},
+                "dependencies": {"opensearch": "2.19.4"},
                 "name": "opensearch-dashboards",
                 "upgrade_supported": ">=2",
-                "version": "2.19.2",
+                "version": "2.19.4",
             },
         }
     )
