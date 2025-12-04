@@ -74,8 +74,10 @@ async def microk8s_cloud(ops_test: OpsTest) -> AsyncGenerator[None, Any]:
         return
 
     try:
-        subprocess.run(["sudo", "snap", "install", "--classic", "microk8s"], check=True)
-        subprocess.run(["sudo", "snap", "install", "--classic", "kubectl"], check=True)
+        # Start microk8s
+
+        subprocess.run(["sudo", "microk8s", "stop"], check=True)
+        subprocess.run(["sudo", "microk8s", "start"], check=True)
         subprocess.run(["sudo", "microk8s", "enable", "dns"], check=True)
         subprocess.run(["sudo", "microk8s", "enable", "hostpath-storage"], check=True)
         subprocess.run(
