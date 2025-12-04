@@ -74,36 +74,9 @@ async def microk8s_cloud(ops_test: OpsTest) -> AsyncGenerator[None, Any]:
         return
 
     try:
-        subprocess.run(["sudo", "snap", "install", "--classic", "microk8s"], check=True)
-        subprocess.run(["sudo", "snap", "install", "--classic", "kubectl"], check=True)
+        # Start microk8s
 
-        # Configure Dockerhub Mirror
-        # The self hosted runners would need to leverage the docker hub
-        # mirror in order to alleviate the problems of rate limiting in docker
-        # Please check https://canonical-self-hosted-github-runner-docs.readthedocs-hosted.com/en/latest/usage/faq/how-to-avoid-dockerhub-rate-limits/
-        dockerhub_mirror = os.environ.get("DOCKERHUB_MIRROR", None)
-        if dockerhub_mirror:
-            docker_io_host_content = f"""server = "{dockerhub_mirror}"
-[host."{dockerhub_mirror}"]
-capabilities = ["pull", "resolve"]
-"""
-            file_path = "/opt/containerd/k8s-containerd/etc/containerd/hosts.d/docker.io"
-            directory = os.path.dirname(file_path)
-            if not os.path.exists(directory):
-                # Create the directory
-                subprocess.run(["sudo", "mkdir", "-p", directory], check=True)
-            # Write the content
-            print(f"Writing configuration to {file_path}...")
-            subprocess.run(
-                ["sudo", "tee", file_path],
-                input=docker_io_host_content,
-                text=True,
-                check=True,
-                stdout=subprocess.DEVNULL,  # Suppress tee output to console
-            )
-            subprocess.run(["sudo", "microk8s", "stop"], check=True)
-            subprocess.run(["sudo", "microk8s", "start"], check=True)
-
+        subprocess.run(["sudo", "microk8s", "start"], check=True)
         subprocess.run(["sudo", "microk8s", "enable", "dns"], check=True)
         subprocess.run(["sudo", "microk8s", "enable", "hostpath-storage"], check=True)
         subprocess.run(
