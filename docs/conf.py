@@ -300,7 +300,11 @@ extensions = [
     "sphinx_last_updated_by_git",
     "sphinx.ext.intersphinx",
     "sphinx_sitemap",
+    "subprojecttoctree",
 ]
+
+is_subproject=True
+readthedocs_url="https://canonical-charmed-opensearch.readthedocs-hosted.com/"
 
 # Excludes files or directories from processing
 
