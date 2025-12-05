@@ -44,4 +44,5 @@ Home <self>
 tutorial/index
 how-to/index
 reference/index
+OpenSearch charm docs<https://canonical-charmed-opensearch.readthedocs-hosted.com/>
 ```
