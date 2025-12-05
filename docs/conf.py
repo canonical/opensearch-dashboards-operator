@@ -176,7 +176,7 @@ if os.getenv("OPENAPI", ""):
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
 #       uncomment and update as needed.
 
-# slug = 'charmed-opensearch-dashboards'
+slug = 'opensearch-dashboards'
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
