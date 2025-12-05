@@ -140,11 +140,10 @@ prepare: |
         echo "MicroK8s has not yet configured iptables."
         sleep 10
       done
-      tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml << EOF
-      server = "$DOCKERHUB_MIRROR"
-      [host."${DOCKERHUB_MIRROR#'https://'}"]
-      capabilities = ["pull", "resolve"]
-      EOF
+      # Use printf to avoid YAML/Heredoc indentation issues
+      printf 'server = "%s"\n[host."%s"]\ncapabilities = ["pull", "resolve"]\n' \
+        "$DOCKERHUB_MIRROR" "${DOCKERHUB_MIRROR#'https://'}" \
+        | sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml > /dev/null
     fi
     microk8s stop
     microk8s start
