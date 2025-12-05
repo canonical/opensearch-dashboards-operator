@@ -2,7 +2,7 @@
 #  4. Access Opensearch Dashboards
 
 Assuming that you have a virtual environment available
-(as described in Step 1.[Set up a virtual environment](/tutorial/1-set-up-the-environment)),
+(as described in Step 1.[Set up a virtual environment](tutorial-1-set-up-the-environment)),
 open a browser and type there the following URL:
 
 ```text
@@ -10,7 +10,7 @@ http://<dashboards_juju_public_address>:5601
 ```
 
 The address of the unit is available in the `juju status` output of the opensearch-dashboards unit.
-For example, in the output from Step 2. [Deploy](/tutorial/2-deploy), this would be `10.163.9.173`.
+For example, in the output from Step 2. [Deploy](tutorial-2-deploy), this would be `10.163.9.173`.
 
 You should see something like this:
 

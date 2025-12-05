@@ -24,7 +24,8 @@ sudo snap install multipass && \
 multipass launch --cpus 4 --memory 8G --disk 30G --name my-vm charm-dev # tune CPU/RAM/HDD accordingly to your needs
 ```
 
-The full set of launch parameters is described [here](https://multipass.run/docs/launch-command).
+The full set of launch parameters is described in the
+[launch command reference](https://multipass.run/docs/launch-command).
 
 Multipass [commands](https://multipass.run/docs/multipass-cli-commands)
 are generally short and intuitive. For example, to show all running VMs:
@@ -43,7 +44,8 @@ You can exit the Multipass VM using Ctrl + D or the exit command.
 
 ## Install and set up Juju
 
-The next step is to install Juju and initialize [LXD](http://containers) (a lightweight container hypervisor).
+The next step is to install Juju and initialize [LXD](http://containers)
+(a lightweight container hypervisor).
 
 ```shell
 sudo snap install juju --classic --channel=3.5/stable
@@ -51,7 +53,8 @@ sudo snap install lxd
 lxd init --auto
 ```
 
-(Files `/var/log/cloud-init.log and /var/log/cloud-init-output.log` contain all low-level installation details).
+Files `/var/log/cloud-init.log` and `/var/log/cloud-init-output.log`
+contain all low-level installation details.
 
 Now that LXD and Juju are installed, the next step is to bootstrap Juju to use local LXD:
 
@@ -59,13 +62,16 @@ Now that LXD and Juju are installed, the next step is to bootstrap Juju to use l
 juju bootstrap localhost overlord
 ```
 
-The controller can work with different models. Most applications such as Opensearch or Opensearch Dashboards. To set up a new “model” called tutorial, run:
+The controller can work with different models.
+Most applications such as Opensearch or Opensearch Dashboards.
+To set up a new “model” called tutorial, run:
 
 ```shell
 juju add-model tutorial
 ```
 
-You can now view the model you created above by entering the command `juju status`. You should see something similar to the following output:
+You can now view the model you created above by entering the command `juju status`.
+You should see something similar to the following output:
 
 ```text
 Model     Controller  Cloud/Region         Version  SLA          Timestamp

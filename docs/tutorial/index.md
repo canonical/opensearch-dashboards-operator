@@ -20,9 +20,9 @@ This tutorial focuses on Opensearch Dashboards deployment, assuming that you hav
 ```{toctree}
 :titlesonly:
 
-1-set-up-the-environment
-2-deploy
-3-enable-tls
-4-interactive-access
-5-clean-up-the-environment
+1. Set up the environment <1-set-up-the-environment>
+2. Deploy <2-deploy>
+3. Enable TLS <3-enable-tls>
+4. Interactive access <4-interactive-access>
+5. Clean up <5-clean-up-the-environment>
 ```

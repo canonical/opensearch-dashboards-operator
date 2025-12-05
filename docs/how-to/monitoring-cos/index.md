@@ -8,13 +8,7 @@ in and outside of Juju.
 The OpenSearch Dashboards charm can use COS to connect to Grafana and Prometheus
 to use monitoring, alert rules, and log features.
 
-> See: [How to enable monitoring](/how-to/monitoring-cos/enable-cos) via COS and Grafana
-
-## Summary
-
-* [Metrics](#metrics-3)
-* [Alert rules](#alert-rules-4)
-* [Logs](#logs-6)
+> See: [How to enable monitoring](how-to-monitoring-enable-cos) via COS and Grafana
 
 ## Metrics
 
@@ -27,61 +21,42 @@ of the exporter.
 
 To ensure you are referencing the latest default alert rules, check the source file
 of alert definitions in the repository’s
-[prometheus_alerts.yaml](https://github.com/canonical/opensearch-dashboards-operator/blob/2/edge/src/alert_rules/prometheus/prometheus_alerts.yaml) file.
+[prometheus_alerts.yaml](https://github.com/canonical/opensearch-dashboards-operator/blob/2/edge/src/alert_rules/prometheus/prometheus_alerts.yaml)
+file.
 
 ### Default alert rules
 
-<table>
-   <thead>
-      <tr>
-         <th>Alert</th>
-         <th>Severity</th>
-         <th>Notes</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td>OpenSearchDashboardsScrapeFailed</td>
-         <td><img src="https://img.shields.io/badge/critical-red" alt="critical" width="47" height="20" loading="lazy" style="aspect-ratio: 47 / 20;"></td>
-         <td>Triggered when the prometheus scrape fails.</td>
-      </tr>
-      <tr>
-         <td>OpenSearchDashboardsRed</td>
-         <td><img src="https://img.shields.io/badge/critical-red" alt="critical" width="47" height="20" loading="lazy" style="aspect-ratio: 47 / 20;"></td>
-         <td>OpenSearch Dashboards status can turn red for the following reasons:
-              <li>Incompatibility between OpenSearch Dashboards and OpenSearch Service</li>
-              <li>Insufficient memory</li>
-              <li> OpenSearch is in red state</li>
-        </td>
-      </tr>
-      <tr>
-         <td>OpenSearchDashboardsYellow</td>
-         <td><img src="https://img.shields.io/badge/warning-yellow" alt="warning" width="47" height="20" loading="lazy" style="aspect-ratio: 47 / 20;"></td>
-         <td>Triggered when OpenSearch Dashboards is yellow. Dashboard plugins might be degraded or shards may be relocating or initializing</td>
-      </tr>
-      <tr>
-      <tr>
-         <td>OpenSearchDashboardsPluginRed</td>
-         <td><img src="https://img.shields.io/badge/critical-red" alt="critical" width="47" height="20" loading="lazy" style="aspect-ratio: 47 / 20;"></td>
-         <td>Triggered when OpenSearch Dashboards plugin or core component are in red state</td>
-      </tr>
-      <tr>
-         <td>OpenSearchDashboardsPluginYellow</td>
-         <td><img src="https://img.shields.io/badge/warning-yellow" alt="warning" width="47" height="20" loading="lazy" style="aspect-ratio: 47 / 20;"></td>
-         <td>Triggered when OpenSearch Dashboards plugin or core component are in yellow state</td>
-      </tr>
-      <tr>
-         <td>OpenSearchDashboardsNoMetrics</td>
-         <td><img src="https://img.shields.io/badge/critical-red" alt="warning" width="47" height="20" loading="lazy" style="aspect-ratio: 47 / 20;"></td>
-         <td>Triggered when exporter failed to collect status metrics.</td>
-      </tr>
-      <tr>
-         <td>OpenSearchDashboardsLongResponseTime</td>
-         <td><img src="https://img.shields.io/badge/critical-red" alt="high" width="47" height="20" loading="lazy" style="aspect-ratio: 47 / 20;"></td>
-         <td>Triggered when the server is up and responsive, however with a high latency.</td>
-      </tr>
-   </tbody>
-</table>
+```{list-table}
+:header-rows: 1
+
+* - Alert
+  - Severity
+  - Notes
+* - OpenSearchDashboardsScrapeFailed
+  - ![critical](https://img.shields.io/badge/critical-red)
+  - Triggered when the prometheus scrape fails.
+* - OpenSearchDashboardsRed
+  - ![critical](https://img.shields.io/badge/critical-red)
+  - OpenSearch Dashboards status can turn red for the following reasons:
+    - Incompatibility between OpenSearch Dashboards and OpenSearch Service
+    - Insufficient memory
+    - OpenSearch is in red state
+* - OpenSearchDashboardsYellow
+  - ![warning](https://img.shields.io/badge/warning-yellow)
+  - Triggered when OpenSearch Dashboards is yellow. Dashboard plugins might be degraded or shards may be relocating or initializing.
+* - OpenSearchDashboardsPluginRed
+  - ![critical](https://img.shields.io/badge/critical-red)
+  - Triggered when OpenSearch Dashboards plugin or core component are in red state.
+* - OpenSearchDashboardsPluginYellow
+  - ![warning](https://img.shields.io/badge/warning-yellow)
+  - Triggered when OpenSearch Dashboards plugin or core component are in yellow state.
+* - OpenSearchDashboardsNoMetrics
+  - ![warning](https://img.shields.io/badge/critical-red)
+  - Triggered when exporter failed to collect status metrics.
+* - OpenSearchDashboardsLongResponseTime
+  - ![high](https://img.shields.io/badge/critical-red)
+  - Triggered when the server is up and responsive, however with a high latency.
+```
 
 ## Logs
 
@@ -92,12 +67,12 @@ To get OpenSearch Dashboards logs, go to the `Label filters` field and set to
 `juju_application = opensearch-dashboards`, select one operation,
 e.g. `Line contains` and run the query.
 
-> See also: [How to connect to the Grafana web interface](/how-to/monitoring-cos/enable-cos)
+> See also: [How to connect to the Grafana web interface](how-to-monitoring-enable-cos)
 
-![image|690x313](upload://1Z9SqHdyitso1saiBvBmq10r28.png)
+![image|690x313](img/OSD-Monitoring-img1.png)
 
 ```{toctree}
 :titlesonly:
 
-enable-cos
+Enable COS <enable-cos>
 ```

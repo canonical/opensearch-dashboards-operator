@@ -105,7 +105,7 @@ juju integrate opensearch-dashboards:certificates self-signed-certificates:certi
 juju integrate opensearch-dashboards:oauth hydra:oauth
 ```
 
-# Create an admin account
+## Create an admin account
 
 We will now create an admin account using Kratos.
 This command will require an email and username, and will give the password reset
@@ -139,7 +139,7 @@ where you specify the user’s password.
 
 Once the password is set, you will then be prompted to configure 2FA (mandatory).
 
-# Access Opensearch Dashboards Using Single Sign In
+## Access Opensearch Dashboards Using Single Sign In
 
 To access OpenSearch Dashboards, use the IP address on the `opensearch-dashboards/0`
 unit to form the link [https://{ip-address}:5601](https://{ip-address}:5601).
@@ -147,23 +147,39 @@ unit to form the link [https://{ip-address}:5601](https://{ip-address}:5601).
 Once the account is ready, open OpenSearch Dashboards.
 A **Log in with single sign-on** button will appear.
 
-![image1|690x342](upload://fYP2qtj1YraixKP5FtV4XTDRc2N.jpeg)
+```{figure} img/OSD-OAuth-1.jpg
+:width: 75%
+:align: center
+
+```
 
 Click the button to open the identity platform login UI.
 You will get redirected to the identity platform UI login screen where you will be
 prompted to enter the email and password.
 
-![image3|690x369](upload://fVwxgsMZMtW5yVYdgERa2UmFfy3.jpeg)
+```{figure} img/OSD-OAuth-2.jpg
+:width: 50%
+:align: center
+
+```
 
 If it is your first time connecting, it will also ask for the 2FA code.
 
-![image4|690x370](upload://Ln88xOh6tpm99uDwrJgL1Dz9lm.jpeg)
+```{figure} img/OSD-OAuth-3.jpg
+:width: 50%
+:align: center
+
+```
 
 After a successful login, you will be redirected to the OpenSearch Dashboards home screen.
 
-![image2|690x373](upload://n6Zx68FIJpVhVIMseCtIzu90Omo.jpeg)
+```{figure} img/OSD-OAuth-4.jpg
+:width: 75%
+:align: center
 
-# Next Steps
+```
+
+## Next Steps
 
 * Review the *roles mapping* section in [*How to access OpenSearch using OAuth*](https://charmhub.io/opensearch/docs/h-oauth) to assign permissions.  
 * Follow the guide [How to manage external identity providers](https://charmhub.io/topics/canonical-identity-platform/how-to/integrate-external-identity-provider) to enable logins with providers like GitHub.

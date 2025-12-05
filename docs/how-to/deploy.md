@@ -1,11 +1,11 @@
 (how-to-deploy)=
 # Deploy the Opensearch Dashboards charm
 
-Please follow the [Tutorial](/tutorial/introduction) for detailed instructions on how to deploy the charm on LXD.
+Please follow the [Tutorial](tutorial-introduction) for detailed instructions on how to deploy the charm on LXD.
 
 Below is a summary of the commands (assuming that instructions from OpenSearch Documentation [Set kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#kernel-parameters) were applied):
 
-```
+```shell
 juju add-model test
 
 cat <<EOF > cloudinit-userdata.yaml
