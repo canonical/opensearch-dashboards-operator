@@ -1,7 +1,7 @@
 (tutorial-3-enable-tls)=
 # 3. Enable TLS encryption
 
-Charmed Opensearch Dashboads supports HTTPS connections.
+Charmed Opensearch Dashboards supports HTTPS connections.
 Configuration is similar to what we have seen for Opensearch – we just need
 to integrate the Dashboards charm against the TLS charm:
 

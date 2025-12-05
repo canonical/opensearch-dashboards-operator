@@ -4,7 +4,7 @@
 In this section, you will set up your environment by:
 
 * installing and setting up Multipass
-* installing Juju and boostrapping LXD
+* installing Juju and bootstrapping LXD
 * setting up a graphical interface with Multipass
 
 ## Install and set up Multipass
@@ -40,7 +40,7 @@ When the new VM is up and running, connect using:
 multipass shell my-vm
 ```
 
-You can exit the Multipass VM using Ctrl + D or the exit command.
+You can exit the Multipass VM using `Ctrl + D` or the exit command.
 
 ## Install and set up Juju
 
@@ -85,7 +85,7 @@ Model "admin/tutorial" is empty.
 There are graphical interfaces available for Multipass (see more details in the
 [Multipass Graphical Interface chapter](https://multipass.run/docs/set-up-a-graphical-interface)).
 
-We recommend to use rdp:
+We recommend to use RDP:
 
 ```shell
 sudo apt install ubuntu-desktop xrdp remmina-plugin-rdp remmina
@@ -99,7 +99,7 @@ remmina -c rdp://<IP>
 ```
 
 If the environment comes up with a small resolution, use this great
-[Stackoverflow suggestion](https://askubuntu.com/questions/914775/remmina-scale-resolution-when-connect-from-ubuntu-to-windows-10).
+[Stack Overflow suggestion](https://askubuntu.com/questions/914775/remmina-scale-resolution-when-connect-from-ubuntu-to-windows-10).
 
 Note that after the graphical setup you may be instructed to restart the Multipass instance.
 You probably want to do this before installing the services within

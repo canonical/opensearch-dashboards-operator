@@ -13,7 +13,7 @@ Make sure that the environment is ready and the Juju model is correctly configur
 instructions in OpenSearch Documentation
 [Set kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#kernel-parameters).
 
-Subsequentially we can deploy Opensearch with TLS:
+Subsequently, we can deploy Opensearch with TLS:
 
 ```shell
 juju deploy opensearch --channel=2/edge -n 2

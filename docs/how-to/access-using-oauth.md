@@ -97,7 +97,7 @@ All the components of the bundle must be active except `kratos-external-idp-inte
 It will be in blocked status.
 
 Switch back to LXD and integrate OpenSearch Dashboards with the interface offered
-by self-signed-certificates from oauth model, and with the oauth interface provided by hydra.
+by self-signed-certificates from OAuth model, and with the OAuth interface provided by Hydra.
 
 ```shell
 juju switch lxd
