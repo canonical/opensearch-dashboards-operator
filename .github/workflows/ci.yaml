@@ -110,8 +110,9 @@ jobs:
           juju add-model test
       - name: Terraform deploy
         run: |
+          MODEL_UUID=$(juju show-model test | grep "model-uuid" | awk '{split($0, a, ": "); print a[2]}')
           pushd ./terraform
-          terraform apply -var='model=test' -auto-approve
+          terraform apply -var="model_uuid=$MODEL_UUID" -auto-approve
           popd
       - name: Wait for model and applications
         run: |
