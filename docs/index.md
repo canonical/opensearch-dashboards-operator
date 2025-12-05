@@ -25,10 +25,10 @@ suggestions, fixes, and constructive feedback.
 
 * Check our [Code of Conduct](https://ubuntu.com/community/ethos/code-of-conduct)
 * Raise software issues or feature requests in [GitHub](https://github.com/canonical/opensearch-dashboards-operator/issues)
-* Report security issues through [LaunchPad](https://wiki.ubuntu.com/DebuggingSecurity#How%20to%20File).
+* Report security issues through [LaunchPad](https://wiki.ubuntu.com/DebuggingSecurity#How_to_File).
 * Meet the community and chat with us on [Matrix](https://matrix.to/#/#charmhub-data-platform:ubuntu.com)
 
-## Licensing & Trademark
+## Licensing & trademark
 
 The Charmed OpenSearch Dashboards Operator is free software, distributed under the
 [Apache Software License, version 2.0](https://github.com/canonical/opensearch-dashboards-operator/blob/main/LICENSE).

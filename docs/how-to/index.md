@@ -1,5 +1,5 @@
 (how-to-index)=
-# How-To
+# How-to guides
 
 The following guides cover key processes and common tasks for Charmed OpenSearch Dashboards.
 <!-- If you are missing a particular how-to guide, feel free to leave us feedback via button above, or [contact us]() directly. -->

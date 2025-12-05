@@ -44,7 +44,7 @@ You can exit the Multipass VM using `Ctrl + D` or the exit command.
 
 ## Install and set up Juju
 
-The next step is to install Juju and initialize [LXD](http://containers)
+The next step is to install Juju and initialize [LXD](https://canonical.com/lxd)
 (a lightweight container hypervisor).
 
 ```shell

@@ -83,7 +83,7 @@ Now you can query Opensearch with your JWT:
 curl --header "Authorization: Bearer <your-jwt-here>" -XGET "https://<ip-address>:9200/_cat/nodes" -k
 ```
 
-## Large Deployments
+## Large deployments
 
 If you have an OpenSearch large deployments cluster,
 it is required to integrate the JWT integrator with the main-orchestrator of your large deployment.

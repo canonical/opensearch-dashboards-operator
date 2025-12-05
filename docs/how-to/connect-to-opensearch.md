@@ -29,5 +29,5 @@ juju integrate opensearch opensearch-dashboards
 ```
 
 ```{note}
-Make sure you've set up the correct [kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#kernel-parameters) for your OpenSearch deployment.
+Make sure you've set up the correct [kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#p-24545-set-kernel-parameters) for your OpenSearch deployment.
 ```

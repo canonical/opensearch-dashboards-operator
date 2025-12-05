@@ -13,5 +13,5 @@ If it’s the whole Multipass instance that you would like to delete, you should
 multipass delete --purge my-vm
 ```
 
-* [Give us your feedback](https://chat.charmhub.io/charmhub/channels/data-platform).
+* [Give us your feedback](https://matrix.to/#/#charmhub-data-platform:ubuntu.com).
 * [Contribute to the code base](https://github.com/canonical/opensearch-dashboards-operator)

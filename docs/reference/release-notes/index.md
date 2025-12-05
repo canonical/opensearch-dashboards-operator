@@ -1,5 +1,5 @@
 (reference-release-notes-index)=
-# Release-Notes
+# Release notes
 
 ```{toctree}
 :titlesonly:

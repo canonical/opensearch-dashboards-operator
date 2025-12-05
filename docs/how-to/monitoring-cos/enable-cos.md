@@ -64,7 +64,8 @@ juju integrate grafana-agent loki
 juju integrate grafana-agent prometheus
 ```
 
-Finally integrate (previously known as [relate](https://juju.is/docs/juju/integration))
+Finally integrate (previously known as
+[relate](https://documentation.ubuntu.com/juju/3.6/reference/relation/))
 it with Charmed OpenSearch Dashboards:
 
 ```shell
@@ -77,7 +78,7 @@ After the integration is complete, Grafana will show the new dashboard
 ## Connect to the Grafana web interface
 
 To connect to the Grafana web interface, follow the
-[Browse dashboards](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s?_ga=2.201254254.1948444620.1704703837-757109492.1701777558#browse-dashboards)
+[Browse dashboards](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s#heading--browse-dashboards)
 section of the MicroK8s "Getting started" guide.
 
 You can obtain the admin password as follows:

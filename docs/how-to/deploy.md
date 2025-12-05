@@ -1,9 +1,12 @@
 (how-to-deploy)=
 # Deploy the Opensearch Dashboards charm
 
-Please follow the [Tutorial](tutorial-introduction) for detailed instructions on how to deploy the charm on LXD.
+Please follow the [Tutorial](tutorial-introduction) for detailed instructions on
+how to deploy the charm on LXD.
 
-Below is a summary of the commands (assuming that instructions from OpenSearch Documentation [Set kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#kernel-parameters) were applied):
+Below is a summary of the commands (assuming that instructions from OpenSearch Documentation
+[Set kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#p-24545-set-kernel-parameters)
+were applied):
 
 ```shell
 juju add-model test
@@ -29,9 +32,9 @@ juju relate opensearch opensearch-dashboards
 juju relate self-signed-certificates opensearch-dashboards   # TLS
 ```
 
-As a result, a healthy system should look something like this: 
+As a result, a healthy system should look something like this:
 
-```
+```text
 Model      Controller  Cloud/Region         Version  SLA          Timestamp
 tutorial   overlord    localhost/localhost  3.5.3    unsupported  17:40:00+02:00
 
@@ -63,4 +66,3 @@ opensearch:upgrade-version-a           opensearch:upgrade-version-a             
 self-signed-certificates:certificates  opensearch-dashboards:certificates       tls-certificates    regular  
 self-signed-certificates:certificates  opensearch:certificates                  tls-certificates    regular 
 ```
-

@@ -139,10 +139,10 @@ where you specify the user’s password.
 
 Once the password is set, you will then be prompted to configure 2FA (mandatory).
 
-## Access Opensearch Dashboards Using Single Sign In
+## Access Opensearch Dashboards using Single Sign In
 
 To access OpenSearch Dashboards, use the IP address on the `opensearch-dashboards/0`
-unit to form the link [https://{ip-address}:5601](https://{ip-address}:5601).
+unit to form the URL: `https://<ip-address>:5601`.
 
 Once the account is ready, open OpenSearch Dashboards.
 A **Log in with single sign-on** button will appear.
@@ -179,7 +179,7 @@ After a successful login, you will be redirected to the OpenSearch Dashboards ho
 
 ```
 
-## Next Steps
+## Next steps
 
 * Review the *roles mapping* section in [*How to access OpenSearch using OAuth*](https://charmhub.io/opensearch/docs/h-oauth) to assign permissions.  
 * Follow the guide [How to manage external identity providers](https://charmhub.io/topics/canonical-identity-platform/how-to/integrate-external-identity-provider) to enable logins with providers like GitHub.
