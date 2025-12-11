@@ -1,5 +1,5 @@
 (tutorial-4-interactive-access)=
-#  4. Access Opensearch Dashboards
+# 4. Access Opensearch Dashboards
 
 Assuming that you have a virtual environment available
 (as described in Step 1.[Set up a virtual environment](tutorial-1-set-up-the-environment)),
@@ -14,7 +14,7 @@ For example, in the output from Step 2. [Deploy](tutorial-2-deploy), this would 
 
 You should see something like this:
 
-![Openserach Dashboards - Multipass Desktop|690x431](upload://eK1uIgM8QPgJHik4IKI7Oyaas59.jpeg)
+![Openserach Dashboards - Multipass Desktop](img/multipass-desktop.jpeg)
 
 ## Set up an Opensearch user
 
@@ -55,9 +55,9 @@ juju run data-integrator/0 get-credentials
 at the bottom of the output you should see something like:
 
 ```bash
-  password: 8kubD7nbWYZFHPVEzIVmTyqV42I7wHb4
-  <CA certificate here>
-  username: opensearch-client_15
+password: 8kubD7nbWYZFHPVEzIVmTyqV42I7wHb4
+<CA certificate here>
+username: opensearch-client_15
 ```
 
 ## Create the "index pattern"
@@ -66,17 +66,17 @@ Log in to the Dashboard using these credentials.
 Clicking the top left icon the main menu will pull down.
 Select **Management** / **Dashboards Management** here
 
-![Opensearch Dashboards - Initial view |690x327](upload://3rWRYZPHDmLbuQfOo8sfBBGriMW.png)
+![Opensearch Dashboards - Initial view](img/initial-view.png)
 
 Select **Index patterns** on the next view:
 
-![Opensearch Dashboards - Index patterns |690x327](upload://lIM735RSOujlM8pUFYFKZctFM8J.png)
+![Opensearch Dashboards - Index patterns](img/index-patterns.png)
 
 Click on **create index pattern** at the bottom.
 
 Adding the index name that used for `data-integrator` deployment (in our example: `testing`) as an index pattern enables Dashboard access to the user's Opensearch space.
 
-![Opensearch Dashboards - Create index pattern|690x327](upload://iExCuxU6jroz8XQX1aDObJwPgCU.png)
+![Opensearch Dashboards - Create index pattern](img/create-index-pattern.png)
 
 Click on the **Next step** button, and finalize the index pattern creation.
 
@@ -98,7 +98,7 @@ done
 
 This is how raw data gets displayed in the Dashboard
 
-![Opensearch Dashboards - Data|690x327](upload://3P7nmmA1fLTdH4NKt3xzCBfumFX.png)
+![Opensearch Dashboards - Data](img/data.png)
 
 ## Data Visualization
 
@@ -106,4 +106,4 @@ Opensearch Dashboards offers a variety of diagrams and data displays.
 
 Choose **Dashboards** in the main left-side menu, and you will be presented to the selection:
 
-![Opensearch Dashboards - Visualization](upload://ivcwgbpYgolK5wZQkovYW4tlBs.png)
+![Opensearch Dashboards - Visualization](img/visualization.png)
