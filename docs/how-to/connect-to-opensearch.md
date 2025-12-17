@@ -12,7 +12,7 @@ A Juju model containing:
  integrated with `opensearch`
 
 To learn how to set up and deploy an OpenSearch application, see steps 1, 2, and 3 of the
-[OpenSearch Tutorial](https://charmhub.io/opensearch/docs/t-set-up).
+[OpenSearch Tutorial](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/tutorial/1-set-up-the-environment/).
 
 ## Deploy and integrate
 
@@ -29,5 +29,5 @@ juju integrate opensearch opensearch-dashboards
 ```
 
 ```{note}
-Make sure you've set up the correct [kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#p-24545-set-kernel-parameters) for your OpenSearch deployment.
+Make sure you've set up the correct [kernel parameters](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/tutorial/1-set-up-the-environment/#set-kernel-parameters) for your OpenSearch deployment.
 ```

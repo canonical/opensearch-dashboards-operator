@@ -11,7 +11,7 @@ alongside the `self-signed-certificates` charm and integrate (also known as “r
 
 Make sure that the environment is ready and the Juju model is correctly configured following
 instructions in OpenSearch Documentation
-[Set kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#p-24545-set-kernel-parameters).
+[Set kernel parameters](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/tutorial/1-set-up-the-environment/#set-kernel-parameters).
 
 Subsequently, we can deploy Opensearch with TLS:
 

@@ -5,7 +5,7 @@ Please follow the [Tutorial](tutorial-introduction) for detailed instructions on
 how to deploy the charm on LXD.
 
 Below is a summary of the commands (assuming that instructions from OpenSearch Documentation
-[Set kernel parameters](https://charmhub.io/opensearch/docs/t-set-up#p-24545-set-kernel-parameters)
+[Set kernel parameters](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/tutorial/1-set-up-the-environment/#set-kernel-parameters)
 were applied):
 
 ```shell

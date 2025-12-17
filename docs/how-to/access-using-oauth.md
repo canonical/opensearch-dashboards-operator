@@ -15,7 +15,7 @@ See: [How to Connect to OpenSearch](https://charmhub.io/opensearch-dashboards/do
 * A deployed Canonical Identity Platform on Kubernetes.
 * Working Integration between OpenSearch and Canonical Identity Platform through certificates
 and Hydra OAuth interface.
-See: [How to access OpenSearch using OAuth](https://charmhub.io/opensearch/docs/h-oauth).
+See: [How to access OpenSearch using OAuth](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/how-to/access-using-oauth/).
 
 ```{note}
 If using MicroK8s, run LXD and MicroK8s under the same Juju controller. Using separate controllers may cause failures during integration. If you must use two controllers, configure a new one for MicroK8s as follows:
@@ -181,5 +181,5 @@ After a successful login, you will be redirected to the OpenSearch Dashboards ho
 
 ## Next steps
 
-* Review the *roles mapping* section in [*How to access OpenSearch using OAuth*](https://charmhub.io/opensearch/docs/h-oauth) to assign permissions.  
+* Review the *roles mapping* section in [*How to access OpenSearch using OAuth*](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/how-to/access-using-oauth/) to assign permissions.  
 * Follow the guide [How to manage external identity providers](https://charmhub.io/topics/canonical-identity-platform/how-to/integrate-external-identity-provider) to enable logins with providers like GitHub.
