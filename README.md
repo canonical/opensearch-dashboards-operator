@@ -76,7 +76,7 @@ Install the
 [self-signed-certificates operator](https://github.com/canonical/self-signed-certificates-operator)
 
 ```shell
-juju deploy self-signed-certificates --channel=latest/stable
+juju deploy self-signed-certificates --channel=1/stable
 ```
 
 and integrate it with the Dashboards charm
@@ -147,7 +147,7 @@ It should specify the `index_name` that was used to create the user with `data-i
 Follow instructions from OpenSearch documentation on
 [How to create an index pattern](https://opensearch.org/docs/latest/dashboards/management/index-patterns/#creating-an-index-pattern)
 
-When the index pattern is defined, data that belongs to the user will display in the Dasboards.
+When the index pattern is defined, data that belongs to the user will display in the Dashboards.
 
 ## License
 

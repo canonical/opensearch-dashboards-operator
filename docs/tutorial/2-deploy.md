@@ -17,7 +17,7 @@ Subsequently, we can deploy Opensearch with TLS:
 
 ```shell
 juju deploy opensearch --channel=2/edge -n 2
-juju deploy self-signed-certificates
+juju deploy self-signed-certificates --channel=1/stable
 juju integrate self-signed-certificates opensearch
 ```
 
@@ -39,7 +39,7 @@ tutorial   overlord    localhost/localhost  3.5.3    unsupported  16:50:56+02:00
 App                       Version  Status  Scale  Charm                     Channel        Rev  Exposed  Message
 opensearch                         active      2  opensearch                2/edge         159  no       
 opensearch-dashboards              active      1  opensearch-dashboards     2/edge          20  no       
-self-signed-certificates           active      1  self-signed-certificates  latest/stable  155  no       
+self-signed-certificates           active      1  self-signed-certificates  1/stable  317  no       
 
 Unit                         Workload  Agent  Machine  Public address  Ports     Message
 opensearch-dashboards/0*     active    idle   3        10.34.169.173   5601/tcp  

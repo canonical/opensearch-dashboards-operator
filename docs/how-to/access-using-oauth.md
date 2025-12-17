@@ -76,7 +76,7 @@ identity-platform-login-ui-operator  0.21.2   active       1  identity-platform-
 kratos                               v1.3.1   active       1  kratos                               latest/edge    500  10.152.183.20   no
 kratos-external-idp-integrator                blocked      1  kratos-external-idp-integrator       latest/edge    245  10.152.183.113  no       Invalid configuration: Missing required configuration 'client_id' for provider 'generic'
 postgresql-k8s                       14.15    active       1  postgresql-k8s                       14/stable      495  10.152.183.109  no
-self-signed-certificates                      active       1  self-signed-certificates             latest/stable  155  10.152.183.250  no
+self-signed-certificates                      active       1  self-signed-certificates             1/stable  317 10.152.183.250  no
 traefik-admin                        v2.11.0  active       1  traefik-k8s                          latest/stable  176  10.241.7.40     no
 traefik-public                       v2.11.0  active       1  traefik-k8s                          latest/stable  176  10.241.7.39     no
 
