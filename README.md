@@ -131,7 +131,7 @@ at the bottom of the output you should see something like:
 
 ### Access the Dashboard
 
-Using information from above, the dashboard URI is construted as
+Using information from above, the dashboard URI is constructed as
 
 ```text
 https://<IP>:5601

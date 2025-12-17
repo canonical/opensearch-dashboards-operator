@@ -37,7 +37,7 @@ cat ~/.kube/config | juju add-k8s microk8s-cluster --cluster-name=microk8s-clust
 juju bootstrap microk8s-cluster k8s-controller
 ```
 
-## Deploy Opensearch Dashboards
+## Deploy OpenSearch Dashboards
 
 On the LXD model where OpenSearch is deployed, deploy OpenSearch Dashboards,
 and integrate it with OpenSearch charm.
@@ -53,7 +53,7 @@ Now, we will wait for the OpenSearch and OpenSearch Dashboards to become active 
 juju status --watch 2s 
 ```
 
-## Integrate Opensearch Dashboards with Canonical Identity Platform
+## Integrate OpenSearch Dashboards with Canonical Identity Platform
 
 Switch to the MicroK8s model and verify the identity platform bundle is ready:
 
@@ -139,7 +139,7 @@ where you specify the user’s password.
 
 Once the password is set, you will then be prompted to configure 2FA (mandatory).
 
-## Access Opensearch Dashboards using Single Sign In
+## Access Opensearch Dashboards using Single Sign-On
 
 To access OpenSearch Dashboards, use the IP address on the `opensearch-dashboards/0`
 unit to form the URL: `https://<ip-address>:5601`.

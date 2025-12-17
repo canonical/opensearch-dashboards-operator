@@ -29,7 +29,7 @@ juju relate  self-signed-certificates opensearch
 
 juju deploy opensearch-dashboards --channel=2/edge
 juju relate opensearch opensearch-dashboards
-juju relate self-signed-certificates opensearch-dashboards   # TLS
+juju relate self-signed-certificates opensearch-dashboards
 ```
 
 As a result, a healthy system should look something like this:
