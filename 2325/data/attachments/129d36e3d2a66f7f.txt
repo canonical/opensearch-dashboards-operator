@@ -1,0 +1,124 @@
+[32mINFO    [0m oauth_tools.oauth_helpers:oauth_helpers.py:181 Choose external provider
+[32mINFO    [0m oauth_tools.oauth_helpers:oauth_helpers.py:186 Completing the login flow on the external provider
+[32mINFO    [0m oauth_tools.external_idp:external_idp.py:214 Signing in to dex
+[32mINFO    [0m httpx:_client.py:1025 HTTP Request: GET https://10.151.33.74:16443/api/v1/namespaces/dex/services/dex "HTTP/1.1 200 OK"
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model         Controller     Cloud/Region    Version  SLA          Timestamp
+testing-uk8s  concierge-lxd  uk8s/localhost  3.6.12   unsupported  02:13:33Z
+
+App                                  Version  Status       Scale  Charm                                Channel        Rev  Address         Exposed  Message
+hydra                                v2.3.0   active           1  hydra                                latest/edge    339  10.152.183.148  no       
+identity-platform-login-ui-operator  0.21.2   active           1  identity-platform-login-ui-operator  latest/edge    146  10.152.183.104  no       
+kratos                               v1.3.1   active           1  kratos                               latest/edge    500  10.152.183.89   no       
+kratos-external-idp-integrator                active           1  kratos-external-idp-integrator       latest/edge    245  10.152.183.87   no       Provider is ready
+postgresql-k8s                       14.19    active           1  postgresql-k8s                       14/stable      495  10.152.183.231  no       
+self-signed-certificates                      active           1  self-signed-certificates             latest/stable  155  10.152.183.114  no       
+traefik-admin                        v2.11.0  active           1  traefik-k8s                          latest/stable  176  10.64.140.45    no       
+traefik-public                       v2.11.0  maintenance      1  traefik-k8s                          latest/stable  176  10.64.140.44    no       updating ingress configuration for 'ingress:16'
+
+Unit                                    Workload     Agent  Address     Ports  Message
+hydra/0*                                active       idle   10.1.53.11         
+identity-platform-login-ui-operator/0*  active       idle   10.1.53.12         
+kratos-external-idp-integrator/0*       active       idle   10.1.53.17         Provider is ready
+kratos/0*                               active       idle   10.1.53.20         
+postgresql-k8s/0*                       active       idle   10.1.53.19         Primary
+self-signed-certificates/0*             active       idle   10.1.53.14         
+traefik-admin/0*                        active       idle   10.1.53.22         
+traefik-public/0*                       maintenance  idle   10.1.53.18         updating ingress configuration for 'ingress:16'
+
+Offer         Application               Charm                     Rev  Connected  Endpoint      Interface         Role
+certificates  self-signed-certificates  self-signed-certificates  155  2/2        certificates  tls-certificates  provider
+oauth         hydra                     hydra                     339  2/2        oauth         oauth             provider
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+unit-kratos-0: 02:03:11 ERROR juju.worker.uniter pebble poll failed for container "kratos": failed to send pebble-ready event: terminated
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model testing-uk8s...
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller     Cloud/Region         Version  SLA          Timestamp
+testing  concierge-lxd  localhost/localhost  3.6.12   unsupported  02:13:34Z
+
+SAAS          Status  Store  URL
+certificates  active  local  admin/testing-uk8s.certificates
+oauth         active  local  admin/testing-uk8s.oauth
+
+App                    Version  Status  Scale  Charm                  Channel  Rev  Exposed  Message
+opensearch                      active      2  opensearch             2/edge   316  no       
+opensearch-dashboards           active      1  opensearch-dashboards             0  no       
+
+Unit                      Workload  Agent  Machine  Public address  Ports     Message
+opensearch-dashboards/0*  active    idle   2        10.116.142.229  5601/tcp  
+opensearch/0*             active    idle   0        10.116.142.144  9200/tcp  
+opensearch/1              active    idle   1        10.116.142.3    9200/tcp  
+
+Machine  State    Address         Inst id        Base          AZ             Message
+0        started  10.116.142.144  juju-4b7982-0  ubuntu@24.04  github-runner  Running
+1        started  10.116.142.3    juju-4b7982-1  ubuntu@24.04  github-runner  Running
+2        started  10.116.142.229  juju-4b7982-2  ubuntu@24.04  github-runner  Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+machine-0: 02:02:32 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 02:02:32 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:02:38 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:02:38 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:02:38 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:02:38 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-0: 02:10:45 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1000)')))
+unit-opensearch-dashboards-0: 02:10:46 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827ef90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:10:51 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827c740>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:10:56 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827ce00>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:01 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827cf20>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:06 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827d400>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:11 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827cf50>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:16 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827c500>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:21 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827f1d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:26 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827de50>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:31 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827e510>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:36 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827fa10>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:41 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827da60>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:46 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827d970>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:51 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827c590>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:11:56 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827cef0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:12:01 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827d160>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:12:07 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827f350>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:12:12 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827ca10>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:12:17 ERROR unit.opensearch-dashboards/0.juju-log Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d21c827c350>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:12:19 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:8: Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7c4c3a78bec0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:12:19 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:8: Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7c4c3a7bc980>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:12:24 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:8: Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: https://10.116.142.229:5601/api/status
+unit-opensearch-dashboards-0: 02:12:49 ERROR unit.opensearch-dashboards/0.juju-log oauth:10: Can't delete secret for relation 4
+unit-opensearch-dashboards-0: 02:12:50 ERROR unit.opensearch-dashboards/0.juju-log oauth:10: Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d4eac47ec60>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 02:12:55 ERROR unit.opensearch-dashboards/0.juju-log oauth:10: Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: https://10.116.142.229:5601/api/status
+unit-opensearch-dashboards-0: 02:13:01 ERROR unit.opensearch-dashboards/0.juju-log oauth:10: Request GET to https://10.116.142.229:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.116.142.229', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7440eaa820c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
