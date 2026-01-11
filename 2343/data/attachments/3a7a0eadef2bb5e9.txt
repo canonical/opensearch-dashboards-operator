@@ -1,0 +1,63 @@
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model         Controller     Cloud/Region    Version  SLA          Timestamp
+testing-uk8s  concierge-lxd  uk8s/localhost  3.6.12   unsupported  02:34:54Z
+
+App                                  Version  Status   Scale  Charm                                Channel        Rev  Address         Exposed  Message
+hydra                                v2.3.0   waiting      1  hydra                                latest/edge    339  10.152.183.159  no       Waiting for database creation
+identity-platform-login-ui-operator  0.21.2   active       1  identity-platform-login-ui-operator  latest/edge    146  10.152.183.53   no       
+kratos                               v1.3.1   waiting      1  kratos                               latest/edge    500  10.152.183.121  no       Waiting for database creation
+kratos-external-idp-integrator                waiting      1  kratos-external-idp-integrator       latest/edge    245  10.152.183.18   no       Waiting for Kratos to register provider
+postgresql-k8s                       14.19    blocked      1  postgresql-k8s                       14/stable      495  10.152.183.71   no       Failed to initialize database relation
+self-signed-certificates                      active       1  self-signed-certificates             latest/stable  155  10.152.183.35   no       
+traefik-admin                        v2.11.0  active       1  traefik-k8s                          latest/stable  176  10.64.140.45    no       
+traefik-public                       v2.11.0  active       1  traefik-k8s                          latest/stable  176  10.64.140.44    no       
+
+Unit                                    Workload  Agent  Address     Ports  Message
+hydra/0*                                waiting   idle   10.1.53.13         Waiting for database creation
+identity-platform-login-ui-operator/0*  active    idle   10.1.53.12         
+kratos-external-idp-integrator/0*       waiting   idle   10.1.53.11         Waiting for Kratos to register provider
+kratos/0*                               waiting   idle   10.1.53.22         Waiting for database creation
+postgresql-k8s/0*                       blocked   idle   10.1.53.19         Failed to initialize database relation
+self-signed-certificates/0*             active    idle   10.1.53.16         
+traefik-admin/0*                        active    idle   10.1.53.20         
+traefik-public/0*                       active    idle   10.1.53.21         
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+unit-hydra-0: 02:02:23 ERROR unit.hydra/0.juju-log public-ingress:13: failed to retrieve ip information from juju
+unit-hydra-0: 02:02:24 ERROR unit.hydra/0.juju-log admin-ingress:12: failed to retrieve ip information from juju
+unit-hydra-0: 02:02:25 ERROR unit.hydra/0.juju-log failed to retrieve ip information from juju
+unit-hydra-0: 02:02:25 ERROR unit.hydra/0.juju-log failed to retrieve ip information from juju
+unit-kratos-0: 02:02:46 ERROR juju.worker.uniter pebble poll failed for container "kratos": failed to send pebble-ready event: terminated
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model testing-uk8s...
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller     Cloud/Region         Version  SLA          Timestamp
+testing  concierge-lxd  localhost/localhost  3.6.12   unsupported  02:34:54Z
+
+App                    Version  Status   Scale  Charm                  Channel  Rev  Exposed  Message
+opensearch                      blocked      2  opensearch             2/edge   316  no       Missing TLS relation with this cluster.
+opensearch-dashboards           blocked      1  opensearch-dashboards             0  no       Opensearch connection is missing
+
+Unit                      Workload  Agent  Machine  Public address  Ports     Message
+opensearch-dashboards/0*  blocked   idle   2        10.8.39.240     5601/tcp  Opensearch connection is missing
+opensearch/0*             blocked   idle   0        10.8.39.229               Missing TLS relation with this cluster.
+opensearch/1              blocked   idle   1        10.8.39.233               Missing TLS relation with this cluster.
+
+Machine  State    Address      Inst id        Base          AZ             Message
+0        started  10.8.39.229  juju-32472d-0  ubuntu@24.04  github-runner  Running
+1        started  10.8.39.233  juju-32472d-1  ubuntu@24.04  github-runner  Running
+2        started  10.8.39.240  juju-32472d-2  ubuntu@24.04  github-runner  Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+machine-0: 02:01:54 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 02:01:54 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:01:59 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:01:59 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:02:02 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:02:02 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
