@@ -1,0 +1,60 @@
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model         Controller     Cloud/Region    Version  SLA          Timestamp
+testing-uk8s  concierge-lxd  uk8s/localhost  3.6.12   unsupported  02:37:19Z
+
+App                                  Version  Status  Scale  Charm                                Channel        Rev  Address         Exposed  Message
+hydra                                v2.3.0   active      1  hydra                                latest/edge    339  10.152.183.198  no       
+identity-platform-login-ui-operator  0.21.2   active      1  identity-platform-login-ui-operator  latest/edge    146  10.152.183.91   no       
+kratos                               v1.3.1   active      1  kratos                               latest/edge    500  10.152.183.220  no       
+kratos-external-idp-integrator                active      1  kratos-external-idp-integrator       latest/edge    245  10.152.183.199  no       Provider is ready
+postgresql-k8s                       14.19    active      1  postgresql-k8s                       14/stable      495  10.152.183.171  no       
+self-signed-certificates                      active      1  self-signed-certificates             latest/stable  155  10.152.183.242  no       
+traefik-admin                        v2.11.0  active      1  traefik-k8s                          latest/stable  176  10.64.140.44    no       
+traefik-public                       v2.11.0  active      1  traefik-k8s                          latest/stable  176  10.64.140.45    no       
+
+Unit                                    Workload  Agent  Address     Ports  Message
+hydra/0*                                active    idle   10.1.53.15         
+identity-platform-login-ui-operator/0*  active    idle   10.1.53.16         
+kratos-external-idp-integrator/0*       active    idle   10.1.53.18         Provider is ready
+kratos/0*                               active    idle   10.1.53.25         
+postgresql-k8s/0*                       active    idle   10.1.53.20         Primary
+self-signed-certificates/0*             active    idle   10.1.53.21         
+traefik-admin/0*                        active    idle   10.1.53.23         
+traefik-public/0*                       active    idle   10.1.53.26         
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+controller-0: 02:19:28 ERROR juju.worker.caasapplicationprovisioner.runner exited "traefik-admin": more than 20 retries ensuring scale: k8s: statefulsets.apps "traefik-admin" not found
+controller-0: 02:19:32 ERROR juju.worker.caasapplicationprovisioner.runner exited "traefik-public": more than 20 retries ensuring scale: k8s: statefulsets.apps "traefik-public" not found
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model testing-uk8s...
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller     Cloud/Region         Version  SLA          Timestamp
+testing  concierge-lxd  localhost/localhost  3.6.12   unsupported  02:37:19Z
+
+App                    Version  Status   Scale  Charm                  Channel  Rev  Exposed  Message
+opensearch                      blocked      2  opensearch             2/edge   320  no       Missing TLS relation with this cluster.
+opensearch-dashboards           blocked      1  opensearch-dashboards             0  no       Opensearch connection is missing
+
+Unit                      Workload     Agent      Machine  Public address  Ports     Message
+opensearch-dashboards/0*  blocked      idle       2        10.52.42.213    5601/tcp  Opensearch connection is missing
+opensearch/0*             blocked      idle       0        10.52.42.10               Missing TLS relation with this cluster.
+opensearch/1              maintenance  executing  1        10.52.42.80               (install) Installing OpenSearch...
+
+Machine  State    Address       Inst id        Base          AZ             Message
+0        started  10.52.42.10   juju-e24a1d-0  ubuntu@24.04  github-runner  Running
+1        started  10.52.42.80   juju-e24a1d-1  ubuntu@24.04  github-runner  Running
+2        started  10.52.42.213  juju-e24a1d-2  ubuntu@24.04  github-runner  Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+machine-0: 02:21:08 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 02:21:08 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:21:19 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:21:19 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:21:36 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:21:36 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
