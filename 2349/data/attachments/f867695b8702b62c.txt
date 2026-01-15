@@ -1,0 +1,172 @@
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model         Controller     Cloud/Region    Version  SLA          Timestamp
+testing-uk8s  concierge-lxd  uk8s/localhost  3.6.12   unsupported  02:11:04Z
+
+App                                  Version  Status   Scale  Charm                                Channel        Rev  Address         Exposed  Message
+hydra                                v2.3.0   waiting      1  hydra                                latest/edge    339  10.152.183.179  no       Waiting for database creation
+identity-platform-login-ui-operator  0.21.2   active       1  identity-platform-login-ui-operator  latest/edge    146  10.152.183.198  no       
+kratos                               v1.3.1   error        1  kratos                               latest/edge    500  10.152.183.211  no       hook failed: "pg-database-relation-changed"
+kratos-external-idp-integrator                waiting      1  kratos-external-idp-integrator       latest/edge    245  10.152.183.203  no       Waiting for Kratos to register provider
+postgresql-k8s                       14.19    waiting      1  postgresql-k8s                       14/stable      495  10.152.183.237  no       awaiting for cluster to start
+self-signed-certificates                      active       1  self-signed-certificates             latest/stable  155  10.152.183.30   no       
+traefik-admin                        v2.11.0  active       1  traefik-k8s                          latest/stable  176  10.64.140.44    no       
+traefik-public                       v2.11.0  active       1  traefik-k8s                          latest/stable  176  10.64.140.45    no       
+
+Unit                                    Workload  Agent      Address     Ports  Message
+hydra/0*                                waiting   idle       10.1.53.11         Waiting for database creation
+identity-platform-login-ui-operator/0*  active    idle       10.1.53.12         
+kratos-external-idp-integrator/0*       waiting   idle       10.1.53.14         Waiting for Kratos to register provider
+kratos/0*                               error     idle       10.1.53.22         hook failed: "pg-database-relation-changed"
+postgresql-k8s/0*                       waiting   executing  10.1.53.17         (config-changed) awaiting for cluster to start
+self-signed-certificates/0*             active    idle       10.1.53.19         
+traefik-admin/0*                        active    executing  10.1.53.18         
+traefik-public/0*                       active    executing  10.1.53.21         
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+unit-kratos-0: 02:10:11 ERROR unit.kratos/0.juju-log Uncaught exception while in charm code:
+Traceback (most recent call last):
+  File "/var/lib/juju/agents/unit-kratos-0/charm/./src/charm.py", line 1340, in <module>
+    main(KratosCharm)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/__init__.py", line 343, in __call__
+    return _main.main(charm_class=charm_class, use_juju_for_storage=use_juju_for_storage)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 543, in main
+    manager.run()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 529, in run
+    self._emit()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 518, in _emit
+    _emit_charm_event(self.charm, self.dispatcher.event_name, self._juju_context)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 134, in _emit_charm_event
+    event_to_emit.emit(*args, **kwargs)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/framework.py", line 347, in emit
+    framework._emit(event)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/framework.py", line 857, in _emit
+    self._reemit(event_path)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/framework.py", line 947, in _reemit
+    custom_handler(event)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/./src/charm.py", line 899, in _on_pebble_ready
+    self._set_version()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/./src/charm.py", line 694, in _set_version
+    version = self.kratos.get_version()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/src/kratos.py", line 209, in get_version
+    stdout = self._run_cmd(cmd)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/src/kratos.py", line 228, in _run_cmd
+    process = self.container.exec(cmd, environment=environment, timeout=timeout)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/model.py", line 2996, in exec
+    return self._pebble.exec(
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/pebble.py", line 2909, in exec
+    stderr_ws = self._connect_websocket(task_id, 'stderr')
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/pebble.py", line 2994, in _connect_websocket
+    ws.connect(url, socket=sock)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_core.py", line 261, in connect
+    self.handshake_response = handshake(self.sock, url, *addrs, **options)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_handshake.py", line 65, in handshake
+    status, resp = _get_resp_headers(sock)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_handshake.py", line 141, in _get_resp_headers
+    status, resp_headers, status_message = read_headers(sock)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_http.py", line 351, in read_headers
+    line = recv_line(sock)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_socket.py", line 140, in recv_line
+    c = recv(sock, 1)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_socket.py", line 118, in recv
+    bytes_ = _recv()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_socket.py", line 97, in _recv
+    return sock.recv(bufsize)
+ConnectionResetError: [Errno 104] Connection reset by peer
+unit-kratos-0: 02:10:11 ERROR juju.worker.uniter pebble poll failed for container "kratos": failed to send pebble-ready event: terminated
+unit-kratos-0: 02:11:01 ERROR unit.kratos/0.juju-log pg-database:9: Uncaught exception while in charm code:
+Traceback (most recent call last):
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_socket.py", line 118, in recv
+    bytes_ = _recv()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_socket.py", line 97, in _recv
+    return sock.recv(bufsize)
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/pebble.py", line 2906, in exec
+    control_ws = self._connect_websocket(task_id, 'control')
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/pebble.py", line 2994, in _connect_websocket
+    ws.connect(url, socket=sock)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_core.py", line 261, in connect
+    self.handshake_response = handshake(self.sock, url, *addrs, **options)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_handshake.py", line 65, in handshake
+    status, resp = _get_resp_headers(sock)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_handshake.py", line 141, in _get_resp_headers
+    status, resp_headers, status_message = read_headers(sock)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_http.py", line 351, in read_headers
+    line = recv_line(sock)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_socket.py", line 140, in recv_line
+    c = recv(sock, 1)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/websocket/_socket.py", line 120, in recv
+    raise WebSocketTimeoutException("Connection timed out")
+websocket._exceptions.WebSocketTimeoutException: Connection timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/var/lib/juju/agents/unit-kratos-0/charm/./src/charm.py", line 1340, in <module>
+    main(KratosCharm)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/__init__.py", line 343, in __call__
+    return _main.main(charm_class=charm_class, use_juju_for_storage=use_juju_for_storage)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 543, in main
+    manager.run()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 529, in run
+    self._emit()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 515, in _emit
+    self.framework.reemit()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/framework.py", line 867, in reemit
+    self._reemit()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/framework.py", line 947, in _reemit
+    custom_handler(event)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/./src/charm.py", line 899, in _on_pebble_ready
+    self._set_version()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/./src/charm.py", line 694, in _set_version
+    version = self.kratos.get_version()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/src/kratos.py", line 209, in get_version
+    stdout = self._run_cmd(cmd)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/src/kratos.py", line 228, in _run_cmd
+    process = self.container.exec(cmd, environment=environment, timeout=timeout)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/model.py", line 2996, in exec
+    return self._pebble.exec(
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/pebble.py", line 2915, in exec
+    raise ChangeError(change.err, change) from e
+ops.pebble.ChangeError: cannot perform the following tasks:
+- Execute command "kratos" (exec 5: timeout waiting for websocket connections: context deadline exceeded)
+----- Logs from task 0 -----
+2026-01-15T02:11:01Z ERROR exec 5: timeout waiting for websocket connections: context deadline exceeded
+-----
+unit-kratos-0: 02:11:02 ERROR juju.worker.uniter.operation hook "pg-database-relation-changed" (via hook dispatching script: dispatch) failed: exit status 1
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model testing-uk8s...
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller     Cloud/Region         Version  SLA          Timestamp
+testing  concierge-lxd  localhost/localhost  3.6.12   unsupported  02:11:04Z
+
+App                    Version  Status       Scale  Charm                  Channel  Rev  Exposed  Message
+opensearch                      maintenance      2  opensearch             2/edge   320  no       Installing OpenSearch...
+opensearch-dashboards           maintenance      1  opensearch-dashboards             0  no       installing Opensearch Dashboards...
+
+Unit                      Workload     Agent      Machine  Public address  Ports  Message
+opensearch-dashboards/0*  maintenance  executing  2        10.156.82.165          (install) installing Opensearch Dashboards...
+opensearch/0*             maintenance  executing  0        10.156.82.254          (install) Installing OpenSearch...
+opensearch/1              maintenance  executing  1        10.156.82.80           (install) Installing OpenSearch...
+
+Machine  State    Address        Inst id        Base          AZ             Message
+0        started  10.156.82.254  juju-034351-0  ubuntu@24.04  github-runner  Running
+1        started  10.156.82.80   juju-034351-1  ubuntu@24.04  github-runner  Running
+2        started  10.156.82.165  juju-034351-2  ubuntu@24.04  github-runner  Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+machine-0: 02:10:19 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 02:10:19 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:10:28 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:10:28 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:10:28 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:10:28 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
