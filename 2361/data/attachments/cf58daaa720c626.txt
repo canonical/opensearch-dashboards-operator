@@ -1,0 +1,94 @@
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model         Controller     Cloud/Region    Version  SLA          Timestamp
+testing-uk8s  concierge-lxd  uk8s/localhost  3.6.13   unsupported  02:07:21Z
+
+App                                  Version  Status       Scale  Charm                                Channel        Rev  Address         Exposed  Message
+hydra                                v2.3.0   waiting          1  hydra                                latest/edge    339  10.152.183.172  no       Waiting for database creation
+identity-platform-login-ui-operator  0.21.2   active           1  identity-platform-login-ui-operator  latest/edge    146  10.152.183.101  no       
+kratos                                        maintenance      1  kratos                               latest/edge    500  10.152.183.148  no       installing charm software
+kratos-external-idp-integrator                waiting          1  kratos-external-idp-integrator       latest/edge    245  10.152.183.215  no       Waiting for Kratos to register provider
+postgresql-k8s                       14.19    waiting          1  postgresql-k8s                       14/stable      495  10.152.183.187  no       awaiting for cluster to start
+self-signed-certificates                      active           1  self-signed-certificates             latest/stable  155  10.152.183.34   no       
+traefik-admin                        v2.11.0  error            1  traefik-k8s                          latest/stable  176  10.64.140.44    no       hook failed: "config-changed"
+traefik-public                                maintenance      1  traefik-k8s                          latest/stable  176  10.64.140.45    no       restarting traefik...
+
+Unit                                    Workload     Agent      Address     Ports  Message
+hydra/0*                                waiting      idle       10.1.53.11         Waiting for database creation
+identity-platform-login-ui-operator/0*  active       idle       10.1.53.12         
+kratos-external-idp-integrator/0*       waiting      idle       10.1.53.14         Waiting for Kratos to register provider
+kratos/0*                               maintenance  executing  10.1.53.22         (upgrade-charm) installing charm software
+postgresql-k8s/0*                       waiting      executing  10.1.53.16         (config-changed) awaiting for cluster to start
+self-signed-certificates/0*             active       idle       10.1.53.17         
+traefik-admin/0*                        error        idle       10.1.53.19         hook failed: "config-changed"
+traefik-public/0*                       maintenance  executing  10.1.53.21         restarting traefik...
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+unit-kratos-0: 02:06:22 ERROR unit.kratos/0.juju-log Uncaught exception while in charm code:
+Traceback (most recent call last):
+  File "/var/lib/juju/agents/unit-kratos-0/charm/./src/charm.py", line 1340, in <module>
+    main(KratosCharm)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/__init__.py", line 343, in __call__
+    return _main.main(charm_class=charm_class, use_juju_for_storage=use_juju_for_storage)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 543, in main
+    manager.run()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 529, in run
+    self._emit()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 518, in _emit
+    _emit_charm_event(self.charm, self.dispatcher.event_name, self._juju_context)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/_main.py", line 134, in _emit_charm_event
+    event_to_emit.emit(*args, **kwargs)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/framework.py", line 347, in emit
+    framework._emit(event)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/framework.py", line 857, in _emit
+    self._reemit(event_path)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/framework.py", line 947, in _reemit
+    custom_handler(event)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/./src/charm.py", line 899, in _on_pebble_ready
+    self._set_version()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/./src/charm.py", line 694, in _set_version
+    version = self.kratos.get_version()
+  File "/var/lib/juju/agents/unit-kratos-0/charm/src/kratos.py", line 209, in get_version
+    stdout = self._run_cmd(cmd)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/src/kratos.py", line 228, in _run_cmd
+    process = self.container.exec(cmd, environment=environment, timeout=timeout)
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/model.py", line 2996, in exec
+    return self._pebble.exec(
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/pebble.py", line 2906, in exec
+    control_ws = self._connect_websocket(task_id, 'control')
+  File "/var/lib/juju/agents/unit-kratos-0/charm/venv/ops/pebble.py", line 2991, in _connect_websocket
+    sock.connect(self.socket_path)
+FileNotFoundError: [Errno 2] No such file or directory
+unit-kratos-0: 02:06:22 ERROR juju.worker.uniter pebble poll failed for container "kratos": failed to send pebble-ready event: terminated
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model testing-uk8s...
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller     Cloud/Region         Version  SLA          Timestamp
+testing  concierge-lxd  localhost/localhost  3.6.13   unsupported  02:07:22Z
+
+App                    Version  Status       Scale  Charm                  Channel  Rev  Exposed  Message
+opensearch                      maintenance      2  opensearch             2/edge   324  no       Installing OpenSearch...
+opensearch-dashboards           blocked          1  opensearch-dashboards             0  no       Opensearch connection is missing
+
+Unit                      Workload     Agent      Machine  Public address  Ports     Message
+opensearch-dashboards/0*  blocked      idle       2        10.115.81.144   5601/tcp  Opensearch connection is missing
+opensearch/0              maintenance  executing  0        10.115.81.220             (install) Installing OpenSearch...
+opensearch/1*             maintenance  executing  1        10.115.81.229             (install) Installing OpenSearch...
+
+Machine  State    Address        Inst id        Base          AZ             Message
+0        started  10.115.81.220  juju-8d8c8a-0  ubuntu@24.04  github-runner  Running
+1        started  10.115.81.229  juju-8d8c8a-1  ubuntu@24.04  github-runner  Running
+2        started  10.115.81.144  juju-8d8c8a-2  ubuntu@24.04  github-runner  Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+machine-1: 02:04:34 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 02:04:34 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 02:04:58 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 02:04:58 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:05:12 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 02:05:12 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
