@@ -1,4 +1,4 @@
-(how-to-enable-jwt-authentication)=
+(dashboard-how-to-enable-jwt-auth)=
 # How to enable JWT Authentication
 
 This document shows how to enable authentication with JSON Web Tokens (JWT) in OpenSearch.

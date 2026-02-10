@@ -1,4 +1,4 @@
-(how-to-monitoring-enable-cos)=
+(dashboard-how-to-monitoring-enable-cos)=
 # How to enable monitoring (COS)
 
 ```{note}

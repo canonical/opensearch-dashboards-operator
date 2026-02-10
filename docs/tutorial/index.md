@@ -342,8 +342,8 @@ configured TLS encryption, and explored data visualization capabilities.
 
 To continue your journey with Charmed OpenSearch Dashboards:
 
-* Explore the [How-to guides](how-to-index) for guidance on practical tasks
-* Review the [Reference documentation](reference-index) for release notes
+* Explore the [How-to guides](dashboard-how-to-index) for guidance on practical tasks
+* Review the [Reference documentation](dashboard-reference-index) for release notes
 * Check out the [Charmed OpenSearch documentation](https://canonical-charmed-opensearch.readthedocs-hosted.com/) for backend integration options
 
 <!-- ## Get involved

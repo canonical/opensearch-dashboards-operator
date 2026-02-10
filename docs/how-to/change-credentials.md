@@ -1,4 +1,4 @@
-(how-to-change-credentials)=
+(dashboard-how-to-change-credentials)=
 # Change credentials
 
 Dashboards have a “super-user” called `kibanaserver`, that is a built-in user
