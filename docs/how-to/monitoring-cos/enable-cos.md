@@ -7,7 +7,7 @@ All commands are written for juju >= v.3.1.7
 
 ## Prerequisites
 
-* A deployed [Charmed OpenSearch operator with a Charmed Opensearch Dashboards operator](tutorial-2-deploy)
+* A deployed [Charmed OpenSearch operator with a Charmed Opensearch Dashboards operator](dashboards-deploy)
 * A deployed [`cos-lite` bundle in a Kubernetes environment](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s)
 
 ## Offer interfaces via the COS controller

@@ -21,7 +21,7 @@ The OpenSearch Dashboards and OpenSearch operators are available for physical/vi
 
 | | |
 |--|--|
-|  [Tutorials](tutorial-introduction)</br>  Get started - a hands-on introduction to using the Charmed OpenSearch Dashboards operator for new users </br> |  [How-to guides](how-to-index) </br> Step-by-step guides covering key operations and common tasks |
+|  [Tutorials](dashboards-tutorial)</br>  Get started - a hands-on introduction to using the Charmed OpenSearch Dashboards operator for new users </br> |  [How-to guides](how-to-index) </br> Step-by-step guides covering key operations and common tasks |
 
 ## Project and community
 
