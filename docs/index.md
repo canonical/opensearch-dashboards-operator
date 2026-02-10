@@ -44,9 +44,4 @@ Home <self>
 tutorial/index
 how-to/index
 reference/index
-
-````{only} not opensearch_submodule
-OpenSearch charm docs<https://canonical-charmed-opensearch.readthedocs-hosted.com/>
-````
-
 ```
