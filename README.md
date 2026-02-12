@@ -1,4 +1,4 @@
-# OpenSearch Dasboards Operator
+# OpenSearch Dashboards Operator
 
 [![Charmhub](https://charmhub.io/opensearch/badge.svg)](https://charmhub.io/opensearch)
 [![Release](https://github.com/canonical/opensearch-dashboards-operator/actions/workflows/release.yaml/badge.svg)](https://github.com/canonical/opensearch-dashboards-operator/actions/workflows/release.yaml)
@@ -36,7 +36,7 @@ sudo snap install lxd
 lxd init --auto
 ```
 
-Then, boostrap Juju over LXD:
+Then, bootstrap Juju over LXD:
 
 ```shell
 juju bootstrap localhost
