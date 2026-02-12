@@ -1,4 +1,4 @@
-# OpenSearch Dasboards Operator
+# OpenSearch Dashboards Operator
 
 [![Charmhub](https://charmhub.io/opensearch/badge.svg)](https://charmhub.io/opensearch)
 [![Release](https://github.com/canonical/opensearch-dashboards-operator/actions/workflows/release.yaml/badge.svg)](https://github.com/canonical/opensearch-dashboards-operator/actions/workflows/release.yaml)
@@ -36,7 +36,7 @@ sudo snap install lxd
 lxd init --auto
 ```
 
-Then, boostrap Juju over LXD:
+Then, bootstrap Juju over LXD:
 
 ```shell
 juju bootstrap localhost
@@ -140,7 +140,7 @@ Log in with the credentials of the new user.
 
 ![OpenSearch Dashboards login](./docs/resources/opensearch_dashboard_login.png)
 
-You must create an "index pattern" that enables the Dasboard to access the user's data.
+You must create an "index pattern" that enables the Dashboard to access the user's data.
 It should specify the `index_name` that was used to create the user with `data-integrator`.
 
 Follow instructions from OpenSearch documentation on

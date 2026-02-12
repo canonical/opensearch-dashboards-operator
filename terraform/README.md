@@ -21,8 +21,8 @@ The module offers the following configurable inputs:
 | `revision`    | number      | Revision number of the charm name               | False      |
 | `units`       | number      | Number of units to be deployed                  | False      |
 | `constraints` | string      | Machine constraints for the charm               | False      |
-| `tls`         | bool        | Whether TLS should be enabled                   | False      |
-| `expose`      | bool        | If set to true, opens to anyone's access        | False      |
+| `tls`         | boolean     | Whether TLS should be enabled                   | False      |
+| `expose`      | boolean     | If set to true, opens to anyone's access        | False      |
 
 
 ### Outputs
