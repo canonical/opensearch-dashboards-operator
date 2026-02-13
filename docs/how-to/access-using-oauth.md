@@ -1,4 +1,4 @@
-(how-to-access-using-oauth)=
+(dashboard-how-to-access-using-oauth)=
 # How to access OpenSearch Dashboards using OAuth
 
 This guide shows how to configure OpenSearch Dashboards to support single sign-on (SSO)

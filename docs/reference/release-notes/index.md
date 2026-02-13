@@ -1,4 +1,4 @@
-(reference-release-notes-index)=
+(dashboard-reference-release-notes-index)=
 # Release notes
 
 ```{toctree}

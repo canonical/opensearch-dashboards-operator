@@ -1,4 +1,4 @@
-(how-to-connect-to-opensearch)=
+(dashboard-how-to-connect-to-opensearch)=
 # Connect to OpenSearch
 
 This guide explains how to connect OpenSearch Dashboards with OpenSearch via Juju integrations.

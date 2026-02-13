@@ -1,4 +1,4 @@
-(how-to-scale-up-down)=
+(dashboard-how-to-scale-up-down)=
 # Scale up/down the application units
 
 It’s very easy to increase or decrease the number of units in a Juju system.

@@ -1,4 +1,4 @@
-(how-to-monitoring-cos-index)=
+(dashboard-how-to-monitoring-cos-index)=
 # Monitoring (COS)
 
 The Canonical Observability Stack (COS) is a set of tools that facilitates gathering,
@@ -8,7 +8,7 @@ in and outside of Juju.
 The OpenSearch Dashboards charm can use COS to connect to Grafana and Prometheus
 to use monitoring, alert rules, and log features.
 
-> See: [How to enable monitoring](how-to-monitoring-enable-cos) via COS and Grafana
+> See: [How to enable monitoring](dashboard-how-to-monitoring-enable-cos) via COS and Grafana
 
 ## Metrics
 
@@ -67,7 +67,7 @@ To get OpenSearch Dashboards logs, go to the `Label filters` field and set to
 `juju_application = opensearch-dashboards`, select one operation,
 e.g. `Line contains` and run the query.
 
-> See also: [How to connect to the Grafana web interface](how-to-monitoring-enable-cos)
+> See also: [How to connect to the Grafana web interface](dashboard-how-to-monitoring-enable-cos)
 
 ![image|690x313](img/OSD-Monitoring-img1.png)
 
