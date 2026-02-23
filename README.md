@@ -110,8 +110,8 @@ Set up a database user by deploying the `data-integrator` [charm](https://charmh
 and integrating it with `opensearch`. The user is created automatically as a result of the integration.
 
 ```shell
-juju deploy data-integrator
 juju deploy data-integrator --config index-name=<index_name>
+juju integrate data-integrator opensearch
 ```
 
 Retrieve user credentials running
