@@ -63,7 +63,7 @@ juju deploy opensearch-dashboards --channel=2/edge
 and integrate it with the OpenSearch charm:
 
 ```shell
-juju integrate opensearch opensearch-dashboards-operator
+juju integrate opensearch opensearch-dashboards
 ```
 
 #### Enable TLS encryption
