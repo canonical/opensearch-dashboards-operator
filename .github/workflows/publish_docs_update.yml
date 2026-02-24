@@ -20,18 +20,6 @@ jobs:
             SUBMODULE_PATH: docs/dashboards
         steps:
 
-        - name: Checkout source repository
-          uses: actions/checkout@v6
-
-        - name: Get reviewers
-          id: get-reviewers
-          run: |
-            REVIEWERS=$(grep ".github/workflows/publish_docs_update.yml" .github/CODEOWNERS \
-                        | awk '{for(i=2;i<=NF;i++) print substr($i,2)}' \
-                        | paste -sd "," -)
-
-            echo "REVIEWERS=${REVIEWERS}" >> "$GITHUB_OUTPUT"
-
         - name: Checkout target repository
           uses: actions/checkout@v6
           with:
@@ -40,6 +28,16 @@ jobs:
             token: ${{ secrets.PAT }}
             submodules: true
             path: target-repo
+
+        - name: Get reviewers
+          id: get-reviewers
+          working-directory: target-repo
+          run: |
+            REVIEWERS=$(grep "${SUBMODULE_PATH}" .github/CODEOWNERS \
+                        | awk '{for(i=2;i<=NF;i++) print substr($i,2)}' \
+                        | paste -sd "," -)
+
+            echo "REVIEWERS=${REVIEWERS}" >> "$GITHUB_OUTPUT"
 
         - name: Configure git signing
           working-directory: target-repo
