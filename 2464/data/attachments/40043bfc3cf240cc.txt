@@ -1,0 +1,831 @@
+[32mINFO    [0m integration.ha.test_scaling:test_scaling.py:93 Adding 3 units
+[32mINFO    [0m integration.ha.test_scaling:test_scaling.py:96 Waiting for 3 units to be added and stable
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/6 [allocating] waiting: waiting for machine
+  opensearch-dashboards/7 [allocating] waiting: waiting for machine
+  opensearch-dashboards/8 [allocating] waiting: waiting for machine
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/6 [allocating] waiting: waiting for machine
+  opensearch-dashboards/7 [allocating] waiting: waiting for machine
+  opensearch-dashboards/8 [allocating] waiting: waiting for machine
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/6 [executing] maintenance: installing Opensearch Dashboards...
+  opensearch-dashboards/7 [allocating] waiting: waiting for machine
+  opensearch-dashboards/8 [allocating] waiting: agent initialising
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/6 [executing] maintenance: Executing restart operation
+  opensearch-dashboards/7 [executing] maintenance: installing Opensearch Dashboards...
+  opensearch-dashboards/8 [executing] maintenance: installing Opensearch Dashboards...
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/6 [executing] maintenance: Executing restart operation
+  opensearch-dashboards/7 [executing] maintenance: starting...
+  opensearch-dashboards/8 [executing] waiting: Awaiting restart operation
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/6 [executing] maintenance: Executing restart operation
+  opensearch-dashboards/7 [idle] blocked: Service unavailable
+  opensearch-dashboards/8 [idle] waiting: Awaiting restart operation
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/6 [executing] maintenance: Executing restart operation
+  opensearch-dashboards/7 [idle] blocked: Service unavailable
+  opensearch-dashboards/8 [idle] waiting: Awaiting restart operation
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/6 [executing] active: 
+  opensearch-dashboards/7 [idle] active: 
+  opensearch-dashboards/8 [idle] active: 
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opensearch-dashboards/6 [idle] active: 
+[32mINFO    [0m integration.ha.test_scaling:test_scaling.py:108 Checking the functionality of the new units
+[32mINFO    [0m integration.helpers:helpers.py:315 Host opensearch-dashboards/6, 10.198.83.212 passed access check
+[32mINFO    [0m integration.helpers:helpers.py:315 Host opensearch-dashboards/7, 10.198.83.215 passed access check
+[32mINFO    [0m integration.helpers:helpers.py:315 Host opensearch-dashboards/8, 10.198.83.232 passed access check
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller     Cloud/Region         Version  SLA          Timestamp
+testing  concierge-lxd  localhost/localhost  3.6.14   unsupported  10:33:03Z
+
+App                       Version  Status  Scale  Charm                     Channel        Rev  Exposed  Message
+opensearch                         active      2  opensearch                2/edge         336  no       
+opensearch-dashboards              active      3  opensearch-dashboards                      0  no       
+self-signed-certificates           active      1  self-signed-certificates  latest/stable  264  no       
+
+Unit                         Workload  Agent  Machine  Public address  Ports     Message
+opensearch-dashboards/6*     active    idle   9        10.198.83.212   5601/tcp  
+opensearch-dashboards/7      active    idle   10       10.198.83.215   5601/tcp  
+opensearch-dashboards/8      active    idle   11       10.198.83.232   5601/tcp  
+opensearch/0*                active    idle   1        10.198.83.81    9200/tcp  
+opensearch/1                 active    idle   2        10.198.83.18    9200/tcp  
+self-signed-certificates/0*  active    idle   3        10.198.83.207             
+
+Machine  State    Address        Inst id         Base          AZ             Message
+1        started  10.198.83.81   juju-264223-1   ubuntu@24.04  github-runner  Running
+2        started  10.198.83.18   juju-264223-2   ubuntu@24.04  github-runner  Running
+3        started  10.198.83.207  juju-264223-3   ubuntu@22.04  github-runner  Running
+9        started  10.198.83.212  juju-264223-9   ubuntu@24.04  github-runner  Running
+10       started  10.198.83.215  juju-264223-10  ubuntu@24.04  github-runner  Running
+11       started  10.198.83.232  juju-264223-11  ubuntu@24.04  github-runner  Running
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+machine-0: 10:04:36 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-0: 10:04:36 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 10:04:37 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-1: 10:04:37 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 10:04:48 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-2: 10:04:48 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-3: 10:05:47 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-3: 10:05:47 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-0: 10:08:30 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: Request GET to http://10.198.83.17:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: http://10.198.83.17:5601/api/status
+unit-opensearch-dashboards-0: 10:08:31 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: Request GET to http://10.198.83.17:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.17', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7632ed698d70>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-0: 10:08:36 ERROR unit.opensearch-dashboards/0.juju-log opensearch-client:7: Request GET to http://10.198.83.17:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.17', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7632ed699580>: Failed to establish a new connection: [Errno 111] Connection refused'))
+machine-4: 10:09:32 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-4: 10:09:32 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-5: 10:09:34 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-5: 10:09:34 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-1: 10:10:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:39 ERROR unit.opensearch-dashboards/1.juju-log Request GET to http://10.198.83.164:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.164', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78b102e97410>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 10:10:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:39 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:42 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:42 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:42 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:42 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:42 ERROR unit.opensearch-dashboards/2.juju-log Request GET to http://10.198.83.22:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.22', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7965b44ac170>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-2: 10:10:42 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:42 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:42 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:42 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:48 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:49 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: Request GET to http://10.198.83.164:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.164', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x71b17dd30e30>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 10:10:49 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:49 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:49 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:49 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:51 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:51 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: Request GET to http://10.198.83.164:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.164', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x718d52a55d30>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 10:10:51 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:51 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:51 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:52 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:53 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:53 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: Request GET to http://10.198.83.22:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.22', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7dd87cf73d70>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-2: 10:10:53 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:53 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:53 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:53 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: Request GET to http://10.198.83.164:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.164', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7d6c3b5ac6e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: Request GET to http://10.198.83.164:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.164', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7d6c3b5acb00>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: Request GET to http://10.198.83.164:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.164', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7d6c3b560200>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:53 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:54 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:54 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: Request GET to http://10.198.83.22:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.22', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7620ac9484a0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-2: 10:10:54 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:54 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:54 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:54 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: Request GET to http://10.198.83.164:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.164', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7d6c3b561d30>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: Request GET to http://10.198.83.164:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.164', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7d6c3b5af440>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:54 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:55 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:55 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: Request GET to http://10.198.83.164:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.164', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x75e7a973b7d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-1: 10:10:55 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:55 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:55 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:55 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:55 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:10:55 ERROR unit.opensearch-dashboards/1.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: Request GET to http://10.198.83.22:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.22', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x760a768a42c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: Request GET to http://10.198.83.22:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.22', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x760a768bbcb0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: Request GET to http://10.198.83.22:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.22', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x760a768a7650>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: Request GET to http://10.198.83.22:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.22', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x760a768b8350>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:56 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: Request GET to http://10.198.83.22:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.22', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x760a768a5100>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:57 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:58 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:58 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: Request GET to http://10.198.83.22:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.22', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7e667dbbc050>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-2: 10:10:58 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:58 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:58 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:58 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:58 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:10:58 ERROR unit.opensearch-dashboards/2.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:13:56 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:13:56 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:13:56 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:13:56 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:13:56 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:13:56 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-2: 10:13:56 ERROR unit.opensearch-dashboards/2.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:15:15 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:15:15 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:15:15 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:15:15 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:15:15 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:15:15 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-1: 10:15:15 ERROR unit.opensearch-dashboards/1.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+machine-6: 10:17:02 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-6: 10:17:02 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-3: 10:17:37 ERROR unit.opensearch-dashboards/3.juju-log Request GET to http://10.198.83.223:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.223', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x702c96ea4350>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-3: 10:17:38 ERROR unit.opensearch-dashboards/3.juju-log Request GET to http://10.198.83.223:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.223', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x790ed25d03e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-3: 10:17:39 ERROR unit.opensearch-dashboards/3.juju-log Request GET to http://10.198.83.223:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.223', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x75d349337530>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-3: 10:17:40 ERROR unit.opensearch-dashboards/3.juju-log opensearch-client:7: Request GET to http://10.198.83.223:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.223', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74eafbdc3c50>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-3: 10:17:41 ERROR unit.opensearch-dashboards/3.juju-log opensearch-client:7: Request GET to http://10.198.83.223:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.223', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x720312f6aa20>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-3: 10:17:43 ERROR unit.opensearch-dashboards/3.juju-log opensearch-client:7: Request GET to http://10.198.83.223:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.223', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7394b51526f0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-3: 10:22:07 ERROR unit.opensearch-dashboards/3.juju-log Request GET to https://10.198.83.223:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.223', port=5601): Max retries exceeded with url: /api/status (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1000)')))
+unit-opensearch-dashboards-3: 10:22:08 ERROR unit.opensearch-dashboards/3.juju-log Request GET to https://10.198.83.223:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.223', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x74b5a4e8a540>: Failed to establish a new connection: [Errno 111] Connection refused'))
+machine-7: 10:23:36 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-7: 10:23:36 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-8: 10:23:39 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-8: 10:23:39 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-4: 10:24:20 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:20 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:20 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:20 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:20 ERROR unit.opensearch-dashboards/4.juju-log Request GET to http://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x794a5143ec00>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:24:20 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:20 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:20 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:20 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:23 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:23 ERROR unit.opensearch-dashboards/4.juju-log Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7c9dbf63e870>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:24:23 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:23 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:23 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:23 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:23 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:23 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:30 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:31 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70aa3770>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:31 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:31 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:31 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:31 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:31 ERROR unit.opensearch-dashboards/5.juju-log Request GET to http://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7cea2505b380>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:31 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:31 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:31 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:31 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:33 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:33 ERROR unit.opensearch-dashboards/5.juju-log Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x716b7955f950>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:33 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:33 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:33 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:33 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:33 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:33 ERROR unit.opensearch-dashboards/5.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:36 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:36 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70c005c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:24:41 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:41 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70aa0230>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:43 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:43 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x75cd85f83740>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:43 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:43 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:43 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:43 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:44 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:44 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7058b16676e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:44 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:44 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:44 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:44 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:46 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:46 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab0ad0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a82e2667b30>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a82e2686870>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a82e2666780>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:46 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a82e2684860>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a82e2667770>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:47 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:49 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:49 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a38a0d8f950>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-5: 10:24:49 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:49 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:49 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:49 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:49 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:24:49 ERROR unit.opensearch-dashboards/5.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:51 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:51 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab1160>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:24:56 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:24:56 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab18e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:01 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:01 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab2120>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:06 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:06 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d71522ed0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:11 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:11 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70c005c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:16 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:16 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab21e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:21 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:21 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab1850>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:26 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:26 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab0dd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:31 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:31 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab0410>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:36 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:36 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab30b0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:41 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:41 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70aa3650>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:46 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:46 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab0d40>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:51 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:51 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab1550>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:25:56 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:25:56 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab1be0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:01 ERROR unit.opensearch-dashboards/4.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:01 ERROR unit.opensearch-dashboards/4.juju-log restart:2: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x704d70ab1cd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:02 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:02 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x736d08187950>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:02 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:02 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:02 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:02 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7139fd1c0230>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:26:03 ERROR unit.opensearch-dashboards/5.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:26:03 ERROR unit.opensearch-dashboards/5.juju-log restart:2: Request GET to https://10.198.83.148:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.148', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x74d301963cb0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fe8e83ab980>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:03 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fe8e83aae10>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fe8e83ba840>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fe8e83ab6e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fe8e83b9520>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:04 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:05 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:05 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: Request GET to https://10.198.83.237:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.237', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7bcd185d0110>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-4: 10:26:05 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:05 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:05 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:05 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:05 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:26:05 ERROR unit.opensearch-dashboards/4.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-5: 10:26:08 ERROR unit.opensearch-dashboards/5.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:27:41 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:27:41 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:27:41 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:27:41 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:27:41 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:27:41 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-4: 10:27:41 ERROR unit.opensearch-dashboards/4.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-1: 10:28:40 ERROR juju.worker.dependency "log-sender" manifold worker returned unexpected error: sending log message: websocket: close 1005 (no status): websocket: close sent
+unit-self-signed-certificates-0: 10:28:54 ERROR juju.worker.dependency "log-sender" manifold worker returned unexpected error: sending log message: websocket: close 1005 (no status): websocket: close sent
+unit-opensearch-0: 10:28:54 ERROR juju.worker.dependency "log-sender" manifold worker returned unexpected error: sending log message: websocket: close 1005 (no status): websocket: close sent
+machine-9: 10:29:52 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-9: 10:29:52 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-11: 10:29:59 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-11: 10:29:59 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-10: 10:30:00 ERROR juju.worker.dependency "kvm-container-provisioner" manifold worker returned unexpected error: container types not yet available
+machine-10: 10:30:00 ERROR juju.worker.dependency "lxd-container-provisioner" manifold worker returned unexpected error: container types not yet available
+unit-opensearch-dashboards-6: 10:30:24 ERROR unit.opensearch-dashboards/6.juju-log Request GET to http://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x70f1ddb3f890>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:30:25 ERROR unit.opensearch-dashboards/6.juju-log Request GET to http://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7c93e2943b00>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:30:28 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20267da0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:30:31 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20284b90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:30:36 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c202846e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:41 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:41 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:41 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:41 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:41 ERROR unit.opensearch-dashboards/8.juju-log Request GET to http://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x768a97343b00>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:41 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:41 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:41 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:41 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-6: 10:30:41 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20285520>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:43 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:43 ERROR unit.opensearch-dashboards/8.juju-log Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x77c9e498b7d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:43 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:43 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:43 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:43 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:43 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:43 ERROR unit.opensearch-dashboards/8.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:44 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:44 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:44 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:44 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:44 ERROR unit.opensearch-dashboards/7.juju-log Request GET to http://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7525654af6e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:30:44 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:44 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:44 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:44 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-6: 10:30:47 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c202857c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:30:47 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:47 ERROR unit.opensearch-dashboards/7.juju-log Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x708860e3a630>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:30:47 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:47 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:47 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:47 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:47 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:30:47 ERROR unit.opensearch-dashboards/7.juju-log This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-6: 10:30:52 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20284bf0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:52 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:52 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x79d9009291c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:52 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:52 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:52 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:52 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:54 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:54 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7dad43183800>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:54 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:54 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:54 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:54 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x797b84c637d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x797b84c83e90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x797b84c62ff0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:55 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x797b84c63d70>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x797b84c809e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:56 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-6: 10:30:57 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20285580>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:57 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:57 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7eb31085f620>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:30:57 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:57 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:57 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:57 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:57 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:30:57 ERROR unit.opensearch-dashboards/8.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:00 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:00 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f31d8a3ab10>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:31:00 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:00 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:00 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:00 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:01 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:01 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7657f2162840>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:31:01 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:01 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:01 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:01 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-6: 10:31:02 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c202842f0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7ced19001010>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7ced18f17890>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7ced18f927e0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:02 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7ced18f163f0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7ced18f911c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:03 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7c5ab7b90560>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:31:04 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:04 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:04 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:04 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:04 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:31:04 ERROR unit.opensearch-dashboards/7.juju-log dashboard_peers:1: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-6: 10:31:07 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20287200>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:12 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20285f10>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:17 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20287860>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:22 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c202847d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:27 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c202866c0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:32 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20286060>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:37 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20284860>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:42 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20285490>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:47 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20285be0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:52 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20285460>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:31:57 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20284560>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:32:02 ERROR unit.opensearch-dashboards/6.juju-log Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a6c20284a10>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:32:08 ERROR unit.opensearch-dashboards/6.juju-log dashboard_peers:1: Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7a82c498fa40>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:32:09 ERROR unit.opensearch-dashboards/6.juju-log dashboard_peers:1: Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x714a05ff3710>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:32:12 ERROR unit.opensearch-dashboards/6.juju-log dashboard_peers:1: Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x72fb76067a40>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-6: 10:32:12 ERROR unit.opensearch-dashboards/6.juju-log dashboard_peers:1: Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: https://10.198.83.212:5601/api/status
+unit-opensearch-dashboards-6: 10:32:12 ERROR unit.opensearch-dashboards/6.juju-log dashboard_peers:1: Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: https://10.198.83.212:5601/api/status
+unit-opensearch-dashboards-6: 10:32:13 ERROR unit.opensearch-dashboards/6.juju-log dashboard_peers:1: Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+503 Server Error: Service Unavailable for url: https://10.198.83.212:5601/api/status
+unit-opensearch-dashboards-6: 10:32:13 ERROR unit.opensearch-dashboards/6.juju-log dashboard_peers:1: Request GET to https://10.198.83.212:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.212', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x72fb76087590>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:32:17 ERROR unit.opensearch-dashboards/7.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-7: 10:32:17 ERROR unit.opensearch-dashboards/7.juju-log restart:2: Request GET to https://10.198.83.215:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.215', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7d8321e3a510>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-7: 10:32:22 ERROR unit.opensearch-dashboards/7.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:32:24 ERROR unit.opensearch-dashboards/8.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+unit-opensearch-dashboards-8: 10:32:24 ERROR unit.opensearch-dashboards/8.juju-log restart:2: Request GET to https://10.198.83.232:5601/api/status with payload: None failed. 
+HTTPSConnectionPool(host='10.198.83.232', port=5601): Max retries exceeded with url: /api/status (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x758064bbea20>: Failed to establish a new connection: [Errno 111] Connection refused'))
+unit-opensearch-dashboards-8: 10:32:29 ERROR unit.opensearch-dashboards/8.juju-log restart:2: This operation (fetch_my_relation_data()) can only be performed by the leader unit
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
