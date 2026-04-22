@@ -11,7 +11,7 @@ By the end, you will be able to sign in to OpenSearch Dashboards with an admin u
 
 * A deployed charmed OpenSearch cluster on LXD.  
 * A deployed charmed OpenSearch Dashboards on LXD and integrated with OpenSearch.
-See: [How to Connect to OpenSearch](https://charmhub.io/opensearch-dashboards/docs/h-db-connect).
+See: [How to Connect to OpenSearch](dashboard-how-to-connect-to-opensearch).
 * A deployed Canonical Identity Platform on Kubernetes.
 * Working Integration between OpenSearch and Canonical Identity Platform through certificates
 and Hydra OAuth interface.
