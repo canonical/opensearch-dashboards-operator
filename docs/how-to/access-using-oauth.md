@@ -2,7 +2,7 @@
 # How to access OpenSearch Dashboards using OAuth
 
 This guide shows how to configure OpenSearch Dashboards to support single sign-on (SSO)
-using the [Canonical Identity Platform](https://charmhub.io/topics/canonical-identity-platform).
+using the [Canonical Identity Platform](https://canonical-identity.readthedocs-hosted.com/).
 The platform is a Charm bundle that includes an identity provider (Hydra),
 an identity broker (Kratos), an ingress (Traefik), and a login-ui application.
 By the end, you will be able to sign in to OpenSearch Dashboards with an admin user created in Kratos.
@@ -11,7 +11,7 @@ By the end, you will be able to sign in to OpenSearch Dashboards with an admin u
 
 * A deployed charmed OpenSearch cluster on LXD.  
 * A deployed charmed OpenSearch Dashboards on LXD and integrated with OpenSearch.
-See: [How to Connect to OpenSearch](https://charmhub.io/opensearch-dashboards/docs/h-db-connect).
+See: [How to Connect to OpenSearch](dashboard-how-to-connect-to-opensearch).
 * A deployed Canonical Identity Platform on Kubernetes.
 * Working Integration between OpenSearch and Canonical Identity Platform through certificates
 and Hydra OAuth interface.
@@ -182,4 +182,4 @@ After a successful login, you will be redirected to the OpenSearch Dashboards ho
 ## Next steps
 
 * Review the *roles mapping* section in [*How to access OpenSearch using OAuth*](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/how-to/access-using-oauth/) to assign permissions.  
-* Follow the guide [How to manage external identity providers](https://charmhub.io/topics/canonical-identity-platform/how-to/integrate-external-identity-provider) to enable logins with providers like GitHub.
+* Follow the guide [How to manage external identity providers](https://canonical-identity.readthedocs-hosted.com/how-to/manage-external-identity-providers/) to enable logins with providers like GitHub.
