@@ -33,9 +33,12 @@ jobs:
           id: get-reviewers
           working-directory: target-repo
           run: |
-            REVIEWERS=$(grep "${SUBMODULE_PATH}" .github/CODEOWNERS \
-                        | awk '{for(i=2;i<=NF;i++) print substr($i,2)}' \
-                        | paste -sd "," -)
+            REVIEWERS=""
+            if [[ -f .github/CODEOWNERS ]]; then
+                REVIEWERS=$(grep "${SUBMODULE_PATH}" .github/CODEOWNERS \
+                            | awk '{for(i=2;i<=NF;i++) print substr($i,2)}' \
+                            | paste -sd "," -)
+            fi
 
             echo "REVIEWERS=${REVIEWERS}" >> "$GITHUB_OUTPUT"
 
@@ -57,9 +60,9 @@ jobs:
           working-directory: target-repo
           run: |
             cd "${SUBMODULE_PATH}"
-            git fetch origin
+            git fetch --depth=1 origin ${{ github.sha }}
             git checkout ${{ github.sha }}
-            cd ..
+            cd ../..
             git add "${SUBMODULE_PATH}"
 
         - name: Commit changes
@@ -85,11 +88,16 @@ jobs:
           run: |
             BODY="Automated update of the OpenSearch Dashboards docs submodule to commit [\`${{ github.sha }}\`](https://github.com/canonical/opensearch-dashboards-operator/commit/${{ github.sha }})."
 
+            REVIEWER_ARGS=()
+            if [[ -n "${{ steps.get-reviewers.outputs.REVIEWERS }}" ]]; then
+                REVIEWER_ARGS=(--reviewer "${{ steps.get-reviewers.outputs.REVIEWERS }}")
+            fi
+
             PR_URL=$(gh pr create \
                 --title "chore: Update OpenSearch Dashboards docs submodule" \
                 --body "${BODY}" \
                 --base "${{ env.BASE_BRANCH }}" \
                 --head "${PR_BRANCH}" \
-                --reviewer "${{ steps.get-reviewers.outputs.REVIEWERS }}"
+                "${REVIEWER_ARGS[@]}"
             )
             echo "- ${PR_URL}" >> "$GITHUB_STEP_SUMMARY"
