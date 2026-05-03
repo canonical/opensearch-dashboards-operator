@@ -156,7 +156,7 @@ class OpensearchDashboardsCharm(CharmBase):
         outdated_status = [MSG_WAITING_FOR_PEER]
 
         # attempt startup of server
-        if not self.state.unit_server.started:
+        if not self.workload.alive():
             self.init_server()
 
         # don't delay scale-down leader ops by restarting dying unit
