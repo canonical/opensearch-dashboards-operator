@@ -11,7 +11,7 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
-from literals import MSG_STATUS_DB_UNHEALTHY
+from single_kernel_opensearch_dashboards.literals import MSG_STATUS_DB_UNHEALTHY
 
 from .helpers import (
     CONFIG_OPTS,
