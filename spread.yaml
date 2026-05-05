@@ -83,9 +83,7 @@ backends:
       sudo systemctl start ssh
 
       # Needed for IS-hosted runners
-      sudo passwd --delete runner
-
-      sudo systemctl reload ssh || sudo systemctl restart ssh
+      sudo passwd --delete ubuntu
 
       ADDRESS localhost
     # HACK: spread does not pass environment variables set on runner
@@ -104,8 +102,8 @@ backends:
       # To install pipx on self-hosted runners
       CONCIERGE_EXTRA_DEBS: pipx
     systems:
-      - ubuntu-24.04:
-          username: runner
+      - self-hosted-linux-amd64-noble-large:
+          username: ubuntu
 
 suites:
   tests/spread/:
