@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2022 Canonical Ltd.
+# Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
 
 import json
@@ -26,14 +26,12 @@ from tenacity import (
     wait_fixed,
 )
 
-from core.workload import ODPaths
+from single_kernel_opensearch_dashboards.workload.base import Paths
 
 METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
 OPENSEARCH_APP_NAME = "opensearch"
 CONFIG_OPTS = {"profile": "testing"}
-
-OPENSEARCH_APP_NAME = "opensearch"
 OPENSEARCH_RELATION_NAME = "opensearch-client"
 OPENSEARCH_CONFIG = {
     "logging-config": "<root>=INFO;unit=DEBUG",
@@ -431,7 +429,7 @@ def _get_show_unit_json(model_full_name: str, unit: str) -> Dict:
 
 def check_properties(model_full_name: str, unit: str):
     properties = check_output(
-        f"JUJU_MODEL={model_full_name} juju ssh {unit} sudo -i 'cat {ODPaths().properties}'",
+        f"JUJU_MODEL={model_full_name} juju ssh {unit} sudo -i 'cat {Paths.properties}'",
         stderr=PIPE,
         shell=True,
         universal_newlines=True,
