@@ -11,8 +11,6 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
-from literals import MSG_STATUS_DB_UNHEALTHY
-
 from .helpers import (
     CONFIG_OPTS,
     DASHBOARD_QUERY_PARAMS,
@@ -298,7 +296,7 @@ async def test_dashboard_status_changes(ops_test: OpsTest):
         await ops_test.model.wait_for_idle(apps=[APP_NAME], status="blocked")
 
     assert await check_full_status(
-        ops_test, status="blocked", status_msg="Opensearch connection is missing"
+        ops_test, status="blocked", status_msg="OpenSearch connection is missing"
     )
 
     logger.info("Checking if Dashboards have become unavailable")
@@ -348,7 +346,7 @@ async def test_dashboard_status_changes(ops_test: OpsTest):
     assert await check_full_status(
         ops_test,
         status="blocked",
-        status_msg=MSG_STATUS_DB_UNHEALTHY,
+        status_msg="The OpenSearch service health is red",
     )
 
 

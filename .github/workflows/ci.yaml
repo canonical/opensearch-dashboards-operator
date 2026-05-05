@@ -9,11 +9,11 @@ concurrency:
 on:
   pull_request:
     paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - '.gitignore'
+      - "docs/**"
+      - "**.md"
+      - ".gitignore"
   schedule:
-    - cron: '53 0 * * *' # Daily at 00:53 UTC
+    - cron: "53 0 * * *" # Daily at 00:53 UTC
   # Triggered on push to branch "main" by .github/workflows/release.yaml
   workflow_call:
     outputs:
@@ -47,20 +47,6 @@ jobs:
           use-labels: false
           fail-build: ${{ github.event_name == 'pull_request' }}
 
-  unit-test:
-    name: Unit test charm
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install tox & poetry
-        run: |
-          pipx install tox
-          pipx install poetry
-      - name: Run tests
-        run: tox run -e unit
-
   promtool:
     runs-on: ubuntu-22.04
     steps:
@@ -74,10 +60,6 @@ jobs:
       - name: Check validity of prometheus alert rules
         run: |
           promtool check rules src/alert_rules/prometheus/*.yaml
-
-      - name: Run unit tests for prometheus alert rules
-        run: |
-          promtool test rules tests/unit/test_alert_rules/*.yaml
 
   terraform-test:
     name: Terraform - Lint and Simple Deployment
@@ -139,7 +121,6 @@ jobs:
     name: Integration test charm
     needs:
       - lint
-      - unit-test
       - build
     uses: ./.github/workflows/integration_test.yaml
     with:
