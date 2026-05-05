@@ -11,7 +11,6 @@ import pytest
 import yaml
 from pytest_operator.plugin import OpsTest
 
-
 from .helpers import (
     CONFIG_OPTS,
     DASHBOARD_QUERY_PARAMS,

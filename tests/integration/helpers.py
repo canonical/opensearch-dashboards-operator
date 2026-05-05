@@ -16,6 +16,7 @@ from juju.relation import Relation
 from juju.unit import Unit
 from pytest_operator.plugin import OpsTest
 from requests.exceptions import ConnectionError, SSLError
+from single_kernel_opensearch_dashboards.workload.base import Paths
 from tenacity import (
     Retrying,
     before_sleep_log,
@@ -25,8 +26,6 @@ from tenacity import (
     stop_after_attempt,
     wait_fixed,
 )
-
-from single_kernel_opensearch_dashboards.workload.base import Paths
 
 METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
