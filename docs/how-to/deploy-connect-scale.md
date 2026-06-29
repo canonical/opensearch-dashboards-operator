@@ -87,3 +87,4 @@ While scaling down goes as:
 
 ```shell
 juju remove-unit opensearch-dashboards/<ID>
+```
