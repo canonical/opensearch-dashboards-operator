@@ -26,3 +26,5 @@ Then, integrate it with the OpenSearch Dashboards charm:
 ```shell
 juju integrate self-signed-certificates opensearch-dashboards
 ```
+
+For further guidance on how to manage TLS certificates, see the [TLS encryption page for the OpenSearch charm](https://canonical.com/data/opensearch/docs/2/how-to/tls-encryption/).
