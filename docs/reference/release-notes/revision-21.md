@@ -15,7 +15,7 @@ Charmed OpenSearch Dashboards Revision 22 has been deployed to the
 ## Highlights
 
 * Encryption via TLS
-  * See: [How to enable TLS](dashboard-how-to-enable-tls)
+  * See: [How to manage TLS](dashboard-how-to-manage-tls)
 * High availability deployment support
 * Automated rolling restart
 * Monitoring via COS

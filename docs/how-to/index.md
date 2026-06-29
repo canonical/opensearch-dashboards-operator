@@ -7,7 +7,7 @@ The following guides cover key processes and common tasks for Charmed OpenSearch
 Initial setup, including:
 [deploying](dashboard-how-to-deploy),
 [changing credentials](dashboard-how-to-change-credentials),
-[enabling TLS](dashboard-how-to-enable-tls),
+[managing TLS](dashboard-how-to-manage-tls),
 and [connecting to OpenSearch](dashboard-how-to-connect-to-opensearch).
 
 Configuration and maintenance:
@@ -23,7 +23,7 @@ Deploy <deploy>
 Scale up/down <scale-up-down>
 Connect to OpenSearch <connect-to-opensearch>
 Change credentials <change-credentials>
-Enable TLS <enable-tls>
+Manage TLS <tls-encryption>
 Enable JWT Auth <enable-jwt-authentication>
 Access using OAuth <access-using-oauth>
 monitoring-cos/index

@@ -1,4 +1,4 @@
-(dashboard-how-to-enable-tls)=
+(dashboard-how-to-manage-tls)=
 # How to manage TLS encryption
 
 First, make sure you have a TLS certificates charm set up.
