@@ -1,10 +1,10 @@
 (dashboard-how-to-enable-tls)=
 # How to manage TLS encryption
 
-First, make sure you have your TLS certificates provider set up.
+First, make sure you have a TLS certificates charm set up.
 
 This guide will show how to enable TLS using the
-[`self-signed-certificates` operator](https://github.com/canonical/self-signed-certificates-operator)
+[`self-signed-certificates` charm](https://github.com/canonical/self-signed-certificates-operator)
 as an example.
 
 ```{caution}
@@ -21,8 +21,8 @@ To deploy the `self-signed-certificates` charm:
 juju deploy self-signed-certificates --config ca-common-name="Tutorial CA"
 ```
 
-Then, relate it to the Opensearch Dashboards charm.
+Then, integrate it with the OpenSearch Dashboards charm:
 
 ```shell
-juju relate self-signed-certificates opensearch-dashboards
+juju integrate self-signed-certificates opensearch-dashboards
 ```
