@@ -1,5 +1,5 @@
 (dashboard-how-to-manage-security)=
-# Manage security
+# How to manage security
 
 This guide covers enabling TLS encryption and changing the `kibanaserver`
 credentials for Charmed OpenSearch Dashboards.

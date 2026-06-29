@@ -1,5 +1,5 @@
 (dashboard-how-to-deploy-connect-scale)=
-# Deploy, connect, and scale
+# How to deploy, connect, and scale
 
 This guide covers deploying the OpenSearch Dashboards charm, connecting it to an
 OpenSearch cluster, and scaling the number of units up or down.

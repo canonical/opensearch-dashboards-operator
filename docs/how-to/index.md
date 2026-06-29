@@ -18,6 +18,7 @@ Configuration and maintenance:
 
 Deploy, connect, and scale <deploy-connect-scale>
 Manage security <manage-security>
-Enable JWT Auth <enable-jwt-authentication>
-Access using OAuth <access-using-oauth>
-Enable monitoring <enable-monitoring>
+JWT Auth <enable-jwt-authentication>
+OAuth <access-using-oauth>
+Monitoring <enable-monitoring>
+```

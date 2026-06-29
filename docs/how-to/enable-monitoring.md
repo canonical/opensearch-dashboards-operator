@@ -1,5 +1,5 @@
 (dashboard-how-to-enable-monitoring)=
-# Enable monitoring (COS)
+# How to enable monitoring (COS)
 
 ```{note}
 All commands are written for juju >= v.3.1.7
