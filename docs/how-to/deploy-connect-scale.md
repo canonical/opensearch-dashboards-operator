@@ -1,35 +1,41 @@
-(dashboard-how-to-deploy)=
-# Deploy the Opensearch Dashboards charm
+(dashboard-how-to-deploy-connect-scale)=
+# Deploy, connect, and scale
 
-Please follow the [Tutorial](dashboards-tutorial) for detailed instructions on
-how to deploy the charm on LXD.
+This guide covers deploying the OpenSearch Dashboards charm, connecting it to an
+OpenSearch cluster, and scaling the number of units up or down.
 
-Below is a summary of the commands (assuming that instructions from OpenSearch Documentation
-[Set kernel parameters](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/tutorial/1-set-up-the-environment/#set-kernel-parameters)
-were applied):
+## Prerequisites
+
+A Juju model containing:
+
+* An active `opensearch` application
+* A TLS certificate provider charm (e.g. `self-signed-certificates`)
+  integrated with `opensearch`
+
+To learn how to set up and deploy an OpenSearch application, see steps 1, 2, and 3 of the
+[OpenSearch Tutorial](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/tutorial/1-set-up-the-environment/).
+
+Make sure you've set up the correct
+[kernel parameters](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/tutorial/1-set-up-the-environment/#set-kernel-parameters)
+for your OpenSearch deployment.
+
+For a detailed walk-through of a full deployment on LXD, see the
+[Tutorial](dashboards-tutorial).
+
+## Deploy OpenSearch Dashboards
+
+On top of a live, healthy OpenSearch database, deploy the Dashboards visualization interface:
 
 ```shell
-juju add-model test
-
-cat <<EOF > cloudinit-userdata.yaml
-cloudinit-userdata: |
-  postruncmd:
-    - [ 'sysctl', '-w', 'vm.max_map_count=262144' ]
-    - [ 'sysctl', '-w', 'vm.swappiness=0' ]
-    - [ 'sysctl', '-w', 'net.ipv4.tcp_retries2=5' ]
-    - [ 'sysctl', '-w', 'fs.file-max=1048576' ]
-EOF
-
-juju model-config --file cloudinit-userdata.yaml
-
-juju deploy opensearch --channel=2/edge --config profile="testing"
-juju deploy self-signed-certificates
-
-juju relate  self-signed-certificates opensearch
-
 juju deploy opensearch-dashboards --channel=2/edge
-juju relate opensearch opensearch-dashboards
-juju relate self-signed-certificates opensearch-dashboards
+```
+
+## Connect to OpenSearch
+
+Integrate the Dashboards charm with the OpenSearch database:
+
+```shell
+juju integrate opensearch opensearch-dashboards
 ```
 
 As a result, a healthy system should look something like this:
@@ -66,3 +72,18 @@ opensearch:upgrade-version-a           opensearch:upgrade-version-a             
 self-signed-certificates:certificates  opensearch-dashboards:certificates       tls-certificates    regular  
 self-signed-certificates:certificates  opensearch:certificates                  tls-certificates    regular 
 ```
+
+## Scale up/down
+
+It's very easy to increase or decrease the number of units in a Juju system.
+
+Scaling up goes as:
+
+```shell
+juju add-unit opensearch-dashboards -n <desired_num_of_units>
+```
+
+While scaling down goes as:
+
+```shell
+juju remove-unit opensearch-dashboards/<ID>

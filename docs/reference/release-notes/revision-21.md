@@ -10,22 +10,22 @@ Charmed OpenSearch Dashboards Revision 22 has been deployed to the
 * Juju `v3.5.3+`
   * Older minor versions of Juju 3 may be compatible, but are not officially supported.
 * This charm was built to be integrated with [Charmed OpenSearch](https://charmhub.io/opensearch)
-  * See: [How to connect with OpenSearch](dashboard-how-to-connect-to-opensearch)
+  * See: [Deploy, connect, and scale](dashboard-how-to-deploy-connect-scale)
 
 ## Highlights
 
 * Encryption via TLS
-  * See: [How to manage TLS](dashboard-how-to-manage-tls)
+  * See: [Manage security](dashboard-how-to-manage-security)
 * High availability deployment support
 * Automated rolling restart
 * Monitoring via COS
-  * See: [How to enable monitoring](dashboard-how-to-monitoring-enable-cos)
+  * See: [Enable monitoring](dashboard-how-to-enable-monitoring)
 
 ## Join the community
 
 Charmed OpenSearch Dashboards is an official distribution of
 [OpenSearch Dashboards](https://opensearch.org/docs/latest/dashboards/).
-It’s an open-source project that welcomes community contributions, suggestions,
+It's an open-source project that welcomes community contributions, suggestions,
 fixes and constructive feedback.
 
 * Raise an issue or feature request in the [Github repository](https://github.com/canonical/opensearch-dashboards-operator/issues).
