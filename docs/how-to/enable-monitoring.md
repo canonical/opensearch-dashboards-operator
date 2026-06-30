@@ -76,7 +76,7 @@ Finally integrate (previously known as
 it with Charmed OpenSearch Dashboards:
 
 ```shell
-juju integrate grafana-agent-k8s opensearch-dashboards
+juju integrate grafana-agent opensearch-dashboards
 ```
 
 After the integration is complete, Grafana will show the new dashboard

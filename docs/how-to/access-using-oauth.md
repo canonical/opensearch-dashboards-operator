@@ -139,7 +139,7 @@ where you specify the user’s password.
 
 Once the password is set, you will then be prompted to configure 2FA (mandatory).
 
-## Access Opensearch Dashboards using Single Sign-On
+## Access OpenSearch Dashboards using Single Sign-On
 
 To access OpenSearch Dashboards, use the IP address on the `opensearch-dashboards/0`
 unit to form the URL: `https://<ip-address>:5601`.

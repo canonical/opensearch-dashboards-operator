@@ -1,19 +1,19 @@
 (dashboards-tutorial)=
 # Tutorial
 
-This tutorial guides you through how to get Charmed Opensearch Dashboards up and running.
+This tutorial guides you through how to get Charmed OpenSearch Dashboards up and running.
 It also provides a quick introduction to the following:
 
 * Set up an environment using [Multipass](https://multipass.run/) with
 [LXD](https://ubuntu.com/lxd) and [Juju](https://juju.is/).
-* Deploy Opensearch Dashboards using a single command.
+* Deploy OpenSearch Dashboards using a single command.
 * Configure TLS certificate equally simple.
 
-This tutorial focuses on Opensearch Dashboards deployment, assuming that you have familiarity with:
+This tutorial focuses on OpenSearch Dashboards deployment, assuming that you have familiarity with:
 
 * Basic terminal commands.
-* Opensearch and Opensearch Dashboards concepts
-* The [Charmed Opensearch Operator](https://charmhub.io/opensearch)
+* OpenSearch and OpenSearch Dashboards concepts
+* The [Charmed OpenSearch Operator](https://charmhub.io/opensearch)
 
 (dashboards-setup-environment)=
 ## Set up the environment
@@ -82,7 +82,7 @@ juju bootstrap localhost overlord
 ```
 
 The controller can work with different models.
-Most applications such as Opensearch or Opensearch Dashboards.
+Most applications such as OpenSearch or OpenSearch Dashboards.
 To set up a new "model" called tutorial, run:
 
 ```shell
@@ -128,19 +128,19 @@ You probably want to do this before installing the services within
 (dashboards-deploy)=
 ## Get OpenSearch Dashboards up and running
 
-The objective of Opensearch Dashboard is to display the contents of an Opensearch database.
-This is why a  functional Opensearch database is a pre-requisite for the Dashboards application
+The objective of OpenSearch Dashboard is to display the contents of an OpenSearch database.
+This is why a functional OpenSearch database is a pre-requisite for the Dashboards application
 to install successfully.
 
-So, before going further, let's set up Charmed Opensearch.
-Note that Opensearch has a mandatory requirement of TLS support, so we need to deploy it
+So, before going further, let's set up Charmed OpenSearch.
+Note that OpenSearch has a mandatory requirement of TLS support, so we need to deploy it
 alongside the `self-signed-certificates` charm and integrate (also known as "relate") them.
 
 Make sure that the environment is ready and the Juju model is correctly configured following
 instructions in OpenSearch Documentation
 [Set kernel parameters](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/tutorial/1-set-up-the-environment/#set-kernel-parameters).
 
-Subsequently, we can deploy Opensearch with TLS:
+Subsequently, we can deploy OpenSearch with TLS:
 
 ```shell
 juju deploy opensearch --channel=2/edge -n 2
@@ -148,7 +148,7 @@ juju deploy self-signed-certificates --channel=1/stable
 juju integrate self-signed-certificates opensearch
 ```
 
-We can simply add the Opensearch Dashboards charm to this setup by deploying and relating it to Opensearch
+We can simply add the OpenSearch Dashboards charm to this setup by deploying and relating it to OpenSearch
 
 ```shell
 juju deploy opensearch-dashboards --channel=2/edge
@@ -196,8 +196,8 @@ juju status --watch 1s
 (dashboards-enable-tls)=
 ## Enable TLS encryption
 
-Charmed Opensearch Dashboards supports HTTPS connections.
-Configuration is similar to what we have seen for Opensearch – we just need
+Charmed OpenSearch Dashboards supports HTTPS connections.
+Configuration is similar to what we have seen for OpenSearch – we just need
 to integrate the Dashboards charm against the TLS charm:
 
 ```shell
@@ -207,7 +207,7 @@ juju integrate self-signed-certificates opensearch-dashboards
 Once the two charms are successfully related, you should be able to access the same URL now using HTTPS.
 
 (dashboards-access)=
-## Access Opensearch Dashboards
+## Access OpenSearch Dashboards
 
 Assuming that you have a virtual environment available
 (as described in [Set up the environment](dashboards-setup-environment)),
@@ -222,19 +222,19 @@ For example, in the output from [Get OpenSearch Dashboards up and running](dashb
 
 You should see something like this:
 
-![Openserach Dashboards - Multipass Desktop](img/multipass-desktop.jpeg)
+![OpenSearch Dashboards - Multipass Desktop](img/multipass-desktop.jpeg)
 
 (dashboards-setup-user)=
-### Set up an Opensearch user
+### Set up an OpenSearch user
 
 Set up a user using the `data-integrator` [charm](https://charmhub.io/data-integrator).
 
-At deployment time the Opensearch index (in the example: `index_name`) has to be specified as well. This is an arbitrary, alphanumerical identifier of the users' data space in Opensearch.
+At deployment time the OpenSearch index (in the example: `index_name`) has to be specified as well. This is an arbitrary, alphanumerical identifier of the users' data space in OpenSearch.
 
-User creation takes affect when integrated against the  `opensearch` charm.
+User creation takes effect when integrated against the  `opensearch` charm.
 
 ```bash
-juju deploy data-integrator --config index-name=<intex_name>
+juju deploy data-integrator --config index-name=<index_name>
 juju integrate data-integrator opensearch
 ```
 
@@ -276,17 +276,17 @@ Log in to the Dashboard using these credentials.
 Clicking the top left icon the main menu will pull down.
 Select **Management** / **Dashboards Management** here
 
-![Opensearch Dashboards - Initial view](img/initial-view.png)
+![OpenSearch Dashboards - Initial view](img/initial-view.png)
 
 Select **Index patterns** on the next view:
 
-![Opensearch Dashboards - Index patterns](img/index-patterns.png)
+![OpenSearch Dashboards - Index patterns](img/index-patterns.png)
 
 Click on **create index pattern** at the bottom.
 
-Adding the index name that used for `data-integrator` deployment (in our example: `testing`) as an index pattern enables Dashboard access to the user's Opensearch space.
+Adding the index name that used for `data-integrator` deployment (in our example: `testing`) as an index pattern enables Dashboard access to the user's OpenSearch space.
 
-![Opensearch Dashboards - Create index pattern](img/create-index-pattern.png)
+![OpenSearch Dashboards - Create index pattern](img/create-index-pattern.png)
 
 Click on the **Next step** button, and finalize the index pattern creation.
 
@@ -295,7 +295,7 @@ As a verification, the user's index metadata will display.
 (dashboards-visualize)=
 ### Add and visualize data
 
-For test purposes, a simple method could do. Like generating data from the command-line, via the Opensearch API:
+For test purposes, a simple method could do. Like generating data from the command-line, via the OpenSearch API:
 
 ```text
 for ID in `seq 1 100`
@@ -309,16 +309,16 @@ done
 
 This is how raw data gets displayed in the Dashboard
 
-![Opensearch Dashboards - Data](img/data.png)
+![OpenSearch Dashboards - Data](img/data.png)
 
 (dashboards-data-visualization)=
 ### Data Visualization
 
-Opensearch Dashboards offers a variety of diagrams and data displays.
+OpenSearch Dashboards offers a variety of diagrams and data displays.
 
 Choose **Dashboards** in the main left-side menu, and you will be presented to the selection:
 
-![Opensearch Dashboards - Visualization](img/visualization.png)
+![OpenSearch Dashboards - Visualization](img/visualization.png)
 
 (dashboards-cleanup)=
 ## Clean up the environment

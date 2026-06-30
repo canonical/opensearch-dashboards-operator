@@ -37,10 +37,10 @@ For further guidance on how to manage TLS certificates, see the [TLS encryption 
 ## Change credentials
 
 Dashboards have a "super-user" called `kibanaserver`, that is a built-in user
-set in the Opensearch database.
+set in the OpenSearch database.
 
 For this reason, the credentials change doesn't happen on the Dashboards side,
-rather on the Opensearch side.
+rather on the OpenSearch side.
 
 Running the following command on the leader unit changes the `kibanaserver` password:
 
