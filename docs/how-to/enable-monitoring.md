@@ -85,7 +85,7 @@ After the integration is complete, Grafana will show the new dashboard
 ## Connect to the Grafana web interface
 
 To connect to the Grafana web interface, follow the
-[Browse dashboards](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s#heading--browse-dashboards)
+[Browse dashboards](https://documentation.ubuntu.com/observability/latest/tutorial/cos-lite-microk8s-sandbox/#browse-dashboards)
 section of the MicroK8s "Getting started" guide.
 
 You can obtain the admin password as follows:
