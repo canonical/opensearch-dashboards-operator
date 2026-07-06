@@ -25,7 +25,7 @@ integrated with the Charmed OpenSearch model.
 To switch to the Kubernetes controller for the COS model, run
 
 ```shell
-juju switch <k8s_cos_controller>:<cos_model_name>
+juju switch k8s-controller:cos
 ```
 
 To offer the COS interfaces, run
@@ -44,15 +44,15 @@ We are currently on the Kubernetes controller for the COS model.
 To switch to the OpenSearch Dashboards model, run
 
 ```shell
-juju switch <db_controller>:<opensearch_dashboards_model_name>
+juju switch overlord:tutorial
 ```
 
 To consume offers to be reachable in the current model, run
 
 ```shell
-juju consume <k8s_cos_controller>:admin/cos.grafana
-juju consume <k8s_cos_controller>:admin/cos.loki
-juju consume <k8s_cos_controller>:admin/cos.prometheus
+juju consume k8s-controller:admin/cos.grafana
+juju consume k8s-controller:admin/cos.loki
+juju consume k8s-controller:admin/cos.prometheus
 ```
 
 ## Deploy and integrate Grafana
@@ -91,7 +91,7 @@ section of the MicroK8s "Getting started" guide.
 You can obtain the admin password as follows:
 
 ```shell
-juju run grafana/leader get-admin-password --model <k8s_cos_controller>:<cos_model_name>
+juju run grafana/leader get-admin-password --model k8s-controller:cos
 ```
 
 For details on available metrics and default alert rules, see the

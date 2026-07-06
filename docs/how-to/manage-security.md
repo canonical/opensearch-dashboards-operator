@@ -45,7 +45,7 @@ rather on the OpenSearch side.
 Running the following command on the leader unit changes the `kibanaserver` password:
 
 ```shell
-juju run opensearch/0 set-password
+juju run opensearch/leader set-password
 ```
 
 The new credentials will be populated for the Dashboards charm.

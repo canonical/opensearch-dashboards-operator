@@ -43,6 +43,7 @@ On the LXD model where OpenSearch is deployed, deploy OpenSearch Dashboards,
 and integrate it with OpenSearch charm.
 
 ```shell
+juju switch overlord:tutorial
 juju deploy opensearch-dashboards --channel=2/edge
 juju integrate opensearch opensearch-dashboards
 ```
@@ -58,7 +59,7 @@ juju status --watch 2s
 Switch to the MicroK8s model and verify the identity platform bundle is ready:
 
 ```shell
-juju switch oauth
+juju switch k8s-controller:oauth
 juju status
 ```
 
@@ -96,11 +97,26 @@ traefik-public/0*                       active    idle   10.1.156.86
 All the components of the bundle must be active except `kratos-external-idp-integrator`.
 It will be in blocked status.
 
-Switch back to LXD and integrate OpenSearch Dashboards with the interface offered
-by self-signed-certificates from OAuth model, and with the OAuth interface provided by Hydra.
+Before switching back to the LXD model, we need to offer the `hydra:oauth` and
+`self-signed-certificates:certificates` endpoints from the OAuth model so they
+can be consumed cross-model by the OpenSearch Dashboards model:
 
 ```shell
-juju switch lxd
+juju offer hydra:oauth
+juju offer self-signed-certificates:certificates
+```
+
+Switch back to the OpenSearch Dashboards model and consume the offers:
+
+```shell
+juju switch overlord:tutorial
+juju consume k8s-controller:admin/oauth.hydra
+juju consume k8s-controller:admin/oauth.self-signed-certificates
+```
+
+Now integrate OpenSearch Dashboards with the consumed offers:
+
+```shell
 juju integrate opensearch-dashboards:certificates self-signed-certificates:certificates
 juju integrate opensearch-dashboards:oauth hydra:oauth
 ```
@@ -112,10 +128,7 @@ This command will require an email and username, and will give the password rese
 link as well as the reset code.
 
 ```shell
-juju run kratos/0 create-admin-account email=myuser@example.com username=myuser
-Running operation 7 with 1 task
-  - task 8 on unit-kratos-0
-
+juju run kratos/leader create-admin-account email=myuser@example.com username=myuser
 Running operation 1 with 1 task
   - task 2 on unit-kratos-0
 
