@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2024 Canonical Ltd.
+# Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
 
 """Application charm that connects to opensearch using the opensearch-client relation."""
@@ -7,6 +7,7 @@
 import json
 import logging
 from typing import Dict, List, Optional, Union
+from urllib.parse import urlparse
 
 import requests
 from charms.data_platform_libs.v0.data_interfaces import (
@@ -51,6 +52,10 @@ class ApplicationCharm(CharmBase):
 
     def _on_update_status(self, _) -> None:
         """Health check for index connection."""
+        self._set_status_from_connection()
+
+    def _set_status_from_connection(self) -> None:
+        """Set workload status from the current OpenSearch connection state."""
         if self.connection_check():
             self.unit.status = ActiveStatus()
         else:
@@ -95,6 +100,7 @@ class ApplicationCharm(CharmBase):
         logger.info(f"writing cert to {CERT_PATH}.")
         with open(CERT_PATH, "w") as f:
             f.write(tls_ca)
+        self._set_status_from_connection()
 
     def _run_request_action(self, event: ActionEvent, server):
         """Generic request action handler to be used in the specific request action handlers."""
@@ -105,11 +111,6 @@ class ApplicationCharm(CharmBase):
         payload = event.params.get("payload", None)
         if payload:
             payload = payload.replace("\\", "")
-
-        protocol = "https"
-        if server.split("://") != [server]:
-            protocol, server = server.split("://")
-
         requires = self._get_requires(event.params["relation-name"])
         username = requires.fetch_relation_field(relation_id, "username")
         password = requires.fetch_relation_field(relation_id, "password")
@@ -118,16 +119,30 @@ class ApplicationCharm(CharmBase):
             event.fail("Credentials are not accessible.")
             return
 
-        host_addr, port = server.split(":")
+        if "://" not in server:
+            full_server_url = f"https://{server}"
+        else:
+            full_server_url = server
+
+        parsed = urlparse(full_server_url)
+
+        protocol = parsed.scheme or "https"
+        host_addr = parsed.hostname
+        port = parsed.port
+        path = parsed.path.rstrip("/")
+        clean_endpoint = endpoint if endpoint.startswith("/") else f"/{endpoint}"
+
         logger.info(
-            f"Sending {method} request to {server}/{endpoint} with headers {headers} and payload {payload}"
+            f"Sending {method} request to {protocol}://{host_addr}:{port}{path}{clean_endpoint}"
         )
+
         try:
             response = self.request(
                 method,
                 headers,
                 endpoint,
-                int(port),
+                port,
+                path,
                 username,
                 password,
                 host_addr,
@@ -183,20 +198,21 @@ class ApplicationCharm(CharmBase):
         password = requires.fetch_relation_field(relation_id, "password")
         hosts = requires.fetch_relation_field(relation_id, "endpoints")
 
-        if None in [username, password] or not hosts:
-            raise OpenSearchHttpError
+        if not all([username, password, hosts]):
+            raise OpenSearchHttpError("Missing credentials or host information")
 
-        host, port = hosts.split(",")[0].split(":")
-        headers = {}
+        first_endpoint = hosts.split(",")[0].strip()
+        host, port = first_endpoint.split(":", 1)
 
         return self.request(
-            method,
-            headers,
-            endpoint,
-            int(port),
-            username,
-            password,
-            host,
+            method=method,
+            headers={},
+            endpoint=endpoint,
+            port=int(port),
+            path="",
+            username=username,
+            password=password,
+            host=host,
             payload=payload,
         )
 
@@ -206,6 +222,7 @@ class ApplicationCharm(CharmBase):
         headers: dict,
         endpoint: str,
         port: int,
+        path: str,
         username: str,
         password: str,
         host: str,
@@ -232,7 +249,7 @@ class ApplicationCharm(CharmBase):
         if endpoint.startswith("/"):
             endpoint = endpoint[1:]
 
-        full_url = f"{protocol}://{host}:{port}/{endpoint}"
+        full_url = f"{protocol}://{host}:{port}{path}/{endpoint}"
 
         request_kwargs = {
             "verify": CERT_PATH,

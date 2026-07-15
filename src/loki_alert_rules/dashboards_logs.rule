@@ -1,0 +1,40 @@
+groups:
+- name: opensearch_dashboards_log.alerts
+  rules:
+
+
+    - alert: OpenSearchDashboardsHighErrorRate
+    annotations:
+      summary: High rate of errors in OpenSearch Dashboards logs
+      description: "The OpenSearch Dashboards unit {{ $labels.juju_unit }} is logging a high number of errors. Check the pod logs for details."
+    expr: |
+      sum by (juju_unit) (
+        rate({juju_application="opensearch-dashboards"} |~ "(?i)(error|fatal)" [5m])
+      ) > 0.5
+    for: 2m
+    labels:
+      severity: critical
+
+  - alert: OpenSearchDashboardsConnectionRefused
+    annotations:
+      summary: OpenSearch Dashboards cannot connect to OpenSearch
+      description: "Unit {{ $labels.juju_unit }} is failing to connect to the OpenSearch backend database."
+    expr: |
+      sum by (juju_unit) (
+        rate({juju_application="opensearch-dashboards"} |= "ECONNREFUSED" [2m])
+      ) > 0
+    for: 1m
+    labels:
+      severity: critical
+
+  - alert: OpenSearchDashboardsFatalCrash
+    annotations:
+      summary: OpenSearch Dashboards process crashed
+      description: "A fatal error or Out Of Memory (OOM) event was detected in the logs for {{ $labels.juju_unit }}."
+    expr: |
+      sum by (juju_unit) (
+        rate({juju_application="opensearch-dashboards"} |~ "(?i)(FATAL ERROR|JavaScript heap out of memory)" [1m])
+      ) > 0
+    for: 0m
+    labels:
+      severity: critical

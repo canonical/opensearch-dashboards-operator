@@ -1,4 +1,4 @@
-# Copyright 2023 Canonical Ltd.
+# Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
 
 name: opensearch-dashboards
@@ -12,11 +12,20 @@ summary: The Charmed Opensearch Dashboards operator
 docs: https://discourse.charmhub.io/t/charmed-opensearch-dashboards-home/14117
 source: https://github.com/canonical/opensearch-dashboards-operator
 issues: https://github.com/canonical/opensearch-dashboards-operator/issues
+charm-user: non-root
 
 maintainers:
   - Canonical Data Platform Team <data-platform@lists.launchpad.net>
-series:
-  - jammy
+
+containers:
+  opensearch-dashboards:
+    resource: opensearch-dashboards-image
+
+resources:
+  opensearch-dashboards-image:
+    type: oci-image
+    description: OCI image for opensearch-dashboards
+    upstream-source: ghcr.io/canonical/charmed-opensearch-dashboards:2.19.5-24.04_edge
 
 peers:
   dashboard_peers:
@@ -44,8 +53,16 @@ requires:
     interface: jwt
     limit: 1
     optional: true
+  logging:
+    interface: loki_push_api
+  ingress:
+    interface: ingress
+    limit: 1
 
 provides:
   cos-agent:
     interface: cos_agent
-    limit: 1
+  metrics-endpoint:
+    interface: prometheus_scrape
+  grafana-dashboard:
+    interface: grafana_dashboard

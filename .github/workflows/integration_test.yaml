@@ -14,9 +14,13 @@ jobs:
     name: Collect integration test spread jobs
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Set up environment
         run: |
           sudo snap install charmcraft --classic
@@ -44,16 +48,19 @@ jobs:
           )
           jobs = []
           for job in spread_jobs:
-              # Example `job`: "github-ci:ubuntu-24.04:tests/spread/test_charm.py:juju36"
+              # Example `job`: "github-ci:ubuntu-24.04:tests/spread/vm/test_charm.py:juju36"
+              # or "github-ci:ubuntu-24.04:tests/spread/k8s/test_charm.py:juju36"
               _, runner, task, variant = job.split(":")
-              # Example: "test_charm.py"
+              
+              # Removes the root test directory prefix
+              # This will leave tasks looking like "vm/test_charm.py" or "k8s/test_charm.py"
               task = task.removeprefix("tests/spread/")
               # For IS-hosted runners
               if "arm64" in runner:
                   architecture = "arm64"
               else:
                   architecture = "amd64"
-              # Example: "test_charm.py:juju36 | amd64"
+              # Example: "vm/test_charm.py:juju36 | amd64"
               name = f"{task}:{variant} | {architecture}"
               # ":" character not valid in GitHub Actions artifact
               name_in_artifact = f"{task.replace('/', '-')}-{variant}-{architecture}"
@@ -74,7 +81,7 @@ jobs:
         # Default test results in case the integration tests time out or runner set up fails
         # (So that Allure report will show "unknown"/"failed" test result, instead of omitting the test)
         if: ${{ github.event_name == 'schedule' && github.run_attempt == '1' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: allure-default-results-integration-test
           path: allure-default-results/
@@ -92,13 +99,17 @@ jobs:
       - collect-integration-tests
     runs-on: ${{ matrix.job.runner }}
     timeout-minutes: 217 # Sum of steps `timeout-minutes` + 5
+    permissions:
+      contents: read
     steps:
       - name: Disk usage
         timeout-minutes: 5
         run: df --human-readable
       - name: Checkout
         timeout-minutes: 3
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Set up environment
         timeout-minutes: 5
         run: sudo snap install charmcraft --classic
@@ -109,15 +120,10 @@ jobs:
           go install github.com/canonical/spread/cmd/spread@latest
       - name: Download packed charm(s)
         timeout-minutes: 5
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: ${{ inputs.artifact-prefix }}-*
           merge-multiple: true
-      # TODO Remove pinned image when https://bugs.launchpad.net/snapd/+bug/2127244 is resolved
-      - name: Pin lxc image for jammy
-        run: |
-          sudo lxc image copy ubuntu:568f69ff1166 local:
-          sudo lxc image alias create "juju/ubuntu@22.04/amd64" 568f69ff1166
       - name: Run spread job
         timeout-minutes: 180
         id: spread
@@ -125,21 +131,13 @@ jobs:
         # https://github.com/canonical/charmcraft/issues/2105 and
         # https://github.com/canonical/charmcraft/issues/2130 fixed
         run: ~/go/bin/spread -vv -artifacts=artifacts '${{ matrix.job.spread_job }}'
-        env:
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
-          AZURE_SECRET_KEY: ${{ secrets.AZURE_SECRET_KEY }}
-          GCP_ACCESS_KEY: ${{ secrets.GCP_ACCESS_KEY }}
-          GCP_SECRET_KEY: ${{ secrets.GCP_SECRET_KEY }}
-          GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
       - name: Upload Allure results
         timeout-minutes: 3
         # Only upload results from one spread system & one spread variant
         # Allure can only process one result per pytest test ID. If parameterization is done via
         # spread instead of pytest, there will be overlapping pytest test IDs.
         if: ${{ (success() || (failure() && steps.spread.outcome == 'failure')) && startsWith(matrix.job.spread_job, 'github-ci:') && endsWith(matrix.job.spread_job, ':ubuntu24') && github.event_name == 'schedule' && github.run_attempt == '1' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: allure-results-integration-test-${{ matrix.job.name_in_artifact }}
           path: artifacts/${{ matrix.job.spread_job }}/allure-results/
@@ -147,7 +145,7 @@ jobs:
       - timeout-minutes: 1
         if: ${{ success() || (failure() && steps.spread.outcome == 'failure') }}
         run: snap list
-      - name: Select model
+      - name: Select and identify models
         timeout-minutes: 1
         # `!contains(matrix.job.spread_job, 'juju29')` workaround for juju 2 error:
         # "ERROR cannot acquire lock file to read controller concierge-microk8s: unable to open
@@ -159,23 +157,51 @@ jobs:
           # sudo needed since spread runs scripts as root
           # "testing" is default model created by concierge
           sudo juju switch testing
-          mkdir ~/logs/
+          mkdir -p "$HOME/logs/"
+
+          # Check if the second model exists and store the list in GITHUB_ENV
+          MODELS="testing"
+          if sudo juju models | grep -qw "testing-vm"; then
+            MODELS="testing testing-vm"
+          fi
+          echo "TARGET_MODELS=$MODELS" >> "$GITHUB_ENV"
       - name: juju status
         timeout-minutes: 1
         if: ${{ !contains(matrix.job.spread_job, 'juju29') && (success() || (failure() && steps.spread.outcome == 'failure')) }}
-        run: sudo juju status --color --relations | tee ~/logs/juju-status.txt
+        run: |
+          # shellcheck disable=SC2086
+          for model in $TARGET_MODELS; do
+            echo "::group::juju status -m $model"
+            sudo juju status -m "$model" --color --relations | tee "$HOME/logs/juju-status-${model}.txt"
+            echo "::endgroup::"
+          done
+
       - name: juju debug-log
         timeout-minutes: 3
         if: ${{ !contains(matrix.job.spread_job, 'juju29') && (success() || (failure() && steps.spread.outcome == 'failure')) }}
-        run: sudo juju debug-log --color --replay --no-tail | tee ~/logs/juju-debug-log.txt
+        run: |
+          # shellcheck disable=SC2086
+          for model in $TARGET_MODELS; do
+            echo "::group::juju debug-log -m $model"
+            sudo juju debug-log -m "$model" --color --replay --no-tail | tee "$HOME/logs/juju-debug-log-${model}.txt"
+            echo "::endgroup::"
+          done
+
       - name: jhack tail
         timeout-minutes: 3
         if: ${{ !contains(matrix.job.spread_job, 'juju29') && (success() || (failure() && steps.spread.outcome == 'failure')) }}
-        run: sudo jhack tail --printer raw --replay --no-watch | tee ~/logs/jhack-tail.txt
+        run: |
+          # shellcheck disable=SC2086
+          for model in $TARGET_MODELS; do
+            echo "::group::jhack tail -m $model"
+            script -q -c "sudo env JUJU_MODEL=$model jhack tail --printer raw --replay --no-watch" /dev/null | tee "$HOME/logs/jhack-tail-${model}.txt" || true
+            echo "::endgroup::"
+          done
+
       - name: Upload logs
         timeout-minutes: 5
         if: ${{ !contains(matrix.job.spread_job, 'juju29') && (success() || (failure() && steps.spread.outcome == 'failure')) }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: logs-integration-test-${{ matrix.job.name_in_artifact }}
           path: ~/logs/
@@ -193,6 +219,8 @@ jobs:
       - integration-test
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write
     steps:
       - name: Download Allure
         # Following instructions from https://allurereport.org/docs/install-for-linux/#install-from-a-deb-package
@@ -213,19 +241,20 @@ jobs:
       # git push origin gh-pages-beta
       # )
       - name: Checkout GitHub pages branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: gh-pages-beta
           path: repo/
+          persist-credentials: false
       - name: Download default test results
         # Default test results in case the integration tests time out or runner set up fails
         # (So that Allure report will show "unknown"/"failed" test result, instead of omitting the test)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: allure-default-results/
           name: allure-default-results-integration-test
       - name: Download test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: allure-results/
           pattern: allure-results-integration-test-*

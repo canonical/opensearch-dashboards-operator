@@ -1,4 +1,4 @@
-# Copyright 2023 Canonical Ltd.
+# Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
 name: Release to Charmhub
 
@@ -15,15 +15,16 @@ jobs:
   ci-tests:
     name: Tests
     uses: ./.github/workflows/ci.yaml
-    secrets: inherit
+    secrets:
+      CHARMHUB_TOKEN: ${{ secrets.CHARMHUB_TOKEN }}
     permissions:
-      contents: write  # Needed for Allure Report beta
+      contents: write # Needed by integration-test job for Allure Report
 
   release:
     name: Release charm
     needs:
       - ci-tests
-    uses: canonical/data-platform-workflows/.github/workflows/release_charm_edge.yaml@v32.1.0
+    uses: canonical/data-platform-workflows/.github/workflows/release_charm_edge.yaml@v50.0.0
     with:
       track: "2"
       artifact-prefix: ${{ needs.ci-tests.outputs.artifact-prefix }}

@@ -8,9 +8,9 @@ backends:
     allocate: |
       hash=$(python3 -c "import hashlib; print(hashlib.sha256('$SPREAD_PASSWORD'.encode()).hexdigest()[:6])")
       VM_NAME="${VM_NAME:-${SPREAD_SYSTEM//./-}-${hash}}"
-      DISK="${DISK:-20}"
-      CPU="${CPU:-4}"
-      MEM="${MEM:-8}"
+      DISK="${DISK:-30}"
+      CPU="${CPU:-6}"
+      MEM="${MEM:-12}"
 
       cloud_config="#cloud-config
       ssh_pwauth: true
@@ -91,13 +91,6 @@ backends:
     environment:
       CI: '$(HOST: echo $CI)'
       CHARM_UBUNTU_BASE: '$(HOST: echo $CHARM_UBUNTU_BASE)'
-      AWS_ACCESS_KEY: '$(HOST: echo $AWS_ACCESS_KEY)'
-      AWS_SECRET_KEY: '$(HOST: echo $AWS_SECRET_KEY)'
-      AZURE_STORAGE_ACCOUNT: '$(HOST: echo $AZURE_STORAGE_ACCOUNT)'
-      AZURE_SECRET_KEY: '$(HOST: echo $AZURE_SECRET_KEY)'
-      GCP_ACCESS_KEY: '$(HOST: echo $GCP_ACCESS_KEY)'
-      GCP_SECRET_KEY: '$(HOST: echo $GCP_SECRET_KEY)'
-      GCP_SERVICE_ACCOUNT: '$(HOST: echo $GCP_SERVICE_ACCOUNT)'
       DOCKERHUB_MIRROR: '$(HOST: echo $DOCKERHUB_MIRROR)'
       # To install pipx on self-hosted runners
       CONCIERGE_EXTRA_DEBS: pipx
@@ -106,15 +99,18 @@ backends:
           username: ubuntu
 
 suites:
-  tests/spread/:
-    summary: General test suite
+  tests/spread/vm/:
+    summary: General vm test suite
+  tests/spread/k8s/:
+    summary: General k8s test suite
 
 path: /root/spread_project
 
 kill-timeout: 3h
 environment:
-  PATH: $PATH:$(pipx environment --value PIPX_BIN_DIR)
+  PATH: $PATH:/root/.local/bin
   CONCIERGE_JUJU_CHANNEL: 3.6/stable
+  CONCIERGE_MICROK8S_CHANNEL: 1.35-strict/stable
   CHARM_UBUNTU_BASE/ubuntu24: 24.04
   CHARM_UBUNTU_BASE/ubuntu22: 22.04
 prepare: |
@@ -123,15 +119,15 @@ prepare: |
   cd "$SPREAD_PATH"
   snap install --classic concierge
 
-  if [[ $SPREAD_TASK == *"oauth"* ]]
+  if [[ $SPREAD_SUITE == *"k8s"* ]]
   then
     # Running on IS-hosted runner; configure microk8s to use Docker Hub mirror
     # Run before concierge prepare because of https://github.com/canonical/concierge/issues/75
-    sudo snap install microk8s  --classic
-    sudo snap install kubectl --classic 
+    sudo snap install microk8s --classic --channel "$CONCIERGE_MICROK8S_CHANNEL"
+    sudo snap install kubectl --classic
     sudo snap install yq
-    
-    if [[ -n "$DOCKERHUB_MIRROR" ]]
+
+    if [[ -n "${DOCKERHUB_MIRROR:-}" ]]
     then
       # Wait for microk8s to populate iptables
       # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
@@ -145,14 +141,17 @@ prepare: |
         "$DOCKERHUB_MIRROR" "${DOCKERHUB_MIRROR#'https://'}" \
         | sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml > /dev/null
     fi
+
     microk8s stop
     microk8s start
     microk8s enable dns
     microk8s enable hostpath-storage
     microk8s enable metallb:10.64.140.43-10.64.140.49
+    microk8s status --wait-ready
     mkdir -p ~/.kube
     microk8s config > ~/.kube/config
-    
+    export KUBECONFIG="$HOME/.kube/config"
+
     echo "Waiting for all pods to be in 'Running' phase..."
     until kubectl get po -A --field-selector=status.phase!=Running 2>&1 | grep -q "No resources found"; do
       echo "Some pods are not running. Retrying in 5 seconds..."
@@ -164,10 +163,14 @@ prepare: |
   # Install charmcraft & pipx (on lxd-vm backend)
   concierge prepare --trace
 
-  if [[ $SPREAD_TASK == *"oauth"* ]]
+  if [[ $SPREAD_SUITE == *"k8s"* ]]
   then
-    /snap/bin/juju add-k8s uk8s --client --controller $(/snap/bin/juju show-controller | yq "keys | .[0]")
+    JUJU_CONTROLLER=$(/snap/bin/juju show-controller | yq "keys | .[0]")
+    /snap/bin/juju add-k8s uk8s \
+      --controller "$JUJU_CONTROLLER" \
+      --storage=microk8s-hostpath
   fi
+
 
   pipx install tox poetry
 prepare-each: |
@@ -180,6 +183,15 @@ prepare-each: |
   fi
   # `concierge prepare` needs to be run for each spread job in case Juju version changed
   concierge prepare --trace
+
+  if [[ $SPREAD_SUITE == *"k8s"* ]]
+  then
+    # concierge prepare creates the "testing" model on LXD; for k8s tests we need it on k8s.
+    juju destroy-model --force --no-wait --destroy-storage --no-prompt testing 2>/dev/null || true
+    until ! juju models 2>/dev/null | grep -qw "testing$"; do sleep 2; done
+    juju add-model testing uk8s
+    juju switch testing
+  fi
 
   # Unable to set constraint on all models because of Juju bug:
   # https://bugs.launchpad.net/juju/+bug/2065050

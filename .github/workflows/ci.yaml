@@ -1,10 +1,13 @@
-# Copyright 2022 Canonical Ltd.
+# Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
 name: Tests
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 on:
   pull_request:
@@ -20,38 +23,26 @@ on:
       artifact-prefix:
         description: build_charm.yaml `artifact-prefix` output
         value: ${{ jobs.build.outputs.artifact-prefix }}
+    secrets:
+      CHARMHUB_TOKEN:
+        required: false
 
 jobs:
   lint:
     name: Lint
-    uses: canonical/data-platform-workflows/.github/workflows/lint.yaml@v32.1.0
-
-  lib-check:
-    name: Check libraries
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - run: |
-          # Workaround for https://github.com/canonical/charmcraft/issues/1389#issuecomment-1880921728
-          touch requirements.txt
-      - name: Check libs
-        uses: canonical/charming-actions/check-libraries@2.6.0
-        continue-on-error: true
-        with:
-          credentials: ${{ secrets.CHARMHUB_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          use-labels: false
-          fail-build: ${{ github.event_name == 'pull_request' }}
+    uses: canonical/data-platform-workflows/.github/workflows/lint_workflows.yaml@v50.0.0
+    permissions:
+      contents: read
 
   promtool:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       # prometheus snap includes promtool
       - name: Install prometheus snap
@@ -63,13 +54,19 @@ jobs:
 
   terraform-test:
     name: Terraform - Lint and Simple Deployment
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     timeout-minutes: 120
+    permissions:
+      contents: read
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Terraform
+        run: sudo snap install terraform --classic
 
       - name: lint charm module
         run: |
@@ -81,7 +78,11 @@ jobs:
           sudo snap install juju --channel=3.6 --classic
       - name: LXD setup
         run: |
-          sudo snap refresh lxd --channel=latest/stable
+          if snap list lxd >/dev/null 2>&1; then
+            sudo snap refresh lxd --channel=latest/stable
+          else
+            sudo snap install lxd --channel=latest/stable
+          fi
           sudo adduser "$USER" 'lxd'
           # `newgrp` does not work in GitHub Actions; use `sg` instead
           sg 'lxd' -c "lxd waitready"
@@ -110,12 +111,15 @@ jobs:
       matrix:
         path:
           - .
-          - tests/integration/application-charm
+          - tests/integration/dashboards_application_charm
+          - tests/integration/dashboards_tester_charm
     name: Build charm | ${{ matrix.path }}
-    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v32.1.0
+    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v50.0.0
     with:
       cache: false
       path-to-charm-directory: ${{ matrix.path }}
+    permissions:
+      contents: read
 
   integration-test:
     name: Integration test charm
@@ -125,6 +129,5 @@ jobs:
     uses: ./.github/workflows/integration_test.yaml
     with:
       artifact-prefix: ${{ needs.build.outputs.artifact-prefix }}
-    secrets: inherit
     permissions:
       contents: write # Needed for Allure Report

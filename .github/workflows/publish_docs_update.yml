@@ -1,3 +1,5 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
 name: Update OpenSearch Dashboards docs submodule
 
 on:
@@ -8,6 +10,9 @@ on:
         - 'docs/**'
 
     workflow_dispatch:
+
+permissions:
+    contents: read
 
 jobs:
     update-docs-submodule:
@@ -21,13 +26,14 @@ jobs:
         steps:
 
         - name: Checkout target repository
-          uses: actions/checkout@v6
+          uses: actions/checkout@v7
           with:
             repository: canonical/opensearch-operator
             ref: ${{ env.BASE_BRANCH }}
             token: ${{ secrets.PAT }}
             submodules: true
             path: target-repo
+            persist-credentials: false
 
         - name: Get reviewers
           id: get-reviewers
@@ -78,19 +84,22 @@ jobs:
 
         - name: Push branch
           working-directory: target-repo
+          env:
+            PAT: ${{ secrets.PAT }}
           run: |
-            git push origin "${PR_BRANCH}"
+            git push "https://x-access-token:${PAT}@github.com/canonical/opensearch-operator.git" "HEAD:${PR_BRANCH}"
 
         - name: Open Pull Request
           working-directory: target-repo
           env:
             GITHUB_TOKEN: ${{ secrets.PAT }}
+            REVIEWERS: ${{ steps.get-reviewers.outputs.REVIEWERS }}
           run: |
             BODY="Automated update of the OpenSearch Dashboards docs submodule to commit [\`${{ github.sha }}\`](https://github.com/canonical/opensearch-dashboards-operator/commit/${{ github.sha }})."
 
             REVIEWER_ARGS=()
-            if [[ -n "${{ steps.get-reviewers.outputs.REVIEWERS }}" ]]; then
-                REVIEWER_ARGS=(--reviewer "${{ steps.get-reviewers.outputs.REVIEWERS }}")
+            if [[ -n "${REVIEWERS}" ]]; then
+                REVIEWER_ARGS=(--reviewer "${REVIEWERS}")
             fi
 
             PR_URL=$(gh pr create \

@@ -1,3 +1,5 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
 name: Markdown style checks
 
 on:
@@ -14,11 +16,14 @@ on:
 
 jobs:
   markdown-lint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
+        persist-credentials: false
     - name: Create venv
       working-directory: "docs"
       run: make install
