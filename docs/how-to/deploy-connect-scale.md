@@ -86,5 +86,5 @@ juju add-unit opensearch-dashboards -n <desired_num_of_units>
 While scaling down goes as:
 
 ```shell
-juju remove-unit opensearch-dashboards/<ID>
+juju remove-unit opensearch-dashboards/<unit_number>
 ```
