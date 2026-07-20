@@ -17,15 +17,23 @@ to use monitoring, alert rules, and log features.
 * A deployed [Charmed OpenSearch Dashboards operator](dashboard-how-to-deploy-connect-scale)
 * A deployed [`cos-lite` bundle in a Kubernetes environment](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s)
 
-## Offer interfaces via the COS controller
+```{note}
+For cross-model integration to work reliably, deploy COS Lite on a MicroK8s cloud
+added to the same Juju controller as OpenSearch Dashboards (`overlord`).
+See the [OAuth guide](dashboard-how-to-access-using-oauth) for instructions on
+adding MicroK8s to an existing controller. After adding the cloud, create the
+`cos` model on it with `juju add-model cos microk8s-cluster`.
+```
 
-First, we will switch to the COS K8s environment and offer COS interfaces to be cross-model
-integrated with the Charmed OpenSearch model.
+## Offer interfaces via the COS model
 
-To switch to the Kubernetes controller for the COS model, run
+First, we will switch to the COS model and offer COS interfaces to be cross-model
+integrated with the Charmed OpenSearch Dashboards model.
+
+To switch to the COS model, run
 
 ```shell
-juju switch k8s-controller:cos
+juju switch overlord:cos
 ```
 
 To offer the COS interfaces, run
@@ -40,7 +48,7 @@ juju offer prometheus:receive-remote-write
 
 Next, we will switch to the Charmed OpenSearch Dashboards model, find offers, and consume them.
 
-We are currently on the Kubernetes controller for the COS model.
+We are currently on the COS model.
 To switch to the OpenSearch Dashboards model, run
 
 ```shell
@@ -50,9 +58,9 @@ juju switch overlord:tutorial
 To consume offers to be reachable in the current model, run
 
 ```shell
-juju consume k8s-controller:admin/cos.grafana
-juju consume k8s-controller:admin/cos.loki
-juju consume k8s-controller:admin/cos.prometheus
+juju consume admin/cos.grafana
+juju consume admin/cos.loki
+juju consume admin/cos.prometheus
 ```
 
 ## Deploy and integrate Grafana
@@ -91,7 +99,7 @@ section of the MicroK8s "Getting started" guide.
 You can obtain the admin password as follows:
 
 ```shell
-juju run grafana/leader get-admin-password --model k8s-controller:cos
+juju run grafana/leader get-admin-password --model overlord:cos
 ```
 
 For details on available metrics and default alert rules, see the

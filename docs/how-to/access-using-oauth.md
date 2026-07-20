@@ -18,7 +18,11 @@ and Hydra OAuth interface.
 See: [How to access OpenSearch using OAuth](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/how-to/access-using-oauth/).
 
 ```{note}
-If using MicroK8s, run LXD and MicroK8s under the same Juju controller. Using separate controllers may cause failures during integration. If you must use two controllers, configure a new one for MicroK8s as follows:
+This guide assumes that LXD and MicroK8s are managed under the same Juju controller
+(`overlord`, as set up in the [Tutorial](dashboards-tutorial)).
+Running LXD and MicroK8s under separate controllers may cause failures during
+cross-model integration. If you have not yet added MicroK8s to your controller,
+you can do so as follows:
 ```
 
 ```shell
@@ -30,11 +34,14 @@ export LOCAL_IP="127.0.0.1"
 export PUBLIC_IP=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
 sed -i 's/'${LOCAL_IP}'/'${PUBLIC_IP}'/g' ~/.kube/config
 
-# Create new cloud using modified config
-cat ~/.kube/config | juju add-k8s microk8s-cluster --cluster-name=microk8s-cluster --client
+# Add the microk8s cloud to the existing controller
+juju add-k8s microk8s-cluster --controller overlord
+```
 
-# Bootstrap the microk8s controller
-juju bootstrap microk8s-cluster k8s-controller
+After adding the cloud, create a model on it for the Identity Platform:
+
+```shell
+juju add-model oauth microk8s-cluster
 ```
 
 ## Deploy OpenSearch Dashboards
@@ -56,10 +63,10 @@ juju status --watch 2s
 
 ## Integrate OpenSearch Dashboards with Canonical Identity Platform
 
-Switch to the MicroK8s model and verify the identity platform bundle is ready:
+Switch to the `oauth` model and verify the identity platform bundle is ready:
 
 ```shell
-juju switch k8s-controller:oauth
+juju switch overlord:oauth
 juju status
 ```
 
@@ -68,8 +75,8 @@ juju status
 <summary> Output example</summary>
 
 ```text
-Model        Controller  Cloud/Region        Version  SLA          Timestamp
-oauth  microk8s    microk8s/localhost  3.6.10   unsupported  15:38:54Z
+Model  Controller  Cloud/Region                Version  SLA          Timestamp
+oauth  overlord    microk8s-cluster/localhost  3.6.10   unsupported  15:38:54Z
 
 App                                  Version  Status   Scale  Charm                                Channel        Rev  Address         Exposed  Message
 hydra                                v2.3.0   active       1  hydra                                latest/edge    339  10.152.183.124  no
@@ -110,8 +117,8 @@ Switch back to the OpenSearch Dashboards model and consume the offers:
 
 ```shell
 juju switch overlord:tutorial
-juju consume k8s-controller:admin/oauth.hydra
-juju consume k8s-controller:admin/oauth.self-signed-certificates
+juju consume admin/oauth.hydra
+juju consume admin/oauth.self-signed-certificates
 ```
 
 Now integrate OpenSearch Dashboards with the consumed offers:
@@ -128,7 +135,7 @@ This command will require an email and username, and will give the password rese
 link as well as the reset code.
 
 ```shell
-juju run kratos/leader create-admin-account email=myuser@example.com username=myuser
+juju run kratos/leader create-admin-account email=myuser@example.com username=myuser --model overlord:oauth
 Running operation 1 with 1 task
   - task 2 on unit-kratos-0
 
