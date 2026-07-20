@@ -190,7 +190,7 @@ juju status --relations
 Alternatively, if you want to monitor your system (with a view updating every second):
 
 ```shell
-juju status --watch 1s
+watch juju status
 ```
 
 (dashboards-enable-tls)=

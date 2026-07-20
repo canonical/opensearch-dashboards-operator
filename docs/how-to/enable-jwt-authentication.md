@@ -21,8 +21,8 @@ Deploy the charm:
 juju deploy jwt-integrator --channel 1/edge
 ```
 
-After the deployment has settled, the charm will be in blocked status because of missing configuration.
-You can check this with `juju status`:
+After the deployment has settled, the charm is in blocked status because of missing configuration.
+Check this with `juju status`:
 
 ```text
 opensearch  dev-controller  localhost/localhost  3.6.8    unsupported  12:02:14Z
@@ -77,7 +77,7 @@ juju integrate jwt-integrator opensearch
 ```
 
 After a few moments, OpenSearch has applied the provided configuration and updated its security plugin.
-Now you can query OpenSearch with your JWT:
+Now query OpenSearch with your JWT:
 
 ```shell
 curl --header "Authorization: Bearer <your-jwt-here>" -XGET "https://<ip-address>:9200/_cat/nodes" -k
@@ -129,7 +129,7 @@ Make sure you have configured the configuration option `jwt-url-parameter` to th
 juju config jwt-integrator jwt-url-parameter="jwt"
 ```
 
-After a few moments, you can access it by adding your JWT as a URL parameter in a web browser:
+After a few moments, access it by adding your JWT as a URL parameter in a web browser:
 
 ```shell
 http://<ip-address>:5601?jwt=<your-jwt>

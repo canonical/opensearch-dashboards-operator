@@ -8,7 +8,7 @@ credentials for Charmed OpenSearch Dashboards.
 
 First, make sure you have a TLS certificates charm set up.
 
-This guide will show how to enable TLS using the
+This guide shows how to enable TLS using the
 [`self-signed-certificates` charm](https://github.com/canonical/self-signed-certificates-operator)
 as an example.
 
@@ -48,4 +48,4 @@ Running the following command on the leader unit changes the `kibanaserver` pass
 juju run opensearch/leader set-password
 ```
 
-The new credentials will be populated for the Dashboards charm.
+The new credentials are populated for the Dashboards charm.

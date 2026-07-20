@@ -27,7 +27,7 @@ adding MicroK8s to an existing controller. After adding the cloud, create the
 
 ## Offer interfaces via the COS model
 
-First, we will switch to the COS model and offer COS interfaces to be cross-model
+First, switch to the COS model and offer COS interfaces to be cross-model
 integrated with the Charmed OpenSearch Dashboards model.
 
 To switch to the COS model, run
@@ -46,9 +46,9 @@ juju offer prometheus:receive-remote-write
 
 ## Consume offers via the OpenSearch Dashboards model
 
-Next, we will switch to the Charmed OpenSearch Dashboards model, find offers, and consume them.
+Next, switch to the Charmed OpenSearch Dashboards model, find offers, and consume them.
 
-We are currently on the COS model.
+You are currently on the COS model.
 To switch to the OpenSearch Dashboards model, run
 
 ```shell
@@ -87,8 +87,8 @@ it with Charmed OpenSearch Dashboards:
 juju integrate grafana-agent opensearch-dashboards
 ```
 
-After the integration is complete, Grafana will show the new dashboard
-`Charmed OpenSearch Dashboards` and will allow access to Charmed OpenSearch Dashboards logs on Loki.
+After the integration is complete, Grafana shows the new dashboard
+`Charmed OpenSearch Dashboards` and allows access to Charmed OpenSearch Dashboards logs on Loki.
 
 ## Connect to the Grafana web interface
 
@@ -96,7 +96,7 @@ To connect to the Grafana web interface, follow the
 [Browse dashboards](https://documentation.ubuntu.com/observability/latest/tutorial/cos-lite-microk8s-sandbox/#browse-dashboards)
 section of the MicroK8s "Getting started" guide.
 
-You can obtain the admin password as follows:
+Obtain the admin password as follows:
 
 ```shell
 juju run grafana/leader get-admin-password --model overlord:cos

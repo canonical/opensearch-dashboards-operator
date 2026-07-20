@@ -22,7 +22,7 @@ This guide assumes that LXD and MicroK8s are managed under the same Juju control
 (`overlord`, as set up in the [Tutorial](dashboards-tutorial)).
 Running LXD and MicroK8s under separate controllers may cause failures during
 cross-model integration. If you have not yet added MicroK8s to your controller,
-you can do so as follows:
+add it as follows:
 ```
 
 ```shell
@@ -55,10 +55,10 @@ juju deploy opensearch-dashboards --channel=2/edge
 juju integrate opensearch opensearch-dashboards
 ```
 
-Now, we will wait for the OpenSearch and OpenSearch Dashboards to become active and ready.
+Now, wait for the OpenSearch and OpenSearch Dashboards to become active and ready:
 
 ```shell
-juju status --watch 2s 
+watch juju status
 ```
 
 ## Integrate OpenSearch Dashboards with Canonical Identity Platform
@@ -102,9 +102,9 @@ traefik-public/0*                       active    idle   10.1.156.86
 </details>
 
 All the components of the bundle must be active except `kratos-external-idp-integrator`.
-It will be in blocked status.
+It is in blocked status.
 
-Before switching back to the LXD model, we need to offer the `hydra:oauth` and
+Before switching back to the LXD model, offer the `hydra:oauth` and
 `self-signed-certificates:certificates` endpoints from the OAuth model so they
 can be consumed cross-model by the OpenSearch Dashboards model:
 
@@ -130,12 +130,17 @@ juju integrate opensearch-dashboards:oauth hydra:oauth
 
 ## Create an admin account
 
-We will now create an admin account using Kratos.
-This command will require an email and username, and will give the password reset
-link as well as the reset code.
+Create an admin account using Kratos.
+This command requires an email and username, and prints the password reset
+link as well as the reset code:
 
 ```shell
 juju run kratos/leader create-admin-account email=myuser@example.com username=myuser --model overlord:oauth
+```
+
+The output is similar to the following:
+
+```text
 Running operation 1 with 1 task
   - task 2 on unit-kratos-0
 
@@ -154,10 +159,10 @@ The output provides a password reset link and recovery code.
 Open the link, enter the recovery code, and set a password.
 
 Make sure to enter the recovery code given in the output of the previous command.
-Once that is done you will be redirected to the password reset page,
+Once that is done, you are redirected to the password reset page,
 where you specify the user’s password.
 
-Once the password is set, you will then be prompted to configure 2FA (mandatory).
+Once the password is set, you are prompted to configure 2FA (mandatory).
 
 ## Access OpenSearch Dashboards using Single Sign-On
 
@@ -165,7 +170,7 @@ To access OpenSearch Dashboards, use the IP address on the `opensearch-dashboard
 unit to form the URL: `https://<ip-address>:5601`.
 
 Once the account is ready, open OpenSearch Dashboards.
-A **Log in with single sign-on** button will appear.
+A **Log in with single sign-on** button appears.
 
 ```{figure} img/OSD-OAuth-1.jpg
 :width: 75%
@@ -174,7 +179,7 @@ A **Log in with single sign-on** button will appear.
 ```
 
 Click the button to open the identity platform login UI.
-You will get redirected to the identity platform UI login screen where you will be
+You are redirected to the identity platform UI login screen, where you are
 prompted to enter the email and password.
 
 ```{figure} img/OSD-OAuth-2.jpg
@@ -183,7 +188,7 @@ prompted to enter the email and password.
 
 ```
 
-If it is your first time connecting, it will also ask for the 2FA code.
+If it is your first time connecting, it also asks for the 2FA code.
 
 ```{figure} img/OSD-OAuth-3.jpg
 :width: 50%
@@ -191,7 +196,7 @@ If it is your first time connecting, it will also ask for the 2FA code.
 
 ```
 
-After a successful login, you will be redirected to the OpenSearch Dashboards home screen.
+After a successful login, you are redirected to the OpenSearch Dashboards home screen.
 
 ```{figure} img/OSD-OAuth-4.jpg
 :width: 75%
