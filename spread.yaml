@@ -57,7 +57,7 @@ backends:
       git restore pyproject.toml poetry.lock
 
       # Use instead of `concierge restore` to save time between tests
-      # For example, with microk8s, using `concierge restore` takes twice as long as this (e.g. 6
+      # For example, with k8s, using `concierge restore` takes twice as long as this (e.g. 6
       # min instead of 3 min between every spread job)
       juju destroy-model --force --no-wait --destroy-storage --no-prompt testing
       juju kill-controller --no-prompt concierge-lxd
@@ -110,7 +110,6 @@ kill-timeout: 3h
 environment:
   PATH: $PATH:/root/.local/bin
   CONCIERGE_JUJU_CHANNEL: 3.6/stable
-  CONCIERGE_MICROK8S_CHANNEL: 1.35-strict/stable
   CHARM_UBUNTU_BASE/ubuntu24: 24.04
   CHARM_UBUNTU_BASE/ubuntu22: 22.04
 prepare: |
@@ -121,56 +120,49 @@ prepare: |
 
   if [[ $SPREAD_SUITE == *"k8s"* ]]
   then
-    # Running on IS-hosted runner; configure microk8s to use Docker Hub mirror
-    # Run before concierge prepare because of https://github.com/canonical/concierge/issues/75
-    sudo snap install microk8s --classic --channel "$CONCIERGE_MICROK8S_CHANNEL"
-    sudo snap install kubectl --classic
+    # Remove docker and fix iptable forwarding rules to avoid conflicts with k8s and cilium
+    sudo apt-get purge -y docker.io containerd 2>/dev/null || true
+    sudo apt-get autoremove -y 2>/dev/null || true
+    for chain in DOCKER DOCKER-ISOLATION-STAGE-1 DOCKER-ISOLATION-STAGE-2 DOCKER-USER DOCKER-FORWARD; do
+      sudo iptables -D FORWARD -j $chain 2>/dev/null || true
+      sudo iptables -F $chain 2>/dev/null || true
+      sudo iptables -X $chain 2>/dev/null || true
+      sudo iptables -t nat -F $chain 2>/dev/null || true
+      sudo iptables -t nat -X $chain 2>/dev/null || true
+    done
+    sudo iptables -P FORWARD ACCEPT
+
+    # Install charmcraft & pipx, k8s snap and bootstrap the controller on LXD
+    concierge prepare --trace -c concierge-k8s.yaml
+
+    # k8s status --wait-ready returns as soon as 1 node is ready
+    # (see https://github.com/canonical/k8s-snap/issues/1789)
+    # but Cilium, CoreDNS, and storage may still be initialising
+    for res in deployment/cilium-operator deployment/coredns deployment/metrics-server daemonset/cilium daemonset/ck-storage-rawfile-csi-node statefulset/ck-storage-rawfile-csi-controller; do
+      if sudo k8s kubectl -n kube-system get "$res" >/dev/null 2>&1; then
+        sudo k8s kubectl -n kube-system rollout status "$res" --timeout=5m
+      else
+        echo "Skipping rollout status for missing $res"
+      fi
+    done
+
     sudo snap install yq
 
-    if [[ -n "${DOCKERHUB_MIRROR:-}" ]]
-    then
-      # Wait for microk8s to populate iptables
-      # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
-      until [[ -n $(iptables --list | grep -i "microk8s") ]]
-      do
-        echo "MicroK8s has not yet configured iptables."
-        sleep 10
-      done
-      # Use printf to avoid YAML/Heredoc indentation issues
-      printf 'server = "%s"\n[host."%s"]\ncapabilities = ["pull", "resolve"]\n' \
-        "$DOCKERHUB_MIRROR" "${DOCKERHUB_MIRROR#'https://'}" \
-        | sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml > /dev/null
-    fi
-
-    microk8s stop
-    microk8s start
-    microk8s enable dns
-    microk8s enable hostpath-storage
-    microk8s enable metallb:10.64.140.43-10.64.140.49
-    microk8s status --wait-ready
+    # The kubeconfig written by concierge points at 127.0.0.1, which is not
+    # reachable from the Juju controller running in an LXD container.
+    # Replace it with the host IP so the controller can reach the k8s API.
     mkdir -p ~/.kube
-    microk8s config > ~/.kube/config
-    export KUBECONFIG="$HOME/.kube/config"
+    sudo k8s kubectl config view --raw > ~/.kube/config
+    export LOCAL_IP="127.0.0.1"
+    export PUBLIC_IP=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
+    sed -i 's/'${LOCAL_IP}'/'${PUBLIC_IP}'/g' ~/.kube/config
 
-    echo "Waiting for all pods to be in 'Running' phase..."
-    until kubectl get po -A --field-selector=status.phase!=Running 2>&1 | grep -q "No resources found"; do
-      echo "Some pods are not running. Retrying in 5 seconds..."
-      sleep 5
-    done
-    echo "Success: All pods are running!"
-  fi
-
-  # Install charmcraft & pipx (on lxd-vm backend)
-  concierge prepare --trace
-
-  if [[ $SPREAD_SUITE == *"k8s"* ]]
-  then
     JUJU_CONTROLLER=$(/snap/bin/juju show-controller | yq "keys | .[0]")
-    /snap/bin/juju add-k8s uk8s \
-      --controller "$JUJU_CONTROLLER" \
-      --storage=microk8s-hostpath
+    cat ~/.kube/config | /snap/bin/juju add-k8s uk8s --client --controller "$JUJU_CONTROLLER"
+  else
+    # Install charmcraft & pipx (on lxd-vm backend)
+    concierge prepare --trace
   fi
-
 
   pipx install tox poetry
 prepare-each: |
@@ -182,7 +174,12 @@ prepare-each: |
     poetry add --lock --group integration juju@^2
   fi
   # `concierge prepare` needs to be run for each spread job in case Juju version changed
-  concierge prepare --trace
+  if [[ $SPREAD_SUITE == *"k8s"* ]]
+  then
+    concierge prepare --trace -c concierge-k8s.yaml
+  else
+    concierge prepare --trace
+  fi
 
   if [[ $SPREAD_SUITE == *"k8s"* ]]
   then

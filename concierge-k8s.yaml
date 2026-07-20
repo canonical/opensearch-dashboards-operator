@@ -1,0 +1,33 @@
+# This file defines the configuration for concierge.
+# Concierge (https://github.com/canonical/concierge) is a utility used to
+# provision charm development and testing machines.
+# This file is used automatically by spread for k8s & oauth jobs.
+#
+# The Juju controller is bootstrapped on LXD; the k8s snap is installed and
+# configured by concierge, then added to the controller as the "uk8s" cloud
+# in spread.yaml (tests need both LXD and k8s clouds on the same controller).
+juju:
+  model-defaults:
+    logging-config: <root>=INFO; unit=DEBUG
+providers:
+  lxd:
+    enable: true
+    bootstrap: true
+  k8s:
+    enable: true
+    bootstrap: false
+    channel: 1.32-classic/stable
+    image-registry:
+      url: $DOCKERHUB_MIRROR
+    features:
+      load-balancer:
+        l2-mode: "true"
+        cidrs: "10.43.45.0/28"
+      local-storage: {}
+      network: {}
+host:
+  snaps:
+    jhack:
+      channel: latest/edge
+      connections:
+        - jhack:dot-local-share-juju snapd
