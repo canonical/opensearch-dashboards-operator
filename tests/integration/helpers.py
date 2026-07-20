@@ -155,7 +155,7 @@ async def deploy_base(
     num_units_app: int = 1,
     num_units_db: int = 2,
     opensearch_channel: str = "2/stable",
-    trust_charm: bool = False,
+    trust_charm: bool = True,
     opensearch_config: dict | None = None,
     resource: dict | None = None,
     charm_channel: str | None = None,
