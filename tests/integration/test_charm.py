@@ -60,7 +60,8 @@ NUM_UNITS_DB = 3
 async def test_build_and_deploy(
     ops_test_vm: OpsTest,
     ops_test: OpsTest,
-    charm: str,
+    charmvm: str,
+    charmk8s: str,
     application_charm: str,
     dashboard_tester_charm: str,
     charm_base: str,
@@ -71,7 +72,7 @@ async def test_build_and_deploy(
     tls = test_flags.test_tls
     traefik = test_flags.traefik
     transfer_traefik_ca = test_flags.transfer_traefik_ca
-
+    charm = charmvm if substrate == "vm" else charmk8s
     app_name = await deploy_base(
         ops_test_vm,
         ops_test,
