@@ -11,14 +11,18 @@ By the end, you will be able to sign in to OpenSearch Dashboards with an admin u
 
 * A deployed charmed OpenSearch cluster on LXD.  
 * A deployed charmed OpenSearch Dashboards on LXD and integrated with OpenSearch.
-See: [How to Connect to OpenSearch](dashboard-how-to-connect-to-opensearch).
+See: [Deploy, connect, and scale](dashboard-how-to-deploy-connect-scale).
 * A deployed Canonical Identity Platform on Kubernetes.
 * Working Integration between OpenSearch and Canonical Identity Platform through certificates
 and Hydra OAuth interface.
 See: [How to access OpenSearch using OAuth](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/how-to/access-using-oauth/).
 
 ```{note}
-If using MicroK8s, run LXD and MicroK8s under the same Juju controller. Using separate controllers may cause failures during integration. If you must use two controllers, configure a new one for MicroK8s as follows:
+This guide assumes that LXD and MicroK8s are managed under the same Juju controller
+(`overlord`, as set up in the [Tutorial](dashboards-tutorial)).
+Running LXD and MicroK8s under separate controllers may cause failures during
+cross-model integration. If you have not yet added MicroK8s to your controller,
+add it as follows:
 ```
 
 ```shell
@@ -30,11 +34,14 @@ export LOCAL_IP="127.0.0.1"
 export PUBLIC_IP=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
 sed -i 's/'${LOCAL_IP}'/'${PUBLIC_IP}'/g' ~/.kube/config
 
-# Create new cloud using modified config
-cat ~/.kube/config | juju add-k8s microk8s-cluster --cluster-name=microk8s-cluster --client
+# Add the microk8s cloud to the existing controller
+juju add-k8s microk8s-cluster --controller overlord
+```
 
-# Bootstrap the microk8s controller
-juju bootstrap microk8s-cluster k8s-controller
+After adding the cloud, create a model on it for the Identity Platform:
+
+```shell
+juju add-model oauth microk8s-cluster
 ```
 
 ## Deploy OpenSearch Dashboards
@@ -43,22 +50,23 @@ On the LXD model where OpenSearch is deployed, deploy OpenSearch Dashboards,
 and integrate it with OpenSearch charm.
 
 ```shell
+juju switch overlord:tutorial
 juju deploy opensearch-dashboards --channel=2/edge
 juju integrate opensearch opensearch-dashboards
 ```
 
-Now, we will wait for the OpenSearch and OpenSearch Dashboards to become active and ready.
+Now, wait for the OpenSearch and OpenSearch Dashboards to become active and ready:
 
 ```shell
-juju status --watch 2s 
+watch juju status
 ```
 
 ## Integrate OpenSearch Dashboards with Canonical Identity Platform
 
-Switch to the MicroK8s model and verify the identity platform bundle is ready:
+Switch to the `oauth` model and verify the identity platform bundle is ready:
 
 ```shell
-juju switch oauth
+juju switch overlord:oauth
 juju status
 ```
 
@@ -67,8 +75,8 @@ juju status
 <summary> Output example</summary>
 
 ```text
-Model        Controller  Cloud/Region        Version  SLA          Timestamp
-oauth  microk8s    microk8s/localhost  3.6.10   unsupported  15:38:54Z
+Model  Controller  Cloud/Region                Version  SLA          Timestamp
+oauth  overlord    microk8s-cluster/localhost  3.6.10   unsupported  15:38:54Z
 
 App                                  Version  Status   Scale  Charm                                Channel        Rev  Address         Exposed  Message
 hydra                                v2.3.0   active       1  hydra                                latest/edge    339  10.152.183.124  no
@@ -94,28 +102,45 @@ traefik-public/0*                       active    idle   10.1.156.86
 </details>
 
 All the components of the bundle must be active except `kratos-external-idp-integrator`.
-It will be in blocked status.
+It is in blocked status.
 
-Switch back to LXD and integrate OpenSearch Dashboards with the interface offered
-by self-signed-certificates from OAuth model, and with the OAuth interface provided by Hydra.
+Before switching back to the LXD model, offer the `hydra:oauth` and
+`self-signed-certificates:certificates` endpoints from the OAuth model so they
+can be consumed cross-model by the OpenSearch Dashboards model:
 
 ```shell
-juju switch lxd
+juju offer hydra:oauth
+juju offer self-signed-certificates:certificates
+```
+
+Switch back to the OpenSearch Dashboards model and consume the offers:
+
+```shell
+juju switch overlord:tutorial
+juju consume admin/oauth.hydra
+juju consume admin/oauth.self-signed-certificates
+```
+
+Now integrate OpenSearch Dashboards with the consumed offers:
+
+```shell
 juju integrate opensearch-dashboards:certificates self-signed-certificates:certificates
 juju integrate opensearch-dashboards:oauth hydra:oauth
 ```
 
 ## Create an admin account
 
-We will now create an admin account using Kratos.
-This command will require an email and username, and will give the password reset
-link as well as the reset code.
+Create an admin account using Kratos.
+This command requires an email and username, and prints the password reset
+link as well as the reset code:
 
 ```shell
-juju run kratos/0 create-admin-account email=myuser@example.com username=myuser
-Running operation 7 with 1 task
-  - task 8 on unit-kratos-0
+juju run kratos/leader create-admin-account email=myuser@example.com username=myuser --model overlord:oauth
+```
 
+The output is similar to the following:
+
+```text
 Running operation 1 with 1 task
   - task 2 on unit-kratos-0
 
@@ -134,18 +159,18 @@ The output provides a password reset link and recovery code.
 Open the link, enter the recovery code, and set a password.
 
 Make sure to enter the recovery code given in the output of the previous command.
-Once that is done you will be redirected to the password reset page,
+Once that is done, you are redirected to the password reset page,
 where you specify the user’s password.
 
-Once the password is set, you will then be prompted to configure 2FA (mandatory).
+Once the password is set, you are prompted to configure 2FA (mandatory).
 
-## Access Opensearch Dashboards using Single Sign-On
+## Access OpenSearch Dashboards using Single Sign-On
 
 To access OpenSearch Dashboards, use the IP address on the `opensearch-dashboards/0`
 unit to form the URL: `https://<ip-address>:5601`.
 
 Once the account is ready, open OpenSearch Dashboards.
-A **Log in with single sign-on** button will appear.
+A **Log in with single sign-on** button appears.
 
 ```{figure} img/OSD-OAuth-1.jpg
 :width: 75%
@@ -154,7 +179,7 @@ A **Log in with single sign-on** button will appear.
 ```
 
 Click the button to open the identity platform login UI.
-You will get redirected to the identity platform UI login screen where you will be
+You are redirected to the identity platform UI login screen, where you are
 prompted to enter the email and password.
 
 ```{figure} img/OSD-OAuth-2.jpg
@@ -163,7 +188,7 @@ prompted to enter the email and password.
 
 ```
 
-If it is your first time connecting, it will also ask for the 2FA code.
+If it is your first time connecting, it also asks for the 2FA code.
 
 ```{figure} img/OSD-OAuth-3.jpg
 :width: 50%
@@ -171,7 +196,7 @@ If it is your first time connecting, it will also ask for the 2FA code.
 
 ```
 
-After a successful login, you will be redirected to the OpenSearch Dashboards home screen.
+After a successful login, you are redirected to the OpenSearch Dashboards home screen.
 
 ```{figure} img/OSD-OAuth-4.jpg
 :width: 75%

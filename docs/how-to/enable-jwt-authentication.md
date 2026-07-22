@@ -1,15 +1,15 @@
 (dashboard-how-to-enable-jwt-auth)=
-# How to enable JWT Authentication
+# How to enable JWT authentication
 
 This document shows how to enable authentication with JSON Web Tokens (JWT) in OpenSearch.
 
 ## Prerequisites
 
-* A running deployment of Opensearch on VM with minimum charm revision 275 (22.04) or 276 (24.04)
+* A running deployment of OpenSearch on VM with minimum charm revision 275 (22.04) or 276 (24.04)
 * A valid JSON Web Token for testing, issued by the JWT provider of your choice
 * The signing-key with which the JWT was signed
 
-The generation of JWT's is not part of the scope of this document.
+The generation of JWTs is not part of the scope of this document.
 
 ## Deploy and configure JWT integrator
 
@@ -21,8 +21,8 @@ Deploy the charm:
 juju deploy jwt-integrator --channel 1/edge
 ```
 
-After the deployment has settled, the charm will be in blocked status because of missing configuration.
-You can check this with `juju status`:
+After the deployment has settled, the charm is in blocked status because of missing configuration.
+Check this with `juju status`:
 
 ```text
 opensearch  dev-controller  localhost/localhost  3.6.8    unsupported  12:02:14Z
@@ -77,7 +77,7 @@ juju integrate jwt-integrator opensearch
 ```
 
 After a few moments, OpenSearch has applied the provided configuration and updated its security plugin.
-Now you can query Opensearch with your JWT:
+Now query OpenSearch with your JWT:
 
 ```shell
 curl --header "Authorization: Bearer <your-jwt-here>" -XGET "https://<ip-address>:9200/_cat/nodes" -k
@@ -117,7 +117,7 @@ self-signed-certificates           active       1  self-signed-certificates 1/st
 ## Enabling JWT authentication with OpenSearch Dashboards
 
 To use JWT authentication in the OpenSearch Dashboards UI,
-all you need to do is integrate the JWT integrator with Opensearch Dashboards:
+all you need to do is integrate the JWT integrator with OpenSearch Dashboards:
 
 ```shell
 juju integrate jwt-integrator opensearch-dashboards
@@ -129,7 +129,7 @@ Make sure you have configured the configuration option `jwt-url-parameter` to th
 juju config jwt-integrator jwt-url-parameter="jwt"
 ```
 
-After a few moments, you can access it by adding your JWT as a URL parameter in a web browser:
+After a few moments, access it by adding your JWT as a URL parameter in a web browser:
 
 ```shell
 http://<ip-address>:5601?jwt=<your-jwt>

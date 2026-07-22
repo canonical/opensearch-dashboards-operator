@@ -25,7 +25,7 @@ The OpenSearch Dashboards and OpenSearch operators are available for physical/vi
 
 ## Project and community
 
-Charmed MongoDB is an open source project that warmly welcomes community contributions,
+Charmed OpenSearch Dashboards is an open source project that warmly welcomes community contributions,
 suggestions, fixes, and constructive feedback.
 
 * Check our [Code of Conduct](https://ubuntu.com/community/ethos/code-of-conduct)
