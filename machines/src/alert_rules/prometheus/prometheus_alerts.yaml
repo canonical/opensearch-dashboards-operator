@@ -1,0 +1,66 @@
+groups:
+- name: opensearch_dashboards.alerts
+  rules:
+
+  - alert: OpenSearchDashboardsScrapeFailed
+    annotations:
+      description: Scrape on {{ $labels.juju_unit }} failed. Ensure that the OpenSearch Dashboards systemd service is healthy.
+      summary: "OpenSearch exporter scrape failed"
+    expr: up < 1
+    for: 5m
+    labels:
+      severity: critical
+
+  - alert: OpenSearchDashboardsRed
+    annotations:
+      description: "Dashboards status is red. The server may be down, it may have lost connection to Opensearch, or may suffer of partial unavailability."
+      summary: Server health status is red or plugins are down
+    expr: opensearch_dashboards_status == 2
+    for: 2m
+    labels:
+      severity: critical
+
+  - alert: OpenSearchDashboardsYellow
+    annotations:
+      description: Dashboards status is yellow. Plugins might be degraded or shards may be relocating or initializing.
+      summary: Dashboard health status is yellow
+    expr: opensearch_dashboards_status == 1
+    for: 10m
+    labels:
+      severity: warning
+
+  - alert: OpenSearchDashboardsPluginRed
+    annotations:
+      description: "Dashboards {{ $labels.id }} status is red: {{ $labels.message }}"
+      summary: Dashboards plugin status is red
+    expr: opensearch_dashboards_statuses == 2
+    for: "2m"
+    labels:
+      severity: critical
+
+  - alert: OpenSearchDashboardsPluginYellow
+    annotations:
+      description: "Dashboards {{ $labels.id }} status is yellow: {{ $labels.message }}"
+      summary: Dashboards plugin status is yellow
+    expr: opensearch_dashboards_statuses == 1
+    for: "10m"
+    labels:
+      severity: warning
+
+  - alert: OpenSearchDashboardsNoMetrics
+    annotations:
+      description: Exporter failed to collect status metrics. Dashboards may be down or user and password may be invalid. Check the exporter logs.
+      summary: No metrics collected.
+    expr: opensearch_dashboards_up == 0
+    for: 2m
+    labels:
+      severity: critical
+
+  - alert: OpenSearchDashboardsLongResponseTime
+    annotations:
+      description: The server is up and responsive, however with a high latency.
+      summary: High response time
+    expr: opensearch_dashboards_resp_time_avg > 200
+    for: "2m"
+    labels:
+      severity: "critical"

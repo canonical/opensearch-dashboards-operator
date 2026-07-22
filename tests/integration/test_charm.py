@@ -40,8 +40,8 @@ from .helpers import (
 
 logger = logging.getLogger(__name__)
 
-METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
-APP_NAME = METADATA["name"]
+METADATA_K8s = yaml.safe_load(Path("./kubernetes/metadata.yaml").read_text())
+METADATA_VM = yaml.safe_load(Path("./machines/metadata.yaml").read_text())
 PROMETHEUS_APP = "prometheus-k8s"
 LOKI_APP = "loki-k8s"
 GRAFANA_APP = "grafana-k8s"
@@ -158,6 +158,7 @@ async def test_dashboard_tls_lifecycle(
     test_flags: Flags,
 ):
     """Test HTTPS relation lifecycle (breaking and restoring)."""
+    APP_NAME = METADATA_VM["name"] if substrate == "vm" else METADATA_K8s["name"]
     tls = test_flags.test_tls
     traefik = test_flags.traefik
     transfer_traefik_ca = test_flags.transfer_traefik_ca
@@ -277,6 +278,7 @@ async def test_cos_relations(
     substrate: str,
     test_flags: Flags,
 ):
+    APP_NAME = METADATA_VM["name"] if substrate == "vm" else METADATA_K8s["name"]
     traefik = test_flags.traefik
     if substrate == "k8s":
         await ops_test.model.integrate(f"{APP_NAME}:metrics-endpoint", PROMETHEUS_APP)
@@ -366,6 +368,7 @@ async def test_log_level_change(
     substrate: str,
     test_flags: Flags,
 ):
+    APP_NAME = METADATA_VM["name"] if substrate == "vm" else METADATA_K8s["name"]
     log_path = "/var/snap/opensearch-dashboards/common/var/log/opensearch-dashboards/opensearch_dashboards.log"
     container = ""
     traefik = test_flags.traefik
@@ -401,6 +404,7 @@ async def test_dashboard_status_changes(
     test_flags: Flags,
 ):
     """Test status changes based on backend failures."""
+    APP_NAME = METADATA_VM["name"] if substrate == "vm" else METADATA_K8s["name"]
     tls = test_flags.test_tls
     traefik = test_flags.traefik
     logger.info("Breaking opensearch connection")
@@ -510,6 +514,7 @@ async def test_restore_opensearch_restores_osd(
     test_flags: Flags,
 ):
     """This test shouldn't be separate but a native continuation of the previous one."""
+    APP_NAME = METADATA_VM["name"] if substrate == "vm" else METADATA_K8s["name"]
     tls = test_flags.test_tls
     traefik = test_flags.traefik
     logger.info("Destroying and restoring the Opensearch cluster")

@@ -1,0 +1,49 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opensearch-dashboards
+display-name: Opensearch Dashboards
+description: |
+  OpenSearch Dashboard is a community-driven, Apache 2.0-licensed open source 
+  user interface that lets you visualize your OpenSearch data and run and scale
+  your OpenSearch clusters.
+
+summary: The Charmed Opensearch Dashboards operator
+docs: https://discourse.charmhub.io/t/charmed-opensearch-dashboards-home/14117
+source: https://github.com/canonical/opensearch-dashboards-operator
+issues: https://github.com/canonical/opensearch-dashboards-operator/issues
+charm-user: non-root
+
+maintainers:
+  - Canonical Data Platform Team <data-platform@lists.launchpad.net>
+
+peers:
+  dashboard_peers:
+    interface: dashboard_peers
+  restart:
+    interface: rolling_op
+  upgrade:
+    interface: upgrade
+  status-peers:
+    interface: status-peers
+
+requires:
+  opensearch-client:
+    interface: opensearch_client
+    limit: 1
+  certificates:
+    interface: tls-certificates
+    limit: 1
+    optional: true
+  oauth:
+    interface: oauth
+    limit: 1
+    optional: true
+  jwt-configuration:
+    interface: jwt
+    limit: 1
+    optional: true
+
+provides:
+  cos-agent:
+    interface: cos_agent

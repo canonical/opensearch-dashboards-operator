@@ -17,8 +17,6 @@ import pytest
 import requests
 import yaml
 from juju.relation import Relation
-from kubernetes import client as k8s_client
-from kubernetes import config as k8s_config
 from kubernetes.stream import stream as k8s_stream
 from pytest_operator.plugin import OpsTest
 from requests.exceptions import ConnectionError, SSLError, Timeout
@@ -32,12 +30,15 @@ from tenacity import (
     wait_fixed,
 )
 
+from kubernetes import client as k8s_client
+from kubernetes import config as k8s_config
+
 from .conftest import Flags
 
-METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
+METADATA_K8s = yaml.safe_load(Path("./kubernetes/metadata.yaml").read_text())
+METADATA_VM = yaml.safe_load(Path("./machines/metadata.yaml").read_text())
 SUBSTRATE = os.environ.get("SUBSTRATE", "vm").lower()
-APP_NAME = METADATA["name"]
-
+APP_NAME = METADATA_VM["name"] if SUBSTRATE == "vm" else METADATA_K8s["name"]
 OPENSEARCH_APP_NAME = "opensearch"
 CONFIG_OPTS = {"profile": "testing"}
 DUMMY_CHARM = "dummy-charm"
@@ -59,7 +60,7 @@ COS_AGENT_RELATION_NAME = "cos-agent"
 DB_CLIENT_APP_NAME = "application"
 TRAEFIK_APP_NAME = "traefik-k8s"
 RESOURCE = {
-    "opensearch-dashboards-image": METADATA["resources"]["opensearch-dashboards-image"][
+    "opensearch-dashboards-image": METADATA_K8s["resources"]["opensearch-dashboards-image"][
         "upstream-source"
     ]
 }

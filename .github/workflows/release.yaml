@@ -21,11 +21,17 @@ jobs:
       contents: write # Needed by integration-test job for Allure Report
 
   release:
-    name: Release charm
+    name: Release charm | ${{ matrix.path }}
+    strategy:
+      matrix:
+        path:
+          - machines
+          - kubernetes
     needs:
       - ci-tests
     uses: canonical/data-platform-workflows/.github/workflows/release_charm_edge.yaml@v50.0.0
     with:
+      path-to-charm-directory: ${{ matrix.path }}
       track: "2"
       artifact-prefix: ${{ needs.ci-tests.outputs.artifact-prefix }}
     secrets:

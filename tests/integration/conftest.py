@@ -42,12 +42,21 @@ def charm_base():
 
 
 @pytest.fixture
-def charm(charm_base):
+def charmvm(charm_base):
     """Path to the charm file to use for testing."""
     # Return str instead of pathlib.Path since python-lib juju's model.deploy(), juju deploy, and
     # juju bundle files expect local charms to begin with `./` or `/` to distinguish them from
     # Charmhub charms.
-    return f"./opensearch-dashboards_{charm_base}-amd64.charm"
+    return f"./machines/opensearch-dashboards_{charm_base}-amd64.charm"
+
+
+@pytest.fixture
+def charmk8s(charm_base):
+    """Path to the charm file to use for testing."""
+    # Return str instead of pathlib.Path since python-lib juju's model.deploy(), juju deploy, and
+    # juju bundle files expect local charms to begin with `./` or `/` to distinguish them from
+    # Charmhub charms.
+    return f"./kubernetes/opensearch-dashboards-k8s_{charm_base}-amd64.charm"
 
 
 @pytest.fixture
