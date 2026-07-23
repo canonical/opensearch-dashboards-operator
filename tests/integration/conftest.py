@@ -47,7 +47,7 @@ def charmvm(charm_base):
     # Return str instead of pathlib.Path since python-lib juju's model.deploy(), juju deploy, and
     # juju bundle files expect local charms to begin with `./` or `/` to distinguish them from
     # Charmhub charms.
-    return f"./machines/opensearch-dashboards_{charm_base}-amd64.charm"
+    return f"./machine/opensearch-dashboards_{charm_base}-amd64.charm"
 
 
 @pytest.fixture

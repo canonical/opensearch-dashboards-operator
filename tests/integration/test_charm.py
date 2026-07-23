@@ -41,7 +41,7 @@ from .helpers import (
 logger = logging.getLogger(__name__)
 
 METADATA_K8s = yaml.safe_load(Path("./kubernetes/metadata.yaml").read_text())
-METADATA_VM = yaml.safe_load(Path("./machines/metadata.yaml").read_text())
+METADATA_VM = yaml.safe_load(Path("./machine/metadata.yaml").read_text())
 PROMETHEUS_APP = "prometheus-k8s"
 LOKI_APP = "loki-k8s"
 GRAFANA_APP = "grafana-k8s"

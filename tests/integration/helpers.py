@@ -36,7 +36,7 @@ from kubernetes import config as k8s_config
 from .conftest import Flags
 
 METADATA_K8s = yaml.safe_load(Path("./kubernetes/metadata.yaml").read_text())
-METADATA_VM = yaml.safe_load(Path("./machines/metadata.yaml").read_text())
+METADATA_VM = yaml.safe_load(Path("./machine/metadata.yaml").read_text())
 SUBSTRATE = os.environ.get("SUBSTRATE", "vm").lower()
 APP_NAME = METADATA_VM["name"] if SUBSTRATE == "vm" else METADATA_K8s["name"]
 OPENSEARCH_APP_NAME = "opensearch"
