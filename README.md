@@ -140,7 +140,7 @@ Log in with the credentials of the new user.
 
 ![OpenSearch Dashboards login](./docs/resources/opensearch_dashboard_login.png)
 
-You must create an "index pattern" that enables the Dasboard to access the user's data.
+You must create an "index pattern" that enables the Dashboard to access the user's data.
 It should specify the `index_name` that was used to create the user with `data-integrator`.
 
 Follow instructions from OpenSearch documentation on
