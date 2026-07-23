@@ -4,5 +4,6 @@
 ```{toctree}
 :titlesonly:
 
+monitoring
 release-notes/index
 ```
