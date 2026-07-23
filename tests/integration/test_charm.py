@@ -535,7 +535,7 @@ async def test_restore_opensearch_restores_osd(
     await ops_test_vm.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
 
     async with ops_test_vm.fast_forward("30s"):
-        await ops_test_vm.model.wait_for_idle(apps=[OPENSEARCH_APP_NAME], status="active")
+        await ops_test_vm.model.wait_for_idle(apps=[OPENSEARCH_APP_NAME], status="active", timeout=1000)
 
         if substrate == "k8s":
             await ops_test_vm.model.create_offer(
