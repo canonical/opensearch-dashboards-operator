@@ -1,17 +1,21 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
 name: Check for removed URLs
 
 on:
   pull_request:
-    branches: [main]
+    branches: [2/edge]
     paths:
       - 'docs/**'   # Only run on changes to the docs directory
 
 jobs:
   build-docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           # This implicitly gets the PR branch. Making it explicit causes problems
           # with private forks, but it is equivalent to the following:
@@ -19,13 +23,15 @@ jobs:
           # ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
           path: compare
+          persist-credentials: false
       - name: Checkout base branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.base.ref }}
           repository: ${{ github.event.pull_request.base.repo.full_name }}
           fetch-depth: 0
           path: base
+          persist-credentials: false
       - uses: actions/setup-python@v6
       - name: Build docs
         run: |

@@ -1,0 +1,28 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+juju:
+  model-defaults:
+    logging-config: <root>=INFO; unit=DEBUG
+providers:
+  lxd:
+    enable: true
+    bootstrap: true
+  k8s:
+    enable: true
+    bootstrap: false
+    channel: 1.32-classic/stable
+    image-registry:
+      url: $DOCKERHUB_MIRROR
+    features:
+      load-balancer:
+        l2-mode: "true"
+        cidrs: "10.43.45.0/28"
+      local-storage: {}
+      network: {}
+host:
+  snaps:
+    jhack:
+      channel: latest/edge
+      connections:
+        - jhack:dot-local-share-juju snapd

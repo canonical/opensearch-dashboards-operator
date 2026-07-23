@@ -1,5 +1,6 @@
 import datetime
 import os
+
 import yaml
 
 # Configuration for the Sphinx documentation builder.
@@ -136,11 +137,9 @@ html_context = {
     # Docs branch in the repo; used in links for viewing the source files
     #
     # TODO: To customise the branch, uncomment and update as needed.
-    'repo_default_branch': 'main',
+    "repo_default_branch": "main",
     # Docs location in the repo; used in links for viewing the source files
     #
-
-
     # TODO: To customise the directory, uncomment and update as needed.
     "repo_folder": "/docs/",
     # TODO: To enable or disable the Previous / Next buttons at the bottom of pages
@@ -148,9 +147,8 @@ html_context = {
     # "sequential_nav": "both",
     # TODO: To enable listing contributors on individual pages, set to True
     "display_contributors": False,
-
-    # Required for feedback button    
-    'github_issues': 'enabled',
+    # Required for feedback button
+    "github_issues": "enabled",
 }
 
 html_extra_path = []
@@ -176,7 +174,7 @@ if os.getenv("OPENAPI", ""):
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
 #       uncomment and update as needed.
 
-slug = 'opensearch-dashboards'
+slug = "opensearch-dashboards"
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
@@ -189,11 +187,11 @@ html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "/")
 # URL scheme. Add language and version scheme elements.
 # When configured with RTD variables, check for RTD environment so manual runs succeed:
 
-if 'READTHEDOCS_VERSION' in os.environ:
+if "READTHEDOCS_VERSION" in os.environ:
     version = os.environ["READTHEDOCS_VERSION"]
-    sitemap_url_scheme = '{version}{link}'
+    sitemap_url_scheme = "{version}{link}"
 else:
-    sitemap_url_scheme = 'MANUAL/{link}'
+    sitemap_url_scheme = "MANUAL/{link}"
 
 # Include `lastmod` dates in the sitemap:
 
@@ -202,9 +200,9 @@ sitemap_show_lastmod = True
 # Exclude generated pages from the sitemap:
 
 sitemap_excludes = [
-    '404/',
-    'genindex/',
-    'search/',
+    "404/",
+    "genindex/",
+    "search/",
 ]
 
 # TODO: Add more pages to sitemap_excludes if needed. Wildcards are supported.
@@ -214,8 +212,8 @@ sitemap_excludes = [
 # Template and asset locations
 #######################
 
-#html_static_path = ["_static"]
-#templates_path = ["_templates"]
+# html_static_path = ["_static"]
+# templates_path = ["_templates"]
 
 
 #############
@@ -232,10 +230,10 @@ sitemap_excludes = [
 #       the sphinx_reredirects extension will be disabled.
 
 redirects = {
-    'reference/doc-cheat-sheet-myst/': '../myst-syntax-reference',
-    'reference/doc-cheat-sheet/': '../rst-syntax-reference',
-    'reference/style-guide-myst/': '../myst-syntax-reference',
-    'reference/style-guide/': '../rst-syntax-reference',
+    "reference/doc-cheat-sheet-myst/": "../myst-syntax-reference",
+    "reference/doc-cheat-sheet/": "../rst-syntax-reference",
+    "reference/style-guide-myst/": "../myst-syntax-reference",
+    "reference/style-guide/": "../rst-syntax-reference",
 }
 
 
@@ -251,7 +249,7 @@ linkcheck_ignore = [
     "http://127.0.0.1:8000",
     "https://github.com/canonical/ACME/*",
     "https://matrix.to/#/#charmhub-data-platform:ubuntu.com",
-    ]
+]
 
 
 # A regex list of URLs where anchors are ignored by 'make linkcheck'
@@ -367,13 +365,16 @@ if "discourse_prefix" not in html_context and "discourse" in html_context:
 
 # Workaround for substitutions.yaml
 
-if os.path.exists('./reuse/substitutions.yaml'):
-    with open('./reuse/substitutions.yaml', 'r') as fd:
+if os.path.exists("./reuse/substitutions.yaml"):
+    with open("./reuse/substitutions.yaml", "r") as fd:
         myst_substitutions = yaml.safe_load(fd.read())
 
 # Add configuration for intersphinx mapping
 
 intersphinx_mapping = {
-    'starter-pack': ('https://canonical-example-product-documentation.readthedocs-hosted.com/en/latest', None),
-    'sphinxcontrib-mermaid': ('https://sphinxcontrib-mermaid-demo.readthedocs.io/en/latest', None)
+    "starter-pack": (
+        "https://canonical-example-product-documentation.readthedocs-hosted.com/en/latest",
+        None,
+    ),
+    "sphinxcontrib-mermaid": ("https://sphinxcontrib-mermaid-demo.readthedocs.io/en/latest", None),
 }
