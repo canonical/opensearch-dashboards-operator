@@ -151,4 +151,4 @@ When the index pattern is defined, data that belongs to the user will display in
 ## License
 
 The Charmed OpenSearch Dashboards Operator is free software, distributed under the Apache
-Software License, version 2.0. See [LICENSE](kubernetes/LICENSE) for more information.
+Software License, version 2.0. See [LICENSE](./LICENSE) for more information.
