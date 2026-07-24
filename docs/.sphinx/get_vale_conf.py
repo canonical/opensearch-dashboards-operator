@@ -1,18 +1,18 @@
 #! /usr/bin/env python
 
+import argparse
+import logging
 import os
 import shutil
 import subprocess
-import tempfile
 import sys
-import logging
-import argparse
+import tempfile
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 SPHINX_DIR = os.path.join(os.getcwd(), ".sphinx")
@@ -25,8 +25,9 @@ VALE_FILE_LIST = [
     "styles/Canonical",
     "styles/config/vocabularies/Canonical",
     "styles/config/dictionaries",
-    "vale.ini"
+    "vale.ini",
 ]
+
 
 def clone_repo_and_copy_paths(file_source_dest, overwrite=False):
     """
@@ -51,12 +52,7 @@ def clone_repo_and_copy_paths(file_source_dest, overwrite=False):
     clone_cmd = ["git", "clone", "--depth", "1", GITHUB_CLONE_URL, temp_dir]
 
     try:
-        result = subprocess.run(
-            clone_cmd,
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        result = subprocess.run(clone_cmd, capture_output=True, text=True, check=True)
         logging.debug("Git clone output: %s", result.stdout)
     except subprocess.CalledProcessError as e:
         logging.error("Git clone failed: %s", e.stderr)
@@ -81,6 +77,7 @@ def clone_repo_and_copy_paths(file_source_dest, overwrite=False):
     shutil.rmtree(temp_dir)
 
     return is_copy_success
+
 
 def copy_files_to_path(source_path, dest_path, overwrite=False):
     """
@@ -109,9 +106,10 @@ def copy_files_to_path(source_path, dest_path, overwrite=False):
             else:
                 os.remove(dest_path)
         else:
-            logging.info("  Destination exists, skip copying (use overwrite=True to replace): %s",
-                         dest_path)
-            return True     # Skip copying
+            logging.info(
+                "  Destination exists, skip copying (use overwrite=True to replace): %s", dest_path
+            )
+            return True  # Skip copying
 
     # Copy the source to destination
     try:
@@ -126,10 +124,14 @@ def copy_files_to_path(source_path, dest_path, overwrite=False):
         logging.error("Copy failed: %s", e)
         return False
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Download Vale configuration files")
-    parser.add_argument("--no-overwrite", action="store_true", help="Don't overwrite existing files")
+    parser.add_argument(
+        "--no-overwrite", action="store_true", help="Don't overwrite existing files"
+    )
     return parser.parse_args()
+
 
 def main():
     # Define local directory paths

@@ -1,0 +1,66 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opensearch-dashboards-k8s
+display-name: Opensearch Dashboards
+description: |
+  OpenSearch Dashboard is a community-driven, Apache 2.0-licensed open source 
+  user interface that lets you visualize your OpenSearch data and run and scale
+  your OpenSearch clusters.
+
+summary: The Charmed Opensearch Dashboards operator
+docs: https://discourse.charmhub.io/t/charmed-opensearch-dashboards-home/14117
+source: https://github.com/canonical/opensearch-dashboards-operator
+issues: https://github.com/canonical/opensearch-dashboards-operator/issues
+charm-user: non-root
+
+maintainers:
+  - Canonical Data Platform Team <data-platform@lists.launchpad.net>
+
+containers:
+  opensearch-dashboards:
+    resource: opensearch-dashboards-image
+
+resources:
+  opensearch-dashboards-image:
+    type: oci-image
+    description: OCI image for opensearch-dashboards
+    upstream-source: ghcr.io/canonical/charmed-opensearch-dashboards:2.19.5-24.04_edge@sha256:57cd5a8e03bc80704bf64843f4d4309744ac6a4c92469169bbf4a4a1f7e81046
+
+peers:
+  dashboard_peers:
+    interface: dashboard_peers
+  restart:
+    interface: rolling_op
+  upgrade:
+    interface: upgrade
+  status-peers:
+    interface: status-peers
+
+requires:
+  opensearch-client:
+    interface: opensearch_client
+    limit: 1
+  certificates:
+    interface: tls-certificates
+    limit: 1
+    optional: true
+  oauth:
+    interface: oauth
+    limit: 1
+    optional: true
+  jwt-configuration:
+    interface: jwt
+    limit: 1
+    optional: true
+  logging:
+    interface: loki_push_api
+  ingress:
+    interface: ingress
+    limit: 1
+
+provides:
+  metrics-endpoint:
+    interface: prometheus_scrape
+  grafana-dashboard:
+    interface: grafana_dashboard
