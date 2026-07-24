@@ -14,7 +14,7 @@ of the exporter.
 
 To ensure you are referencing the latest default alert rules, check the source file
 of alert definitions in the repository's
-[prometheus_alerts.yaml](https://github.com/canonical/opensearch-dashboards-operator/blob/2/edge/src/alert_rules/prometheus/prometheus_alerts.yaml)
+[prometheus_alerts.yaml](https://github.com/canonical/opensearch-dashboards-operator/blob/2/edge/kubernetes/src/alert_rules/prometheus/prometheus_alerts.yaml)
 file.
 
 ## Default alert rules
