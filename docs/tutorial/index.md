@@ -138,7 +138,7 @@ alongside the `self-signed-certificates` charm and integrate (also known as "rel
 
 Make sure that the environment is ready and the Juju model is correctly configured following
 instructions in OpenSearch Documentation
-[Set kernel parameters](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/tutorial/1-set-up-the-environment/#set-kernel-parameters).
+[Set kernel parameters](https://canonical.com/data/opensearch/docs/2/tutorial/1-set-up-the-environment/#set-kernel-parameters).
 
 Subsequently, we can deploy OpenSearch with TLS:
 
@@ -344,7 +344,7 @@ To continue your journey with Charmed OpenSearch Dashboards:
 
 * Explore the [How-to guides](dashboard-how-to-index) for guidance on practical tasks
 * Review the [Reference documentation](dashboard-reference-index) for release notes
-* Check out the [Charmed OpenSearch documentation](https://canonical-charmed-opensearch.readthedocs-hosted.com/) for backend integration options
+* Check out the [Charmed OpenSearch documentation](https://canonical.com/data/opensearch/docs/) for backend integration options
 
 <!-- ## Get involved
 
