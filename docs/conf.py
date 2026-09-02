@@ -249,6 +249,8 @@ linkcheck_ignore = [
     "http://127.0.0.1:8000",
     "https://github.com/canonical/ACME/*",
     "https://matrix.to/#/#charmhub-data-platform:ubuntu.com",
+    # Blocks automated clients (Cloudflare); the link works in browsers
+    r"https://askubuntu\.com/.*",
 ]
 
 
