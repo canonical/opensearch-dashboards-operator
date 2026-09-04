@@ -12,7 +12,7 @@ to analyzing security data for threat detection.
 
 ```{note}
 This charm is designed to work with [Charmed OpenSearch](https://charmhub.io/opensearch).
-See the [Charmed OpenSearch documentation](https://canonical-charmed-opensearch.readthedocs-hosted.com/).
+See the [Charmed OpenSearch documentation](https://canonical.com/data/opensearch/docs/).
 ```
 
 The OpenSearch Dashboards and OpenSearch operators are available for physical/virtual machines.

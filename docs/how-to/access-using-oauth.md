@@ -15,7 +15,7 @@ See: [Deploy, connect, and scale](dashboard-how-to-deploy-connect-scale).
 * A deployed Canonical Identity Platform on Kubernetes.
 * Working Integration between OpenSearch and Canonical Identity Platform through certificates
 and Hydra OAuth interface.
-See: [How to access OpenSearch using OAuth](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/how-to/access-using-oauth/).
+See: [How to access OpenSearch using OAuth](https://canonical.com/data/opensearch/docs/2/how-to/access-using-oauth/).
 
 ```{note}
 This guide assumes that LXD and MicroK8s are managed under the same Juju controller
@@ -206,5 +206,5 @@ After a successful login, you are redirected to the OpenSearch Dashboards home s
 
 ## Next steps
 
-* Review the *roles mapping* section in [*How to access OpenSearch using OAuth*](https://canonical-charmed-opensearch.readthedocs-hosted.com/2/how-to/access-using-oauth/) to assign permissions.  
+* Review the *roles mapping* section in [*How to access OpenSearch using OAuth*](https://canonical.com/data/opensearch/docs/2/how-to/access-using-oauth/) to assign permissions.  
 * Follow the guide [How to manage external identity providers](https://canonical-identity.readthedocs-hosted.com/how-to/manage-external-identity-providers/) to enable logins with providers like GitHub.

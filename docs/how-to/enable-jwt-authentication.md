@@ -89,7 +89,7 @@ If you have an OpenSearch large deployments cluster,
 it is required to integrate the JWT integrator with the main-orchestrator of your large deployment.
 
 Check which of your deployed OpenSearch applications is the main-orchestrator
-by checking the `integrations` section of `juju status`:
+by checking the integrations section of `juju status --relations`:
 
 ```text
 Integration provider                           Requirer                                Interface           Type     Message
