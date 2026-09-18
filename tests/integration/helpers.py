@@ -40,8 +40,8 @@ METADATA_VM = yaml.safe_load(Path("./machine/metadata.yaml").read_text())
 SUBSTRATE = os.environ.get("SUBSTRATE", "vm").lower()
 APP_NAME = METADATA_VM["name"] if SUBSTRATE == "vm" else METADATA_K8s["name"]
 OPENSEARCH_APP_NAME = "opensearch"
+OPENSEARCH_CHANNEL = "2/edge"
 CONFIG_OPTS = {"profile": "testing"}
-DUMMY_CHARM = "dummy-charm"
 OPENSEARCH_RELATION_NAME = "opensearch-client"
 OPENSEARCH_CONFIG = {
     "logging-config": "<root>=INFO;unit=DEBUG",
@@ -147,69 +147,63 @@ async def wait_for_dashboard_idle(ops_test: OpsTest, traefik: bool, idle_period:
         await wait_for_ingress_blocked(ops_test, idle_period=idle_period)
 
 
-async def deploy_base(
-    ops_test_vm: OpsTest,
+async def deploy_opensearch_and_dashboards(
     ops_test: OpsTest,
     charm: str,
     charm_base: str,
     substrate: str,
+    opensearch_deploy_args: tuple[str, bool],
     num_units_app: int = 1,
     num_units_db: int = 2,
-    opensearch_channel: str = "2/stable",
     trust_charm: bool = True,
     opensearch_config: dict | None = None,
     resource: dict | None = None,
     charm_channel: str | None = None,
 ) -> str:
-    """Deploy OpenSearch+TLS on the VM model and dashboards on ops_test, wired together.
+    """Deploy OpenSearch+TLS and dashboards on the same model, wired together."""
+    on_k8s = substrate == "k8s"
+    os_charm, os_trust = opensearch_deploy_args
 
-    The dashboards charm is pulled from `charm_channel` on Charmhub when given (used by the
-    upgrade tests to install an old release), otherwise it's built from the local
-    charm path. Returns app_name. Callers are responsible for traefik, TLS for
-    dashboards, cross-model TLS offers, and the final wait_for_idle on the dashboards app.
-    """
-    if resource is None:
-        resource = RESOURCE
-    model_config = opensearch_config if opensearch_config is not None else OPENSEARCH_CONFIG
+    # The cloudinit-userdata sysctl only applies to vm.
+    if not on_k8s:
+        model_config = opensearch_config if opensearch_config is not None else OPENSEARCH_CONFIG
+        await ops_test.model.set_config(model_config)
 
-    await ops_test_vm.model.set_config(model_config)
-    await ops_test_vm.model.deploy(
-        OPENSEARCH_APP_NAME,
-        channel=opensearch_channel,
-        num_units=num_units_db,
-        config=CONFIG_OPTS,
-    )
-    await ops_test_vm.model.deploy(
+    os_deploy_kwargs: dict = {
+        "application_name": OPENSEARCH_APP_NAME,
+        "channel": OPENSEARCH_CHANNEL,
+        "num_units": num_units_db,
+        "config": CONFIG_OPTS,
+    }
+    if os_trust:
+        os_deploy_kwargs["trust"] = True
+    await ops_test.model.deploy(os_charm, **os_deploy_kwargs)
+    await ops_test.model.deploy(
         TLS_CERTIFICATES_APP_NAME,
         channel=TLS_STABLE_CHANNEL,
         config={"ca-common-name": "CN_CA"},
     )
-    await ops_test_vm.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
+    await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
 
     deploy_kwargs: dict = {
         "application_name": APP_NAME,
         "num_units": num_units_app,
     }
     if charm_channel:
-        deploy_kwargs["channel"] = APP_NAME
+        charm = APP_NAME
+        deploy_kwargs["channel"] = charm_channel
         deploy_kwargs["series"] = "jammy" if charm_base == "ubuntu@22.04" else "noble"
     else:
         deploy_kwargs["base"] = charm_base
 
-    if substrate == "k8s":
+    if on_k8s:
         if trust_charm:
             deploy_kwargs["trust"] = True
         if not charm_channel:
-            deploy_kwargs["resources"] = resource
-        await ops_test.model.deploy(charm, **deploy_kwargs)
-        await ops_test_vm.model.create_offer(
-            "opensearch-client", OPENSEARCH_APP_NAME, "opensearch"
-        )
-        await ops_test.model.consume(f"admin/{ops_test_vm.model.name}.{OPENSEARCH_APP_NAME}")
-    else:
-        await ops_test.model.deploy(charm, **deploy_kwargs)
+            deploy_kwargs["resources"] = resource if resource is not None else RESOURCE
+    await ops_test.model.deploy(charm, **deploy_kwargs)
 
-    await ops_test_vm.model.wait_for_idle(
+    await ops_test.model.wait_for_idle(
         apps=[OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME], status="active", timeout=1000
     )
     pytest.relation = await ops_test.model.integrate(OPENSEARCH_APP_NAME, APP_NAME)
@@ -313,7 +307,11 @@ async def get_dashboard_routing(ops_test: OpsTest, unit_name: str):
             )
 
     app_name = unit_name.split("/")[0]
-    if DUMMY_CHARM in ops_test.model.applications:
+    if (
+        SUBSTRATE == "k8s"
+        and TRAEFIK_APP_NAME not in ops_test.model.applications
+        and DB_CLIENT_APP_NAME in ops_test.model.applications
+    ):
         unit_id = unit_name.split("/")[1]
         host = f"{app_name}-{unit_id}.{app_name}-endpoints"
     else:
@@ -336,10 +334,10 @@ async def access_dashboard(
     path_str = path if path else ""
     url = f"{protocol}://{host}:{port}{path_str}/auth/login"
 
-    # Only route through dummy charm for internal K8s hostnames
+    # Only route through the proxy app for internal K8s hostnames
     if host.endswith("-endpoints"):
-        logger.info(f"Routing request through {DUMMY_CHARM} to {url}")
-        tester_unit = ops_test.model.applications[DUMMY_CHARM].units[0]
+        logger.info(f"Routing request through {DB_CLIENT_APP_NAME} to {url}")
+        tester_unit = ops_test.model.applications[DB_CLIENT_APP_NAME].units[0]
 
         action_kwargs = {
             "url": url,
@@ -394,9 +392,9 @@ async def dashboard_unavailable(
     path_str = path if path else ""
     url = f"{protocol}://{host}:{port}{path_str}/auth/login"
 
-    # Only route through dummy charm for internal K8s hostnames
+    # Only route through the proxy app for internal K8s hostnames
     if host.endswith("-endpoints"):
-        tester_unit = ops_test.model.applications[DUMMY_CHARM].units[0]
+        tester_unit = ops_test.model.applications[DB_CLIENT_APP_NAME].units[0]
         action_kwargs = {"url": url, "method": "GET"}
 
         if https:
@@ -430,24 +428,20 @@ async def dashboard_unavailable(
     retry=retry_if_result(lambda x: x is False),
 )
 async def access_all_dashboards(
-    ops_test_vm: OpsTest,
     ops_test: OpsTest,
     https: bool = False,
     verify: bool = True,
     skip: list[str] = None,
 ):
     skip = skip or []
-    if SUBSTRATE == "k8s":
-        relation_id = get_relations(ops_test_vm, "opensearch-client")[0].id
-    else:
-        relation_id = get_relations(ops_test_vm, "opensearch-client", APP_NAME)[0].id
+    relation_id = get_relations(ops_test, "opensearch-client", APP_NAME)[0].id
 
     if not ops_test.model.applications[APP_NAME].units:
         logger.error(f"No units for application {APP_NAME}")
         return False
 
     dashboard_credentials = await get_secret_by_label(
-        ops_test_vm, f"opensearch-client.{relation_id}.user.secret"
+        ops_test, f"opensearch-client.{relation_id}.user.secret"
     )
     dashboard_password = dashboard_credentials["password"]
     result = True
@@ -849,7 +843,6 @@ async def client_run_dashboards_request(
 
 
 async def client_run_all_dashboards_request(
-    ops_test_vm: OpsTest,
     ops_test: OpsTest,
     unit_name: str,
     relation: Relation,
@@ -865,7 +858,7 @@ async def client_run_all_dashboards_request(
         return False
 
     dashboard_credentials = await get_secret_by_label(
-        ops_test_vm, f"opensearch-client.{relation.id}.user.secret"
+        ops_test, f"opensearch-client.{relation.id}.user.secret"
     )
     username = dashboard_credentials.get("username")
     password = dashboard_credentials.get("password")
@@ -885,9 +878,9 @@ async def client_run_all_dashboards_request(
             logger.debug(f"No hostname found for {dashboards_unit.name}, can't check connection.")
             return False
 
-        if host.endswith("-endpoints") and DUMMY_CHARM in ops_test.model.applications:
-            logger.info(f"Routing client data request through dashboard-tester to {host}")
-            tester_unit = ops_test.model.applications[DUMMY_CHARM].units[0]
+        if host.endswith("-endpoints") and DB_CLIENT_APP_NAME in ops_test.model.applications:
+            logger.info(f"Routing client data request through {DB_CLIENT_APP_NAME} to {host}")
+            tester_unit = ops_test.model.applications[DB_CLIENT_APP_NAME].units[0]
 
             protocol = "https" if https else "http"
             path_str = path if path else ""
@@ -923,7 +916,7 @@ async def client_run_all_dashboards_request(
             logger.info(f"Proxy Response from {host}: {res.results.get('status')}")
         else:
             response = await client_run_dashboards_request(
-                ops_test_vm,
+                ops_test,
                 unit_name,
                 relation,
                 method,
@@ -943,29 +936,12 @@ async def client_run_all_dashboards_request(
     return result
 
 
-async def destroy_cluster(ops_test, app: str = OPENSEARCH_APP_NAME, consumer_ops_test=None):
+async def destroy_cluster(ops_test, app: str = OPENSEARCH_APP_NAME):
     """Destroy cluster in a forceful way."""
-    if consumer_ops_test:
-        await consumer_ops_test.juju("remove-relation", APP_NAME, app, check=False)
-    else:
-        await ops_test.juju("remove-relation", APP_NAME, app, check=False)
+    await ops_test.juju("remove-relation", APP_NAME, app, check=False)
     await ops_test.juju("remove-relation", TLS_CERTIFICATES_APP_NAME, app, check=False)
     await ops_test.juju("remove-relation", DB_CLIENT_APP_NAME, app, check=False)
-    if consumer_ops_test:
-        await consumer_ops_test.juju("remove-saas", app, check=False)
-        await ops_test.juju("remove-offer", f"admin/testing-vm.{app}", "--force", check=False)
-        # Wait until the offer shows 0 connected consumers on the provider side.
-        for attempt in Retrying(stop=stop_after_attempt(30), wait=wait_fixed(10), reraise=True):
-            with attempt:
-                _, stdout, _ = await ops_test.juju(
-                    "status", "--format=json", "--model", ops_test.model.name
-                )
-                status = json.loads(stdout) if stdout.strip() else {}
-                offers = status.get("offers", {})
-                connected = offers.get(app, {}).get("total-connected-count", 0)
-                assert connected == 0, f"offer '{app}' still has {connected} consumer(s)"
-    else:
-        await asyncio.sleep(30)
+    await asyncio.sleep(30)
     n_apps_before = len(ops_test.model.applications)
     await ops_test.model.applications[app].destroy(destroy_storage=True, force=True, no_wait=False)
 
