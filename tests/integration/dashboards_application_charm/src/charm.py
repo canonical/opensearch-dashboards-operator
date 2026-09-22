@@ -48,6 +48,7 @@ class ApplicationCharm(CharmBase):
             self.on.run_dashboards_request_action, self._on_run_dashboards_request_action
         )
 
+        self.framework.observe(self.on.request_action, self._on_request)
         self.relations = {"opensearch-client": self.opensearch}
 
     def _on_update_status(self, _) -> None:
@@ -56,6 +57,10 @@ class ApplicationCharm(CharmBase):
 
     def _set_status_from_connection(self) -> None:
         """Set workload status from the current OpenSearch connection state."""
+        # Standalone / in-cluster proxy mode: no opensearch-client relation to check.
+        if not any(self.model.relations.get(name) for name in self.relations):
+            self.unit.status = ActiveStatus()
+            return
         if self.connection_check():
             self.unit.status = ActiveStatus()
         else:
@@ -179,6 +184,59 @@ class ApplicationCharm(CharmBase):
             return
 
         self._run_request_action(event, server)
+
+    def _on_request(self, event: ActionEvent):
+        """Perform a self-contained HTTP/HTTPS request from inside the cluster.
+
+        Unlike the relation-based request actions, url and credentials are passed directly as
+        params. Used when this charm acts as an in-cluster proxy to reach k8s-internal hostnames.
+        """
+        url = event.params["url"]
+        method = event.params["method"]
+        username = event.params.get("username")
+        password = event.params.get("password")
+        ca_cert = event.params.get("ca_cert")
+        payload = event.params.get("payload")
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "osd-xsrf": "true",
+        }
+
+        verify_arg = False
+        if ca_cert:
+            cert_path = "/tmp/ca.pem"
+            with open(cert_path, "w") as f:
+                f.write(ca_cert)
+            verify_arg = cert_path
+
+        try:
+            auth = (username, password) if username and password else None
+
+            if method.upper() == "POST" and url.endswith("/auth/login") and not payload:
+                data = {"username": username, "password": password}
+                resp = requests.post(
+                    url, json=data, headers=headers, verify=verify_arg, timeout=10
+                )
+            else:
+                kwargs = {
+                    "method": method,
+                    "url": url,
+                    "headers": headers,
+                    "verify": verify_arg,
+                    "timeout": 10,
+                }
+                if auth:
+                    kwargs["auth"] = auth
+                if payload:
+                    kwargs["data"] = payload
+
+                resp = requests.request(**kwargs)
+
+            event.set_results({"status": resp.status_code, "text": resp.text})
+        except Exception as e:
+            event.fail(f"Request failed: {str(e)}")
 
     # =================================
     #  Opensearch connection functions
