@@ -138,7 +138,7 @@ resource "juju_integration" "opensearch_dashboards-ingress-integration" {
 
 ### Enable TLS
 
-The optional `certificates` endpoint allows browsers to connect to OpenSearch Dashboards over HTTPS. This module does not deploy a TLS provider. To enable TLS, deploy a TLS provider and relate it to the `certificates` endpoint. For example, with the self-signed-certificates charm:
+To access OpenSearch Dashboards over HTTPS, relate the ingress and TLS providers. For example, with the traefik-k8s and self-signed-certificates charms:
 
 ```
 resource "juju_application" "self-signed-certificates" {
@@ -150,6 +150,24 @@ resource "juju_application" "self-signed-certificates" {
   }
 }
 
+resource "juju_integration" "traefik_k8s-tls-integration" {
+  model_uuid = juju_model.opensearch.uuid
+
+  application {
+    name     = juju_application.traefik-k8s.name
+    endpoint = "certificates"
+  }
+
+  application {
+    name     = juju_application.self-signed-certificates.name
+    endpoint = "certificates"
+  }
+}
+```
+
+The optional `certificates` endpoint allows OpenSearch Dashboards to serve HTTPS to the ingress provider. Relate it to the same TLS provider as the ingress so that the ingress trusts its certificate:
+
+```
 resource "juju_integration" "opensearch_dashboards-tls-integration" {
   model_uuid = juju_model.opensearch.uuid
 
