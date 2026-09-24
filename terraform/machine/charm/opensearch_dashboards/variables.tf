@@ -9,7 +9,7 @@ variable "app_name" {
 }
 
 variable "base" {
-  description = "Charm base (old name: series)"
+  description = "The base to deploy the charm on."
   type        = string
   default     = "ubuntu@24.04"
 }

@@ -28,7 +28,7 @@ This module requires a `juju` model to be available. Refer to the [usage section
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | `app_name` | Application name | `string` | `"opensearch-dashboards"` | no |
-| `base` | The series to be used for this charm | `string` | `"ubuntu@24.04"` | no |
+| `base` | The base to deploy the charm on. | `string` | `"ubuntu@24.04"` | no |
 | `channel` | Charmhub channel | `string` | `"2/edge"` | no |
 | `config` | Map of charm configuration options | `map(string)` | `{}` | no |
 | `constraints` | Machine constraints for this application | `string` | `"arch=amd64"` | no |
