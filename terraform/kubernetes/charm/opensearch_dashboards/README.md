@@ -28,17 +28,17 @@ This module requires a `juju` Kubernetes model to be available. Refer to the [us
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| `app_name` | Application name | `string` | `"opensearch-dashboards-k8s"` | no |
-| `base` | The base to deploy the charm on. | `string` | `"ubuntu@24.04"` | no |
-| `channel` | Charmhub channel | `string` | `"2/edge"` | no |
-| `config` | Map of charm configuration options | `map(string)` | `{}` | no |
-| `constraints` | Constraints for this application | `string` | `"arch=amd64"` | no |
-| `expose` | Expose the application for external access. | <pre>list(object({<br/>    cidrs     = optional(string)<br/>    endpoints = optional(string)<br/>    spaces    = optional(string)<br/>  }))</pre> | `[]` | no |
-| `model_uuid` | Model UUID | `string` | n/a | yes |
-| `offered_endpoints` | Endpoints to expose as Juju offers for cross-model integration. Allowed: `grafana-dashboard`, `metrics-endpoint`. | `list(string)` | `[]` | no |
-| `resources` | Map of the charm resources (`opensearch-dashboards-image`). When not set, the image published with the charm revision is used. | `map(string)` | `{}` | no |
-| `revision` | Charm revision | `number` | `null` | no |
-| `units` | Charm units | `number` | `1` | no |
+| `app_name` | Application name | string | `"opensearch-dashboards-k8s"` | no |
+| `base` | The base to deploy the charm on. | string | `"ubuntu@24.04"` | no |
+| `channel` | Charmhub channel | string | `"2/edge"` | no |
+| `config` | Map of charm configuration options | map(string) | `{}` | no |
+| `constraints` | Constraints for this application | string | `"arch=amd64"` | no |
+| `expose` | Expose the application for external access. | list(object({ cidrs = optional(string), endpoints = optional(string), spaces = optional(string) })) | `[]` | no |
+| `model_uuid` | Model UUID | string | n/a | yes |
+| `offered_endpoints` | Endpoints to expose as Juju offers for cross-model integration. Allowed: `grafana-dashboard`, `metrics-endpoint`. | list(string) | `[]` | no |
+| `resources` | Map of the charm resources (`opensearch-dashboards-image`). When not set, the image published with the charm revision is used. | map(string) | `{}` | no |
+| `revision` | Charm revision | number | `null` | no |
+| `units` | Charm units | number | `1` | no |
 
 ## Outputs
 
