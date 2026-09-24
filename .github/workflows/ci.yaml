@@ -74,7 +74,7 @@ jobs:
 
       - name: lint charm module
         run: |
-          pushd ./terraform
+          pushd ./terraform/machine/charm/opensearch_dashboards
           terraform init && terraform fmt && terraform validate
           popd
       - name: run checks - prepare
@@ -102,7 +102,7 @@ jobs:
       - name: Terraform deploy
         run: |
           MODEL_UUID=$(juju show-model test | grep "model-uuid" | awk '{split($0, a, ": "); print a[2]}')
-          pushd ./terraform
+          pushd ./terraform/machine/charm/opensearch_dashboards
           terraform apply -var="model_uuid=$MODEL_UUID" -auto-approve
           popd
       - name: Wait for model and applications
