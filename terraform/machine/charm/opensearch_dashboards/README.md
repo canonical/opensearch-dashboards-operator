@@ -32,8 +32,8 @@ This module requires a `juju` model to be available. Refer to the [usage section
 | `channel` | Charmhub channel | string | `"2/edge"` | no |
 | `config` | Map of charm configuration options | map(string) | `{}` | no |
 | `constraints` | Machine constraints for this application | string | `"arch=amd64"` | no |
-| `endpoint_bindings` | Set of endpoint bindings | set(object({ space = string, endpoint = optional(string) })) | `[]` | no |
-| `expose` | Expose the application for external access. | list(object({ cidrs = optional(string), endpoints = optional(string), spaces = optional(string) })) | `[]` | no |
+| `endpoint_bindings` | Set of endpoint bindings | <pre>set(object({<br/>    space    = string<br/>    endpoint = optional(string)<br/>  }))</pre> | `[]` | no |
+| `expose` | Expose the application for external access. | <pre>list(object({<br/>    cidrs     = optional(string)<br/>    endpoints = optional(string)<br/>    spaces    = optional(string)<br/>  }))</pre> | `[]` | no |
 | `machines` | List of machines for placement. When set, one unit is deployed on each machine. | set(string) | `[]` | no |
 | `model_uuid` | Model UUID | string | n/a | yes |
 | `revision` | Charm revision | number | `null` | no |
