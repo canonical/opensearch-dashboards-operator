@@ -2,51 +2,47 @@
 
 This is a Terraform module facilitating the deployment of the OpenSearch Dashboards charm with [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
 
+This module requires a `juju` model to be available. Refer to the [usage section](#usage) below for more details.
+
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
-|------|---------|
-| `Terraform` | >= 1.6 |
-| `Juju provider` | ~> 2.0 |
-
-This module requires a `juju` model to be available. Refer to the [usage section](#usage) below for more details.
+| ---- | ------- |
+| terraform | >= 1.6 |
+| juju | ~> 2.0 |
 
 ## Providers
 
 | Name | Version |
 | ---- | ------- |
-| `juju` | ~> 2.0 |
-
-## Resources
-
-| Name | Type |
-|------|------|
-| `juju_application.opensearch-dashboards` | [Juju application](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application) |
+| juju | ~> 2.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| `app_name` | Application name | string | `"opensearch-dashboards"` | no |
-| `base` | The base to deploy the charm on. | string | `"ubuntu@24.04"` | no |
-| `channel` | Charmhub channel | string | `"2/edge"` | no |
-| `config` | Map of charm configuration options | map(string) | `{}` | no |
-| `constraints` | Machine constraints for this application | string | `"arch=amd64"` | no |
-| `endpoint_bindings` | Set of endpoint bindings | <pre>set(object({<br/>    space    = string<br/>    endpoint = optional(string)<br/>  }))</pre> | `[]` | no |
-| `expose` | Expose the application for external access. | <pre>list(object({<br/>    cidrs     = optional(string)<br/>    endpoints = optional(string)<br/>    spaces    = optional(string)<br/>  }))</pre> | `[]` | no |
-| `machines` | List of machines for placement. When set, one unit is deployed on each machine. | set(string) | `[]` | no |
-| `model_uuid` | Model UUID | string | n/a | yes |
-| `revision` | Charm revision | number | `null` | no |
-| `units` | Charm units. Ignored when `machines` is set. | number | `1` | no |
+| ---- | ----------- | ---- | ------- | :------: |
+| app_name | Application name | `string` | `"opensearch-dashboards"` | no |
+| base | The base to deploy the charm on. | `string` | `"ubuntu@24.04"` | no |
+| channel | Charmhub channel | `string` | `"2/edge"` | no |
+| config | Map of charm configuration options | `map(string)` | `{}` | no |
+| constraints | Machine constraints for this application | `string` | `"arch=amd64"` | no |
+| endpoint_bindings | Set of endpoint bindings | <pre>set(object({<br/>    space    = string<br/>    endpoint = optional(string)<br/>  }))</pre> | `[]` | no |
+| expose | Expose the application for external access. | <pre>list(object({<br/>    cidrs     = optional(string)<br/>    endpoints = optional(string)<br/>    spaces    = optional(string)<br/>  }))</pre> | `[]` | no |
+| machines | List of machines for placement. When set, one unit is deployed on each listed machine. | `set(string)` | `[]` | no |
+| model_uuid | Model UUID | `string` | n/a | yes |
+| revision | Charm revision | `number` | `null` | no |
+| units | Charm units. Ignored when `machines` is set. | `number` | `1` | no |
 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
-| `application` | The deployed OpenSearch Dashboards application. |
-| `offers` | No offers are exposed by this application. |
-| `provides` | Map of all "provides" endpoints: `cos_agent`. |
-| `requires` | Map of all "requires" endpoints: `certificates`, `jwt_configuration`, `oauth` and `opensearch_client`. |
+| ---- | ----------- |
+| application | The deployed OpenSearch Dashboards application. |
+| offers | No offers are exposed by this application. |
+| provides | Map of all 'provides' endpoints. |
+| requires | Map of all 'requires' endpoints. |
+<!-- END_TF_DOCS -->
 
 ## Usage
 

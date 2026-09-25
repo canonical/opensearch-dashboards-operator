@@ -2,52 +2,47 @@
 
 This is a Terraform module facilitating the deployment of the OpenSearch Dashboards K8s charm (`opensearch-dashboards-k8s`) with [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
 
+This module requires a `juju` Kubernetes model to be available. Refer to the [usage section](#usage) below for more details.
+
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
-|------|---------|
-| `Terraform` | >= 1.6 |
-| `Juju provider` | ~> 2.0 |
-
-This module requires a `juju` Kubernetes model to be available. Refer to the [usage section](#usage) below for more details.
+| ---- | ------- |
+| terraform | >= 1.6 |
+| juju | ~> 2.0 |
 
 ## Providers
 
 | Name | Version |
 | ---- | ------- |
-| `juju` | ~> 2.0 |
-
-## Resources
-
-| Name | Type |
-|------|------|
-| `juju_application.opensearch_dashboards_k8s` | [Juju application](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application) |
-| `juju_offer.offered_endpoints` | [Juju offer](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) |
+| juju | ~> 2.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| `app_name` | Application name | string | `"opensearch-dashboards-k8s"` | no |
-| `base` | The base to deploy the charm on. | string | `"ubuntu@24.04"` | no |
-| `channel` | Charmhub channel | string | `"2/edge"` | no |
-| `config` | Map of charm configuration options | map(string) | `{}` | no |
-| `constraints` | Constraints for this application | string | `"arch=amd64"` | no |
-| `expose` | Expose the application for external access. | <pre>list(object({<br/>    cidrs     = optional(string)<br/>    endpoints = optional(string)<br/>    spaces    = optional(string)<br/>  }))</pre> | `[]` | no |
-| `model_uuid` | Model UUID | string | n/a | yes |
-| `offered_endpoints` | Endpoints to expose as Juju offers for cross-model integration. Allowed: `grafana-dashboard`, `metrics-endpoint`. | list(string) | `[]` | no |
-| `resources` | Map of the charm resources (`opensearch-dashboards-image`). When not set, the image published with the charm revision is used. | map(string) | `{}` | no |
-| `revision` | Charm revision | number | `null` | no |
-| `units` | Charm units | number | `1` | no |
+| ---- | ----------- | ---- | ------- | :------: |
+| app_name | Application name | `string` | `"opensearch-dashboards-k8s"` | no |
+| base | The base to deploy the charm on. | `string` | `"ubuntu@24.04"` | no |
+| channel | Charmhub channel | `string` | `"2/edge"` | no |
+| config | Map of charm configuration options | `map(string)` | `{}` | no |
+| constraints | Constraints for this application | `string` | `"arch=amd64"` | no |
+| expose | Expose the application for external access. | <pre>list(object({<br/>    cidrs     = optional(string)<br/>    endpoints = optional(string)<br/>    spaces    = optional(string)<br/>  }))</pre> | `[]` | no |
+| model_uuid | Model UUID | `string` | n/a | yes |
+| offered_endpoints | Endpoints to expose as Juju offers for cross-model integration. | `list(string)` | `[]` | no |
+| resources | Map of the charm resources. | `map(string)` | `{}` | no |
+| revision | Charm revision | `number` | `null` | no |
+| units | Charm units | `number` | `1` | no |
 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
-| `application` | The deployed OpenSearch Dashboards application. |
-| `offers` | Map of all offers exposed by this application. |
-| `provides` | Map of all "provides" endpoints: `grafana_dashboard` and `metrics_endpoint`. |
-| `requires` | Map of all "requires" endpoints: `certificates`, `ingress`, `jwt_configuration`, `logging`, `oauth` and `opensearch_client`. |
+| ---- | ----------- |
+| application | The deployed OpenSearch Dashboards application. |
+| offers | Map of all offers exposed by this application. |
+| provides | Map of all 'provides' endpoints. |
+| requires | Map of all 'requires' endpoints. |
+<!-- END_TF_DOCS -->
 
 ## Usage
 
