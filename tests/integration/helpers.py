@@ -147,6 +147,22 @@ async def wait_for_dashboard_idle(ops_test: OpsTest, traefik: bool, idle_period:
         await wait_for_ingress_blocked(ops_test, idle_period=idle_period)
 
 
+async def deploy_traefik(ops_test: OpsTest) -> None:
+    """Deploy traefik-k8s through the juju CLI and wait for it to be active.
+
+    On arm64, traefik-k8s is only published for ubuntu@26.04 (resolute), which libjuju
+    cannot resolve ("Unknown series"), so we shell out to the juju CLI instead.
+    """
+    await ops_test.juju(
+        "deploy", TRAEFIK_APP_NAME, "--channel", "latest/stable", "--trust", check=True
+    )
+    # A CLI deploy may not be reflected in libjuju's model cache yet; wait for the app.
+    await ops_test.model.block_until(
+        lambda: TRAEFIK_APP_NAME in ops_test.model.applications, timeout=1000
+    )
+    await ops_test.model.wait_for_idle(apps=[TRAEFIK_APP_NAME], status="active", timeout=1000)
+
+
 async def deploy_opensearch_and_dashboards(
     ops_test: OpsTest,
     charm: str,
