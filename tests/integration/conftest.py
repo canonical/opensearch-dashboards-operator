@@ -3,6 +3,7 @@
 # See LICENSE file for licensing details.
 import logging
 import os
+import platform
 import subprocess
 from typing import Literal
 
@@ -42,15 +43,26 @@ def charm_base():
     return f"ubuntu@{base_version}"
 
 
+@pytest.fixture(scope="session")
+def architecture() -> str:
+    """Returns the charm architecture matching the machine running the tests."""
+    machine = platform.machine()
+    if machine == "x86_64":
+        return "amd64"
+    if machine == "aarch64":
+        return "arm64"
+    raise ValueError(f"Unsupported machine platform: {machine}")
+
+
 @pytest.fixture
-def charm(charm_base, substrate):
+def charm(charm_base, substrate, architecture):
     """Path to the dashboards charm file to use for testing."""
     # Return str instead of pathlib.Path since python-lib juju's model.deploy(), juju deploy, and
     # juju bundle files expect local charms to begin with `./` or `/` to distinguish them from
     # Charmhub charms.
     if substrate == "k8s":
-        return f"./kubernetes/opensearch-dashboards-k8s_{charm_base}-amd64.charm"
-    return f"./machine/opensearch-dashboards_{charm_base}-amd64.charm"
+        return f"./kubernetes/opensearch-dashboards-k8s_{charm_base}-{architecture}.charm"
+    return f"./machine/opensearch-dashboards_{charm_base}-{architecture}.charm"
 
 
 @pytest.fixture
@@ -62,9 +74,9 @@ def opensearch_deploy_args(substrate) -> tuple[str, bool]:
 
 
 @pytest.fixture
-def application_charm() -> str:
+def application_charm(architecture) -> str:
     """Path to the application charm to use for testing."""
-    return "./tests/integration/dashboards_application_charm/application_ubuntu@24.04-amd64.charm"
+    return f"./tests/integration/dashboards_application_charm/application_ubuntu@24.04-{architecture}.charm"
 
 
 def pytest_configure(config):
