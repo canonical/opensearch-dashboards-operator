@@ -40,8 +40,8 @@ This module requires a `juju` model to be available. Refer to the [usage section
 | ---- | ----------- |
 | application | The deployed OpenSearch Dashboards application. |
 | offers | No offers are exposed by this application. |
-| provides | Map of all 'provides' endpoints. |
-| requires | Map of all 'requires' endpoints. |
+| provides | Map of all `provides` endpoints. |
+| requires | Map of all `requires` endpoints. |
 <!-- END_TF_DOCS -->
 
 ## Usage

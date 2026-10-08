@@ -17,7 +17,7 @@ output "offers" {
 }
 
 output "provides" {
-  description = "Map of all 'provides' endpoints."
+  description = "Map of all `provides` endpoints."
   value = {
     grafana_dashboard = {
       kind     = "endpoint"
@@ -33,7 +33,7 @@ output "provides" {
 }
 
 output "requires" {
-  description = "Map of all 'requires' endpoints."
+  description = "Map of all `requires` endpoints."
   value = {
     certificates = {
       kind     = "endpoint"
