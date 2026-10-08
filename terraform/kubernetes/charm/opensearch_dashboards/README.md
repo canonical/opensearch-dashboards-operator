@@ -60,7 +60,7 @@ resource "juju_model" "opensearch" {
   }
 }
 
-module "opensearch-dashboards" {
+module "opensearch_dashboards" {
   source     = "<path-to-this-directory>"
   model_uuid = juju_model.opensearch.uuid
 }
@@ -75,7 +75,7 @@ data "juju_model" "opensearch" {
   owner = "admin"
 }
 
-module "opensearch-dashboards" {
+module "opensearch_dashboards" {
   source     = "<path-to-this-directory>"
   model_uuid = data.juju_model.opensearch.uuid
 }
@@ -86,12 +86,12 @@ module "opensearch-dashboards" {
 OpenSearch Dashboards requires an OpenSearch cluster. Deploy one by following the description in: https://github.com/canonical/opensearch-operator/, in the `terraform/kubernetes` directory and relate both of them together:
 
 ```
-resource "juju_integration" "opensearch_dashboards-opensearch-integration" {
+resource "juju_integration" "opensearch_dashboards_opensearch" {
   model_uuid = juju_model.opensearch.uuid
 
   application {
-    name     = module.opensearch-dashboards.requires.opensearch_client.name
-    endpoint = module.opensearch-dashboards.requires.opensearch_client.endpoint
+    name     = module.opensearch_dashboards.requires.opensearch_client.name
+    endpoint = module.opensearch_dashboards.requires.opensearch_client.endpoint
   }
 
   application {
@@ -106,7 +106,7 @@ resource "juju_integration" "opensearch_dashboards-opensearch-integration" {
 The OpenSearch Dashboards application will remain in a `blocked` state until its `ingress` endpoint is related to an ingress provider, which this module does not deploy. Deploy one and relate it to the `ingress` endpoint. For example, with the traefik-k8s charm:
 
 ```
-resource "juju_application" "traefik-k8s" {
+resource "juju_application" "traefik_k8s" {
   model_uuid = juju_model.opensearch.uuid
   trust      = true
 
@@ -116,16 +116,16 @@ resource "juju_application" "traefik-k8s" {
   }
 }
 
-resource "juju_integration" "opensearch_dashboards-ingress-integration" {
+resource "juju_integration" "opensearch_dashboards_ingress" {
   model_uuid = juju_model.opensearch.uuid
 
   application {
-    name     = module.opensearch-dashboards.requires.ingress.name
-    endpoint = module.opensearch-dashboards.requires.ingress.endpoint
+    name     = module.opensearch_dashboards.requires.ingress.name
+    endpoint = module.opensearch_dashboards.requires.ingress.endpoint
   }
 
   application {
-    name     = juju_application.traefik-k8s.name
+    name     = juju_application.traefik_k8s.name
     endpoint = "ingress"
   }
 }
@@ -136,7 +136,7 @@ resource "juju_integration" "opensearch_dashboards-ingress-integration" {
 To access OpenSearch Dashboards over HTTPS, relate the ingress and TLS providers. For example, with the traefik-k8s and self-signed-certificates charms:
 
 ```
-resource "juju_application" "self-signed-certificates" {
+resource "juju_application" "self_signed_certificates" {
   model_uuid = juju_model.opensearch.uuid
 
   charm {
@@ -145,16 +145,16 @@ resource "juju_application" "self-signed-certificates" {
   }
 }
 
-resource "juju_integration" "traefik_k8s-tls-integration" {
+resource "juju_integration" "traefik_k8s_tls" {
   model_uuid = juju_model.opensearch.uuid
 
   application {
-    name     = juju_application.traefik-k8s.name
+    name     = juju_application.traefik_k8s.name
     endpoint = "certificates"
   }
 
   application {
-    name     = juju_application.self-signed-certificates.name
+    name     = juju_application.self_signed_certificates.name
     endpoint = "certificates"
   }
 }
@@ -163,16 +163,16 @@ resource "juju_integration" "traefik_k8s-tls-integration" {
 The optional `certificates` endpoint allows OpenSearch Dashboards to serve HTTPS to the ingress provider. Relate it to the same TLS provider as the ingress so that the ingress trusts its certificate:
 
 ```
-resource "juju_integration" "opensearch_dashboards-tls-integration" {
+resource "juju_integration" "opensearch_dashboards_tls" {
   model_uuid = juju_model.opensearch.uuid
 
   application {
-    name     = module.opensearch-dashboards.requires.certificates.name
-    endpoint = module.opensearch-dashboards.requires.certificates.endpoint
+    name     = module.opensearch_dashboards.requires.certificates.name
+    endpoint = module.opensearch_dashboards.requires.certificates.endpoint
   }
 
   application {
-    name     = juju_application.self-signed-certificates.name
+    name     = juju_application.self_signed_certificates.name
     endpoint = "certificates"
   }
 }

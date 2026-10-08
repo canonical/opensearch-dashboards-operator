@@ -56,7 +56,7 @@ resource "juju_model" "opensearch" {
   name = "opensearch"
 }
 
-module "opensearch-dashboards" {
+module "opensearch_dashboards" {
   source     = "<path-to-this-directory>"
   model_uuid = juju_model.opensearch.uuid
 }
@@ -71,7 +71,7 @@ data "juju_model" "opensearch" {
   owner = "admin"
 }
 
-module "opensearch-dashboards" {
+module "opensearch_dashboards" {
   source     = "<path-to-this-directory>"
   model_uuid = data.juju_model.opensearch.uuid
 }
@@ -82,12 +82,12 @@ module "opensearch-dashboards" {
 OpenSearch Dashboards requires an OpenSearch cluster. Deploy one with the OpenSearch Terraform modules from https://github.com/canonical/opensearch-operator/, in the `terraform` directory, and relate both of them together:
 
 ```
-resource "juju_integration" "opensearch_dashboards-opensearch-integration" {
+resource "juju_integration" "opensearch_dashboards_opensearch" {
   model_uuid = juju_model.opensearch.uuid
 
   application {
-    name     = module.opensearch-dashboards.requires.opensearch_client.name
-    endpoint = module.opensearch-dashboards.requires.opensearch_client.endpoint
+    name     = module.opensearch_dashboards.requires.opensearch_client.name
+    endpoint = module.opensearch_dashboards.requires.opensearch_client.endpoint
   }
 
   application {
@@ -102,7 +102,7 @@ resource "juju_integration" "opensearch_dashboards-opensearch-integration" {
 The optional `certificates` endpoint allows browsers to connect to OpenSearch Dashboards over HTTPS. This module does not deploy a TLS provider. To enable TLS, deploy a TLS provider and relate it to the `certificates` endpoint. For example, with the self-signed-certificates charm:
 
 ```
-resource "juju_application" "self-signed-certificates" {
+resource "juju_application" "self_signed_certificates" {
   model_uuid = juju_model.opensearch.uuid
 
   charm {
@@ -111,16 +111,16 @@ resource "juju_application" "self-signed-certificates" {
   }
 }
 
-resource "juju_integration" "opensearch_dashboards-tls-integration" {
+resource "juju_integration" "opensearch_dashboards_tls" {
   model_uuid = juju_model.opensearch.uuid
 
   application {
-    name     = module.opensearch-dashboards.requires.certificates.name
-    endpoint = module.opensearch-dashboards.requires.certificates.endpoint
+    name     = module.opensearch_dashboards.requires.certificates.name
+    endpoint = module.opensearch_dashboards.requires.certificates.endpoint
   }
 
   application {
-    name     = juju_application.self-signed-certificates.name
+    name     = juju_application.self_signed_certificates.name
     endpoint = "certificates"
   }
 }
