@@ -103,7 +103,7 @@ resource "juju_integration" "opensearch_dashboards-opensearch-integration" {
 
 ### Add an ingress
 
-The OpenSearch Dashboards application will remain in a `blocked` state until its `ingress` endpoint is related to an ingress provider. This module does not deploy an ingress provider. Deploy one and relate it to the `ingress` endpoint. For example, with the traefik-k8s charm:
+The OpenSearch Dashboards application will remain in a `blocked` state until its `ingress` endpoint is related to an ingress provider, which this module does not deploy. Deploy one and relate it to the `ingress` endpoint. For example, with the traefik-k8s charm:
 
 ```
 resource "juju_application" "traefik-k8s" {

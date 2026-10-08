@@ -3,7 +3,7 @@
 
 output "application" {
   description = "The deployed OpenSearch Dashboards application."
-  value       = juju_application.opensearch-dashboards
+  value       = juju_application.opensearch_dashboards
 }
 
 output "offers" {
@@ -16,7 +16,7 @@ output "provides" {
   value = {
     cos_agent = {
       kind     = "endpoint"
-      name     = juju_application.opensearch-dashboards.name
+      name     = juju_application.opensearch_dashboards.name
       endpoint = "cos-agent"
     }
   }
@@ -27,22 +27,22 @@ output "requires" {
   value = {
     certificates = {
       kind     = "endpoint"
-      name     = juju_application.opensearch-dashboards.name
+      name     = juju_application.opensearch_dashboards.name
       endpoint = "certificates"
     }
     jwt_configuration = {
       kind     = "endpoint"
-      name     = juju_application.opensearch-dashboards.name
+      name     = juju_application.opensearch_dashboards.name
       endpoint = "jwt-configuration"
     }
     oauth = {
       kind     = "endpoint"
-      name     = juju_application.opensearch-dashboards.name
+      name     = juju_application.opensearch_dashboards.name
       endpoint = "oauth"
     }
     opensearch_client = {
       kind     = "endpoint"
-      name     = juju_application.opensearch-dashboards.name
+      name     = juju_application.opensearch_dashboards.name
       endpoint = "opensearch-client"
     }
   }

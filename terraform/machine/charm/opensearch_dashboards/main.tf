@@ -1,7 +1,7 @@
 # Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-resource "juju_application" "opensearch-dashboards" {
+resource "juju_application" "opensearch_dashboards" {
   charm {
     name     = "opensearch-dashboards"
     channel  = var.channel
