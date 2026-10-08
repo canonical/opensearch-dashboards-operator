@@ -53,6 +53,11 @@ variable "expose" {
   }))
   default  = []
   nullable = false
+
+  validation {
+    condition     = length(var.expose) <= 1
+    error_message = "`expose` takes at most one entry. To expose several endpoints, list them comma-separated in the entry's `endpoints` attribute."
+  }
 }
 
 variable "machines" {
