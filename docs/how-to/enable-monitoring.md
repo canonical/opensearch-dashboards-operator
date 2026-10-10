@@ -11,8 +11,9 @@ Dashboards. It provides a Grafana dashboard, Prometheus alert rules, and logs in
 The integration depends on where Dashboards runs. On VMs, `opensearch-dashboards` exposes
 the `cos-agent` endpoint to a machine `grafana-agent`, which forwards telemetry to COS Lite.
 On Kubernetes, `opensearch-dashboards-k8s` exposes `metrics-endpoint`, `grafana-dashboard`,
-and `logging`. An `opentelemetry-collector-k8s` forwards these to COS Lite in a separate
-model, or Dashboards integrates directly when COS Lite runs in the same model.
+and `logging`, and a `grafana-agent-k8s` charm in the Dashboards model collects and forwards
+the telemetry to COS Lite. If COS Lite runs in the same model, Dashboards can integrate with
+the COS applications directly instead.
 
 ## Prerequisites
 
@@ -114,31 +115,33 @@ juju integrate grafana-agent opensearch-dashboards:cos-agent
 ````{tab-item} K8s
 :sync: k8s
 
-If COS Lite runs in a separate model from Dashboards, deploy
-[opentelemetry-collector-k8s](https://charmhub.io/opentelemetry-collector-k8s)
-in the Dashboards model:
+Deploy [grafana-agent-k8s](https://charmhub.io/grafana-agent-k8s) in the Dashboards model:
 
 ```shell
-juju deploy opentelemetry-collector-k8s otelcol
+juju deploy grafana-agent-k8s --trust
 ```
 
-Connect the Dashboards metrics, Grafana dashboard, and logs to the collector:
+Integrate it with the consumed COS offers:
 
 ```shell
-juju integrate opensearch-dashboards-k8s:metrics-endpoint otelcol:metrics-endpoint
-juju integrate opensearch-dashboards-k8s:grafana-dashboard otelcol:grafana-dashboards-consumer
-juju integrate opensearch-dashboards-k8s:logging otelcol:receive-loki-logs
+juju integrate grafana-agent-k8s:grafana-dashboards-provider grafana-dashboards
+juju integrate grafana-agent-k8s:logging-consumer loki-logging
+juju integrate grafana-agent-k8s:send-remote-write prometheus-receive-remote-write
 ```
 
-Forward them to the consumed COS offers:
+Then integrate it with Dashboards:
 
 ```shell
-juju integrate otelcol:send-remote-write prometheus-receive-remote-write
-juju integrate otelcol:grafana-dashboards-provider grafana-dashboards
-juju integrate otelcol:send-loki-logs loki-logging
+juju integrate opensearch-dashboards-k8s:metrics-endpoint grafana-agent-k8s:metrics-endpoint
+juju integrate opensearch-dashboards-k8s:grafana-dashboard grafana-agent-k8s:grafana-dashboards-consumer
+juju integrate opensearch-dashboards-k8s:logging grafana-agent-k8s:logging-provider
 ```
 
-If COS Lite and Dashboards run in the same model, skip the collector and
+* `metrics-endpoint` lets the agent scrape the Dashboards metrics endpoint.
+* `grafana-dashboard` transfers the **Charmed OpenSearch Dashboards** dashboard.
+* `logging` sends the Dashboards logs.
+
+If COS Lite and Dashboards run in the same model, skip the agent and
 the offer and consume sections above. Integrate Dashboards with the COS applications directly:
 
 ```shell

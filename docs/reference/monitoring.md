@@ -12,7 +12,7 @@ Both the OpenSearch Dashboards snap on VMs and the Charmed OpenSearch Dashboards
 which serves metrics on port 9684 at `/metrics`.
 The machine charm shares its metrics with COS through `cos-agent`.
 On Kubernetes, `opensearch-dashboards-k8s` provides a `metrics-endpoint`
-for Prometheus scraping, either directly or through an OpenTelemetry Collector.
+for Prometheus scraping, either directly or through `grafana-agent-k8s`.
 
 For descriptions of the exporter metrics, see its
 [README](https://github.com/canonical/prometheus-opensearch-dashboards-exporter?tab=readme-ov-file#metrics).
