@@ -2,7 +2,10 @@
 # How to enable monitoring (COS)
 
 ```{note}
-All commands are written for Juju 3.1.7 or later.
+All commands are written for Juju 3.4 or later.
+
+The Kubernetes charm forwards its workload logs with Pebble log forwarding,
+which requires Juju 3.4 or later.
 ```
 
 The Canonical Observability Stack (COS) collects metrics and logs from Charmed OpenSearch
@@ -115,6 +118,26 @@ juju integrate grafana-agent opensearch-dashboards:cos-agent
 ````{tab-item} K8s
 :sync: k8s
 
+On Kubernetes, `opensearch-dashboards-k8s`
+stays blocked with the message `Ingress relation missing` until it has an ingress
+relation. If the model already has an ingress, integrate Dashboards with the
+existing application. Otherwise, deploy [`traefik-k8s`](https://charmhub.io/traefik-k8s)
+and integrate it with Dashboards:
+
+```shell
+juju deploy traefik-k8s --trust
+juju integrate opensearch-dashboards-k8s:ingress traefik-k8s:ingress
+```
+
+For more about ingress with the Traefik charm, see the
+[Traefik operator documentation](https://canonical.com/juju/docs/traefik-k8s-charm/latest/).
+
+```{note}
+If `grafana-agent-k8s` is already deployed in this model (for example, while
+monitoring Charmed OpenSearch), skip this step (agent deployment) and the next
+step (COS offers integration); only add the Dashboards integrations below.
+```
+
 Deploy [grafana-agent-k8s](https://charmhub.io/grafana-agent-k8s) in the Dashboards model:
 
 ```shell
@@ -138,7 +161,7 @@ juju integrate opensearch-dashboards-k8s:logging grafana-agent-k8s:logging-provi
 ```
 
 * `metrics-endpoint` lets the agent scrape the Dashboards metrics endpoint.
-* `grafana-dashboard` transfers the **Charmed OpenSearch Dashboards** dashboard.
+* `grafana-dashboard` transfers the **Charmed Opensearch Dashboards** dashboard.
 * `logging` sends the Dashboards logs.
 
 If COS Lite and Dashboards run in the same model, skip the agent and
@@ -152,8 +175,9 @@ juju integrate opensearch-dashboards-k8s:logging loki:logging
 ````
 `````
 
-After integration, Grafana displays the **Charmed OpenSearch Dashboards** dashboard,
-and Loki receives Dashboards logs.
+After integration, Grafana displays the **Charmed Opensearch Dashboards** dashboard
+(with the charm revision appended, for example
+`Charmed Opensearch Dashboards - Rev 10`), and Loki receives Dashboards logs.
 
 ## Connect to Grafana
 
