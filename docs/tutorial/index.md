@@ -145,7 +145,7 @@ Subsequently, we can deploy OpenSearch with TLS:
 ```shell
 juju deploy opensearch --channel=2/edge -n 2
 juju deploy self-signed-certificates --channel=1/stable
-juju integrate self-signed-certificates opensearch
+juju integrate self-signed-certificates opensearch:certificates
 ```
 
 We can simply add the OpenSearch Dashboards charm to this setup by deploying and relating it to OpenSearch
