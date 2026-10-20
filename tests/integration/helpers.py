@@ -199,7 +199,9 @@ async def deploy_opensearch_and_dashboards(
         channel=TLS_STABLE_CHANNEL,
         config={"ca-common-name": "CN_CA"},
     )
-    await ops_test.model.integrate(OPENSEARCH_APP_NAME, TLS_CERTIFICATES_APP_NAME)
+    await ops_test.model.integrate(
+        OPENSEARCH_APP_NAME, f"{TLS_CERTIFICATES_APP_NAME}:certificates"
+    )
 
     deploy_kwargs: dict = {
         "application_name": APP_NAME,

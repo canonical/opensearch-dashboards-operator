@@ -57,7 +57,17 @@ jobs:
           promtool check rules machine/src/alert_rules/prometheus/*.yaml
 
   terraform-test:
-    name: Terraform - Lint and Simple Deployment
+    name: Terraform - Lint and Simple Deployment | ${{ matrix.substrate }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - substrate: machine
+            app: opensearch-dashboards
+            cloud: localhost
+          - substrate: kubernetes
+            app: opensearch-dashboards-k8s
+            cloud: uk8s
     runs-on: ubuntu-latest
     timeout-minutes: 120
     permissions:
@@ -73,14 +83,14 @@ jobs:
         run: sudo snap install terraform --classic
 
       - name: lint charm module
-        run: |
-          pushd ./terraform
-          terraform init && terraform fmt && terraform validate
-          popd
+        working-directory: ./terraform/${{ matrix.substrate }}/charm/opensearch_dashboards
+        run: terraform init && terraform fmt -check && terraform validate
       - name: run checks - prepare
+        if: matrix.substrate == 'machine'
         run: |
           sudo snap install juju --channel=3.6 --classic
       - name: LXD setup
+        if: matrix.substrate == 'machine'
         run: |
           if snap list lxd >/dev/null 2>&1; then
             sudo snap refresh lxd --channel=latest/stable
@@ -94,20 +104,29 @@ jobs:
           sg 'lxd' -c "lxc network set lxdbr0 ipv6.address none"
           sudo iptables -F FORWARD
           sudo iptables -P FORWARD ACCEPT
+          sg 'lxd' -c "juju bootstrap 'localhost' --config model-logs-size=10G"
+      - name: K8s setup
+        if: matrix.substrate == 'kubernetes'
+        run: |
+          # Docker and podman networking conflict with Canonical K8s
+          sudo apt-get remove --purge -y docker-ce docker-ce-cli containerd.io docker.io containerd 2>/dev/null || true
+          sudo nft flush ruleset
+          sudo rm -f /etc/cni/net.d/87-podman-bridge.conflist
+          sudo snap install concierge --classic
+          sudo concierge prepare -c concierge-k8s.yaml --juju-channel=3.6/stable
+          # The controller runs in an LXD container, which can't reach K8s on 127.0.0.1
+          sudo k8s kubectl config view --raw | sed "s/127.0.0.1/$(ip -4 -j route get 2.2.2.2 | jq -r '.[0].prefsrc')/" | juju add-k8s uk8s --client --controller concierge-lxd
       - name: Juju setup
         run: |
-          sg 'lxd' -c "juju bootstrap 'localhost' --config model-logs-size=10G"
-          juju model-defaults logging-config='<root>=INFO; unit=DEBUG'
-          juju add-model test
+          juju add-model test ${{ matrix.cloud }} --config logging-config='<root>=INFO; unit=DEBUG'
       - name: Terraform deploy
+        working-directory: ./terraform/${{ matrix.substrate }}/charm/opensearch_dashboards
         run: |
           MODEL_UUID=$(juju show-model test | grep "model-uuid" | awk '{split($0, a, ": "); print a[2]}')
-          pushd ./terraform
           terraform apply -var="model_uuid=$MODEL_UUID" -auto-approve
-          popd
       - name: Wait for model and applications
         run: |
-          juju wait-for application opensearch-dashboards -m test --query='status=="blocked"'
+          juju wait-for application ${{ matrix.app }} -m test --query='status=="blocked"'
           juju wait-for model test --query='life=="alive" && status=="available"'
 
   build:
