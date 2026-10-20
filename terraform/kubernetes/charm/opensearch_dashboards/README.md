@@ -160,7 +160,7 @@ resource "juju_integration" "traefik_k8s_tls" {
 }
 ```
 
-The optional `certificates` endpoint allows OpenSearch Dashboards to serve HTTPS to the ingress provider. Relate it to the same TLS provider as the ingress so that the ingress trusts its certificate:
+TLS from browsers terminates at the ingress, using the certificate from the ingress's `certificates` relation. To also encrypt traffic from the ingress to OpenSearch Dashboards, relate its `certificates` endpoint to a TLS provider. OpenSearch Dashboards then serves HTTPS. Use the same provider as the ingress, so that the ingress trusts its certificate:
 
 ```
 resource "juju_integration" "opensearch_dashboards_tls" {
