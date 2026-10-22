@@ -200,7 +200,7 @@ async def deploy_opensearch_and_dashboards(
         config={"ca-common-name": "CN_CA"},
     )
     await ops_test.model.integrate(
-        OPENSEARCH_APP_NAME, f"{TLS_CERTIFICATES_APP_NAME}:certificates"
+        f"{OPENSEARCH_APP_NAME}:certificates", f"{TLS_CERTIFICATES_APP_NAME}:certificates"
     )
 
     deploy_kwargs: dict = {
@@ -957,7 +957,12 @@ async def client_run_all_dashboards_request(
 async def destroy_cluster(ops_test, app: str = OPENSEARCH_APP_NAME):
     """Destroy cluster in a forceful way."""
     await ops_test.juju("remove-relation", APP_NAME, app, check=False)
-    await ops_test.juju("remove-relation", TLS_CERTIFICATES_APP_NAME, app, check=False)
+    await ops_test.juju(
+        "remove-relation",
+        f"{TLS_CERTIFICATES_APP_NAME}:certificates",
+        f"{app}:certificates",
+        check=False,
+    )
     await ops_test.juju("remove-relation", DB_CLIENT_APP_NAME, app, check=False)
     await asyncio.sleep(30)
     n_apps_before = len(ops_test.model.applications)

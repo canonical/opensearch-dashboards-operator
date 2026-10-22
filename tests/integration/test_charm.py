@@ -516,7 +516,7 @@ async def test_restore_opensearch_restores_osd(
     await ops_test.model.deploy(os_charm, **os_deploy_kwargs)
 
     await ops_test.model.integrate(
-        OPENSEARCH_APP_NAME, f"{TLS_CERTIFICATES_APP_NAME}:certificates"
+        f"{OPENSEARCH_APP_NAME}:certificates", f"{TLS_CERTIFICATES_APP_NAME}:certificates"
     )
 
     async with ops_test.fast_forward("30s"):
