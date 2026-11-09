@@ -19,7 +19,7 @@ A Juju model containing:
 * A TLS certificate provider charm (e.g. `self-signed-certificates`)
   integrated with `opensearch`
 
-To learn how to set up and deploy an OpenSearch application, see steps 1, 2, and 3 of the
+To set up and deploy an OpenSearch application, see steps 1, 2, and 3 of the
 [OpenSearch Tutorial](https://canonical.com/data/opensearch/docs/2/tutorial/1-set-up-the-environment/).
 
 Make sure you've set up the correct
@@ -43,7 +43,7 @@ OpenSearch Dashboards requires an [ingress provider](dashboard-how-to-deploy-ing
 such as `traefik-k8s`, which needs a load balancer for its external IP address, for example
 the Canonical Kubernetes [`load-balancer`](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-loadbalancer/) feature.
 
-To learn how to set up and deploy OpenSearch on Kubernetes, including setting the required
+To set up and deploy OpenSearch on Kubernetes, including setting the required
 kernel parameters on every node, see the
 [OpenSearch deploy guide](https://canonical.com/data/opensearch/docs/2/how-to/deploy/standard/).
 
@@ -109,7 +109,7 @@ juju deploy traefik-k8s --channel latest/stable --trust
 juju integrate opensearch-dashboards traefik-k8s
 ```
 
-### Configure TLS
+**Configure TLS**
 
 By default, Traefik serves the OpenSearch Dashboards URL over HTTP. To serve it over
 HTTPS, integrate Traefik with a TLS provider:
@@ -118,11 +118,11 @@ HTTPS, integrate Traefik with a TLS provider:
 juju integrate traefik-k8s self-signed-certificates:certificates
 ```
 
-With this configuration, TLS terminates at Traefik, and traffic between Traefik and
-OpenSearch Dashboards is not encrypted.
+With this configuration, TLS terminates at Traefik. The connection between Traefik and
+OpenSearch Dashboards is unencrypted.
 
-To also encrypt traffic between Traefik and OpenSearch Dashboards, integrate OpenSearch
-Dashboards with the same TLS provider:
+To encrypt this connection, configure OpenSearch Dashboards to use the same TLS provider
+as Traefik:
 
 ```shell
 juju integrate opensearch-dashboards:certificates self-signed-certificates:certificates
@@ -140,7 +140,7 @@ that signs the OpenSearch Dashboards certificate. Integrate Traefik with the
 juju integrate traefik-k8s:receive-ca-cert self-signed-certificates:send-ca-cert
 ```
 
-Get the OpenSearch Dashboards URL:
+To open OpenSearch Dashboards in your browser, get the URL that Traefik serves it at:
 
 ```shell
 juju run traefik-k8s/0 show-proxied-endpoints
@@ -202,7 +202,7 @@ sync-group: substrate
 
 ```text
 Model      Controller  Cloud/Region         Version  SLA          Timestamp
-tutorial   overlord    localhost/localhost  3.5.3    unsupported  17:40:00+02:00
+tutorial   overlord    localhost/localhost  3.6.28   unsupported  17:40:00+02:00
 
 App                       Version  Status  Scale  Charm                     Channel   Rev  Exposed  Message
 opensearch                         active      2  opensearch                2/edge    159  no
