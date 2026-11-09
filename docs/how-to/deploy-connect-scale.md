@@ -6,18 +6,18 @@ OpenSearch cluster, and scaling the number of units up or down.
 
 ## Prerequisites
 
+A Juju model containing:
+
+* An active `opensearch` application
+* A TLS certificate provider charm (e.g. `self-signed-certificates`)
+  integrated with `opensearch`
+
 `````{tab-set}
 ---
 sync-group: substrate
 ---
 ````{tab-item} VM
 :sync: vm
-
-A Juju model containing:
-
-* An active `opensearch` application
-* A TLS certificate provider charm (e.g. `self-signed-certificates`)
-  integrated with `opensearch`
 
 To set up and deploy an OpenSearch application, see steps 1, 2, and 3 of the
 [OpenSearch Tutorial](https://canonical.com/data/opensearch/docs/2/tutorial/1-set-up-the-environment/).
@@ -32,12 +32,6 @@ For a detailed walk-through of a full deployment on LXD, see the
 
 ````{tab-item} K8s
 :sync: k8s
-
-A Juju model on a Kubernetes cloud containing:
-
-* An active `opensearch` application
-* A TLS certificate provider charm (e.g. `self-signed-certificates`)
-  integrated with `opensearch`
 
 OpenSearch Dashboards requires an [ingress provider](dashboard-how-to-deploy-ingress)
 such as `traefik-k8s`, which needs a load balancer for its external IP address, for example
